@@ -1,15 +1,32 @@
 package com.cowrycode.smileapp.domains;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.Entity;
 
 @Entity
-@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class UserProfileEntity extends BaseEntity {
     String name;
     double smilegrampoint;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getSmilegrampoint() {
+        return smilegrampoint;
+    }
+
+    public void setSmilegrampoint(double smilegrampoint) {
+        this.smilegrampoint = smilegrampoint;
+    }
 }

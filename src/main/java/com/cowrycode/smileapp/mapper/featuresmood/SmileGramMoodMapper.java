@@ -5,6 +5,7 @@ import com.cowrycode.smileapp.models.featuresmood.SmileGramMoodDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+
 @Mapper
 public interface SmileGramMoodMapper {
     SmileGramMoodMapper INSTANCE = Mappers.getMapper(SmileGramMoodMapper.class);

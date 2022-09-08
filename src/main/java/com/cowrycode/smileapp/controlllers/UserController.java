@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/smile")
 public class UserController {
 
     private final MoodService moodService;
@@ -36,10 +36,15 @@ public class UserController {
 
     @PostMapping("/create-user")
     public ResponseEntity<UserProfileDTO> createUser(@RequestBody @Validated UserProfileDTO userProfileDTO , HttpServletRequest request){
+        UserProfileDTO userProfileDTO1 = new UserProfileDTO();
+        userProfileDTO1.setId(1L);
+        userProfileDTO1.setName("The Name");
+        userProfileDTO1.setSmilegrampoint(2.0);
+        System.out.println(userProfileDTO1.getName());
+        System.out.println(userProfileDTO1.getSmilegrampoint());
         UserProfileDTO savedProfile = userProfileService.saveUserprofile(userProfileDTO);
         return new ResponseEntity<>(savedProfile, HttpStatus.OK);
     }
-
     @PostMapping("/tribemessage")
     public ResponseEntity<MyTribeMessageDTO> saveTribeMessage(@RequestBody @Validated MyTribeMessageDTO myTribeMessageDTO, HttpServletRequest request){
         MyTribeMessageDTO savedMessage = myTribeMessageService.saveTribeMessage(myTribeMessageDTO);
@@ -58,7 +63,7 @@ public class UserController {
         return new ResponseEntity<>(savedpocketbuddy, HttpStatus.OK);
     }
 
-    @PostMapping("/pocketbuddy-mood")
+    @PostMapping("/tribe-mood")
     public ResponseEntity<TribeMoodDTO> savePocketbuddyMood(@RequestBody @Validated TribeMoodDTO tribeMoodDTO, HttpServletRequest request){
         TribeMoodDTO savedtribemood = moodService.saveTribemood(tribeMoodDTO);
         return new ResponseEntity<>(savedtribemood, HttpStatus.OK);

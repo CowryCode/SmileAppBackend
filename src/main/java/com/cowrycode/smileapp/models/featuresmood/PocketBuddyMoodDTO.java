@@ -2,12 +2,14 @@ package com.cowrycode.smileapp.models.featuresmood;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PocketBuddyMoodDTO {
     private Long id;
     LocalDate startDate;
@@ -17,4 +19,5 @@ public class PocketBuddyMoodDTO {
     Time endTime;
     int endMood;
     double smileduration; //in minutes
+
 }

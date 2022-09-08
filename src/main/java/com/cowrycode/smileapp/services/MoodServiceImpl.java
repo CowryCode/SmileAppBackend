@@ -20,9 +20,9 @@ public class MoodServiceImpl implements MoodService {
     private final PocketBuddyMoodRepo pocketBuddyMoodRepo;
     private final TribeMoodRepo tribeMoodRepo;
 
-    private SmileGramMoodMapper smileGramMoodMapper = SmileGramMoodMapper.INSTANCE;
     private PocketBuddyMoodMapper pocketBuddyMoodMapper = PocketBuddyMoodMapper.INSTANCE;
     private TribeMoodMapper tribeMoodMapper = TribeMoodMapper.INSTANCE;
+    private SmileGramMoodMapper smileGramMoodMapper = SmileGramMoodMapper.INSTANCE;
 
     public MoodServiceImpl(SmileGramMoodRepo smileGramMoodRepo,
                            PocketBuddyMoodRepo pocketBuddyMoodRepo,

@@ -3,6 +3,7 @@ package com.cowrycode.smileapp.domains.featuresmood;
 import com.cowrycode.smileapp.domains.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import java.sql.Time;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class SmileGramMoodEntity extends BaseEntity {
     private LocalDate  startDate;
     private Time startTime;

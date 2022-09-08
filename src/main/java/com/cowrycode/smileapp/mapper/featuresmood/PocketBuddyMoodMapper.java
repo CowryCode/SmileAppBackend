@@ -7,6 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface PocketBuddyMoodMapper {
+
     PocketBuddyMoodMapper INSTANCE = Mappers.getMapper(PocketBuddyMoodMapper.class);
 
     PocketBuddyMoodDTO EntityToDTO(PocketBuddyMoodEntity pocketBuddyMoodEntity);
