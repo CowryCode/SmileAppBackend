@@ -13,28 +13,4 @@ public class UserProfileDTO {
     private String name;
 
     private double smilegrampoint;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getSmilegrampoint() {
-        return smilegrampoint;
-    }
-
-    public void setSmilegrampoint(double smilegrampoint) {
-        this.smilegrampoint = smilegrampoint;
-    }
 }

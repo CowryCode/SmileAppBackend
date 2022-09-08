@@ -12,12 +12,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PocketBuddyMoodDTO {
     private Long id;
-    LocalDate startDate;
-    Time startTime;
-    int startMood;
-    LocalDate  endDate;
-    Time endTime;
-    int endMood;
-    double smileduration; //in minutes
+    private LocalDate startDate;
+    private Time startTime;
+    private int startMood;
+    private LocalDate  endDate;
+    private Time endTime;
+    private int endMood;
+    private double smileduration; //in minutes
 
 }

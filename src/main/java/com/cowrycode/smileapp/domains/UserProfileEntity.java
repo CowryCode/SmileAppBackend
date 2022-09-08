@@ -14,19 +14,4 @@ public class UserProfileEntity extends BaseEntity {
     String name;
     double smilegrampoint;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getSmilegrampoint() {
-        return smilegrampoint;
-    }
-
-    public void setSmilegrampoint(double smilegrampoint) {
-        this.smilegrampoint = smilegrampoint;
-    }
 }

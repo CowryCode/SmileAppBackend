@@ -36,12 +36,6 @@ public class UserController {
 
     @PostMapping("/create-user")
     public ResponseEntity<UserProfileDTO> createUser(@RequestBody @Validated UserProfileDTO userProfileDTO , HttpServletRequest request){
-        UserProfileDTO userProfileDTO1 = new UserProfileDTO();
-        userProfileDTO1.setId(1L);
-        userProfileDTO1.setName("The Name");
-        userProfileDTO1.setSmilegrampoint(2.0);
-        System.out.println(userProfileDTO1.getName());
-        System.out.println(userProfileDTO1.getSmilegrampoint());
         UserProfileDTO savedProfile = userProfileService.saveUserprofile(userProfileDTO);
         return new ResponseEntity<>(savedProfile, HttpStatus.OK);
     }
