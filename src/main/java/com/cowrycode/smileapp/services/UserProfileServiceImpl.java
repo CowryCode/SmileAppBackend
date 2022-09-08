@@ -6,6 +6,8 @@ import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepo userProfileRepo;
@@ -21,6 +23,23 @@ public class UserProfileServiceImpl implements UserProfileService {
         try {
             UserProfileEntity savedProfile = userProfileRepo.save(userProfileMapper.DTOtoEntity(userProfileDTO));
             return userProfileMapper.EntitytoDTO(savedProfile);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public UserProfileDTO savedDeviceID(Long userID, String deviceID) {
+        try {
+            Optional<UserProfileEntity> profile = userProfileRepo.findById(userID);
+            if(profile.isPresent()){
+                UserProfileEntity profileEntity = profile.get();
+                profileEntity.setDeviceId(deviceID);
+                UserProfileEntity updatedprofile =  userProfileRepo.save(profileEntity);
+                return userProfileMapper.EntitytoDTO(updatedprofile);
+            }else {
+                return null;
+            }
         }catch (Exception e){
             return null;
         }

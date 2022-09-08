@@ -22,4 +22,5 @@ public class PocketBuddyMoodEntity extends BaseEntity {
     private Time endTime;
     private int endMood;
     private double smileduration; //in minutes
+
 }

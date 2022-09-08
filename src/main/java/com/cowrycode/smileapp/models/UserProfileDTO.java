@@ -13,4 +13,6 @@ public class UserProfileDTO {
     private String name;
 
     private double smilegrampoint;
+
+    private String deviceId;
 }

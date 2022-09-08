@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MyTribeMessageEntity extends BaseEntity {
-    String content;
-    int numberoflikes;
-    boolean isread;
+    private String content;
+    private int numberoflikes;
+    private boolean isread;
 }

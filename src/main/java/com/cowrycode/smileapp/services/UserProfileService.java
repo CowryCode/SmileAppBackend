@@ -4,4 +4,5 @@ import com.cowrycode.smileapp.models.UserProfileDTO;
 
 public interface UserProfileService  {
     UserProfileDTO saveUserprofile(UserProfileDTO userProfileDTO);
+    UserProfileDTO savedDeviceID (Long userID, String deviceID);
 }

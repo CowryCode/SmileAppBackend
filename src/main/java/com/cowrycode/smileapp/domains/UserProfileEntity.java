@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 public class UserProfileEntity extends BaseEntity {
-    String name;
-    double smilegrampoint;
-
+    private String name;
+    private double smilegrampoint;
+    private String deviceId;
 }

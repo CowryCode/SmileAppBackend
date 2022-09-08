@@ -39,6 +39,14 @@ public class UserController {
         UserProfileDTO savedProfile = userProfileService.saveUserprofile(userProfileDTO);
         return new ResponseEntity<>(savedProfile, HttpStatus.OK);
     }
+
+    @PostMapping("/add-device")
+    public ResponseEntity<UserProfileDTO> addUserDevice(@RequestBody @Validated UserProfileDTO userProfileDTO , HttpServletRequest request){
+        //TODO: GET USERID FROM LOGIN AYTHENTICATION
+        UserProfileDTO updatedProfile = userProfileService.savedDeviceID(1L, userProfileDTO.getDeviceId());
+        return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
+    }
+
     @PostMapping("/tribemessage")
     public ResponseEntity<MyTribeMessageDTO> saveTribeMessage(@RequestBody @Validated MyTribeMessageDTO myTribeMessageDTO, HttpServletRequest request){
         MyTribeMessageDTO savedMessage = myTribeMessageService.saveTribeMessage(myTribeMessageDTO);
