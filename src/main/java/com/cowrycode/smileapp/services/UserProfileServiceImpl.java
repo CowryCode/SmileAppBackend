@@ -6,6 +6,7 @@ import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,37 @@ public class UserProfileServiceImpl implements UserProfileService {
         }catch (Exception e){
             return null;
         }
+    }
+
+    @Override
+    public UserProfileDTO getprofile(HttpServletRequest request) {
+        try{
+            String phonenumberToken = extractToken(request);
+            if(phonenumberToken != null){
+                UserProfileEntity profile = userProfileRepo.findByphonenumber(phonenumberToken);
+                return userProfileMapper.EntitytoDTO(profile);
+            }else {
+                return null;
+            }
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    private String extractToken(HttpServletRequest request){
+        try{
+            String header = request.getHeader("Authorization" );
+            String token;
+            if(header.startsWith("Bearer ")){
+                token = header.substring(7).trim();
+                return token;
+            }else {
+                return null;
+            }
+        }catch (Exception e){
+            return null;
+        }
+
     }
 
     @Override

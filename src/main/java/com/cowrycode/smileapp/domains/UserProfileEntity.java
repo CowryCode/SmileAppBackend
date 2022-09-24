@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 @Setter
 public class UserProfileEntity extends BaseEntity {
     private String name;
+    private String phonenumber;
+    private boolean isconsented;
     private double smilegrampoint;
     private String deviceId;
 }

@@ -12,10 +12,7 @@ import com.cowrycode.smileapp.services.UserProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,8 +33,31 @@ public class UserController {
 
     @PostMapping("/create-user")
     public ResponseEntity<UserProfileDTO> createUser(@RequestBody @Validated UserProfileDTO userProfileDTO , HttpServletRequest request){
-        UserProfileDTO savedProfile = userProfileService.saveUserprofile(userProfileDTO);
-        return new ResponseEntity<>(savedProfile, HttpStatus.OK);
+        try{
+            UserProfileDTO savedProfile = userProfileService.saveUserprofile(userProfileDTO);
+            if(savedProfile != null){
+                return new ResponseEntity<>(savedProfile, HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
+    @GetMapping("/get-user")
+    public ResponseEntity<UserProfileDTO> getUser(HttpServletRequest request){
+        try{
+            UserProfileDTO profile = userProfileService.getprofile(request);
+            if(profile != null){
+                return new ResponseEntity<>(profile, HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
     }
 
     @PostMapping("/add-device")

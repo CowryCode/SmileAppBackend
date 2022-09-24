@@ -86,6 +86,24 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--   Start of Dependencies for Firebase Cloud Messaging-->
+        <dependency>
+            <groupId>com.google.gcm</groupId>
+            <artifactId>gcm-server</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-server-sdk</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <!--   End of Dependencies for Firebase Cloud Messaging-->
+
     </dependencies>
 
     <build>
