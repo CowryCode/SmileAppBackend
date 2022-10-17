@@ -51,6 +51,7 @@ public class UserController {
         try{
             UserProfileDTO profile = userProfileService.getprofile(request);
             if(profile != null){
+                System.out.println("Profile :" + profile);
                 return new ResponseEntity<>(profile, HttpStatus.OK);
             }else {
                 return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
