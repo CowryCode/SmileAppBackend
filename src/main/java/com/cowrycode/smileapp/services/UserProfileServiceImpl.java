@@ -3,10 +3,12 @@ package com.cowrycode.smileapp.services;
 import com.cowrycode.smileapp.domains.UserProfileEntity;
 import com.cowrycode.smileapp.mapper.UserProfileMapper;
 import com.cowrycode.smileapp.models.UserProfileDTO;
+import com.cowrycode.smileapp.models.metamodel.LeaderBoard;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,8 +24,14 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDTO saveUserprofile(UserProfileDTO userProfileDTO) {
         try {
-            UserProfileEntity savedProfile = userProfileRepo.save(userProfileMapper.DTOtoEntity(userProfileDTO));
-            return userProfileMapper.EntitytoDTO(savedProfile);
+            UserProfileEntity savedProfile = userProfileRepo.findByidentifier(userProfileDTO.getIdentifier());
+            if(savedProfile == null){
+                savedProfile = userProfileRepo.save(userProfileMapper.DTOtoEntity(userProfileDTO));
+                return userProfileMapper.EntitytoDTO(savedProfile);
+            }else {
+                return userProfileMapper.EntitytoDTO(savedProfile);
+            }
+
         }catch (Exception e){
             return null;
         }
@@ -75,5 +83,24 @@ public class UserProfileServiceImpl implements UserProfileService {
         }catch (Exception e){
             return null;
         }
+    }
+
+    @Override
+    public LeaderBoard sortPerformance(Long userID) {
+        try {
+           UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+            System.out.println("TRACK 1");
+           if(profileDTO != null ){
+               System.out.println("TRACK 2");
+               List<UserProfileEntity> toUsers = userProfileRepo.getTopPerformers();
+               toUsers.forEach(userProfileEntity ->
+                       System.out.println("Name : " + userProfileEntity.getName() + " " + "Score : " + userProfileEntity.getAccumulatedValue()));
+           }else {
+               System.out.println("TRACK 3");
+           }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

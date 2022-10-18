@@ -20,6 +20,8 @@ public class TrackerEntity extends BaseEntity  {
    // Long identifier;
     String trackerIdentifier; // This will be date
     LocalDate date;
+    int targetValue;
+    int achievedScore;
     @OneToMany
     List<SmileGramMoodEntity> smilegramlist;
     @OneToMany

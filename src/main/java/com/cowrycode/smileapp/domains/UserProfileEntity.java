@@ -20,10 +20,10 @@ public class UserProfileEntity extends BaseEntity {
     private String name;
     private String phonenumber;
     private boolean isconsented;
-    private double smilegrampoint;
+    private double smilegrampoint; // Use Point to get Map String
+    private double accumulatedValue;
     private String deviceId;
-//    @OneToOne(cascade = CascadeType.ALL)
-//    private TrackerEntity trackerEntity;
     @OneToMany
     List<TrackerEntity> dailytrackers;
+    private boolean voided;
 }

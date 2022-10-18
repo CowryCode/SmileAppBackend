@@ -1,6 +1,7 @@
 package com.cowrycode.smileapp.models;
 
 import com.cowrycode.smileapp.domains.TrackerEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,10 @@ public class UserProfileDTO {
     private String phonenumber;
     private boolean isconsented;
     private double smilegrampoint;
+    private double accumulatedValue;
+    @JsonIgnore
     private String deviceId;
-//    private TrackerEntity trackerEntity;
+    @JsonIgnore
     List<TrackerEntity> dailytrackers;
+    private boolean voided;
 }

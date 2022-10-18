@@ -6,6 +6,7 @@ import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.featuresmood.PocketBuddyMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.SmileGramMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.TribeMoodDTO;
+import com.cowrycode.smileapp.models.metamodel.LeaderBoard;
 import com.cowrycode.smileapp.services.AuthService;
 import com.cowrycode.smileapp.services.MoodService;
 import com.cowrycode.smileapp.services.MyTribeMessageService;
@@ -110,6 +111,17 @@ public class UserController {
         TribeMoodDTO savedtribemood = moodService.saveTribemood(tribeMoodDTO, authService.getIdentifier(request));
         if(savedtribemood != null){
             return new ResponseEntity<>(savedtribemood, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
+    @GetMapping("/leaderboard")
+    public ResponseEntity<LeaderBoard> getLeaderboard(HttpServletRequest request){
+        LeaderBoard board = userProfileService.sortPerformance(authService.getIdentifier(request));
+        if(board != null){
+            return new ResponseEntity<>(board, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
