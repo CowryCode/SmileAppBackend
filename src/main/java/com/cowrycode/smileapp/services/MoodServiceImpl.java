@@ -113,7 +113,36 @@ public class MoodServiceImpl implements MoodService {
 
     @Override
     public TribeMoodDTO saveTribemood(TribeMoodDTO tribeMoodDTO, Long identifier) {
-
-        return null;
+        try {
+            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+            if(profile != null){
+                TrackerEntity tracker = profile.getTrackerEntity();
+                List<TribeMoodEntity> tribemoods;
+                if(tracker == null){
+                    tracker =  trackerRepo.save(new TrackerEntity());
+                    tribemoods = new ArrayList<>();
+                }else {
+                    tribemoods = profile.getTrackerEntity().getMyTribeList();
+                    tribemoods = profile.getTrackerEntity().getMyTribeList();
+                    if(tribemoods == null){
+                        tribemoods = new ArrayList<>();
+                    }
+                }
+                TribeMoodEntity saveedTribemoood = tribeMoodRepo.save(tribeMoodMapper.DTOtoEntity(tribeMoodDTO));
+                tribemoods.add(saveedTribemoood);
+                tracker.setMyTribeList(tribemoods);
+                tracker.setDate(LocalDate.now());
+                tracker.setIdentifier(identifier);
+                trackerRepo.save(tracker);
+                profile.setTrackerEntity(tracker);
+                userProfileRepo.save(profile);
+                return tribeMoodMapper.EntitytoDTO(saveedTribemoood);
+            } else {
+                return null;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }
