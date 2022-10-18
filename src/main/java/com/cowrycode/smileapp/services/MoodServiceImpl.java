@@ -47,13 +47,10 @@ public class MoodServiceImpl implements MoodService {
     public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, Long identifier) {
         try {
            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
-            System.out.println("GOT HERE 1");
            if(profile != null){
-               System.out.println("GOT HERE 2");
                TrackerEntity tracker = profile.getTrackerEntity();
                List<SmileGramMoodEntity> grams;
                if(tracker == null){
-                   System.out.println("GOT HERE 3");
                    tracker =  trackerRepo.save(new TrackerEntity());
                    grams = new ArrayList<>();
                }else {
@@ -62,7 +59,6 @@ public class MoodServiceImpl implements MoodService {
                        grams = new ArrayList<>();
                    }
                }
-               System.out.println("GOT HERE 5");
                SmileGramMoodEntity saveedSmileGram = smileGramMoodRepo.save(smileGramMoodMapper.DTOtoEntity(smileGramMoodDTO));
                grams.add(saveedSmileGram);
                tracker.setSmilegramlist(grams);
@@ -84,20 +80,40 @@ public class MoodServiceImpl implements MoodService {
     @Override
     public PocketBuddyMoodDTO savePocketBuddyMood(PocketBuddyMoodDTO pocketBuddyMoodDTO, Long identifier) {
         try {
-            PocketBuddyMoodEntity savedPocketBuddy = pocketBuddyMoodRepo.save(pocketBuddyMoodMapper.DTOtoEntity(pocketBuddyMoodDTO));
-            return pocketBuddyMoodMapper.EntityToDTO(savedPocketBuddy);
+            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+            if(profile != null){
+                TrackerEntity tracker = profile.getTrackerEntity();
+                List<PocketBuddyMoodEntity> pocketbuddies;
+                if(tracker == null){
+                    tracker =  trackerRepo.save(new TrackerEntity());
+                    pocketbuddies = new ArrayList<>();
+                }else {
+                    pocketbuddies = profile.getTrackerEntity().getPocketbuddylist();
+                    if(pocketbuddies == null){
+                        pocketbuddies = new ArrayList<>();
+                    }
+                }
+                PocketBuddyMoodEntity saveedPocketBuddy = pocketBuddyMoodRepo.save(pocketBuddyMoodMapper.DTOtoEntity(pocketBuddyMoodDTO));
+                pocketbuddies.add(saveedPocketBuddy);
+                tracker.setPocketbuddylist(pocketbuddies);
+                tracker.setDate(LocalDate.now());
+                tracker.setIdentifier(identifier);
+                trackerRepo.save(tracker);
+                profile.setTrackerEntity(tracker);
+                userProfileRepo.save(profile);
+                return pocketBuddyMoodMapper.EntityToDTO(saveedPocketBuddy);
+            } else {
+                return null;
+            }
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
     public TribeMoodDTO saveTribemood(TribeMoodDTO tribeMoodDTO, Long identifier) {
-        try{
-            TribeMoodEntity savedtribeMoodEntity = tribeMoodRepo.save(tribeMoodMapper.DTOtoEntity(tribeMoodDTO));
-            return tribeMoodMapper.EntitytoDTO(savedtribeMoodEntity);
-        }catch (Exception e){
-            return null;
-        }
+
+        return null;
     }
 }
