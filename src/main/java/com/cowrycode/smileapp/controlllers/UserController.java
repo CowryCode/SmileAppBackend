@@ -6,6 +6,7 @@ import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.featuresmood.PocketBuddyMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.SmileGramMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.TribeMoodDTO;
+import com.cowrycode.smileapp.services.AuthService;
 import com.cowrycode.smileapp.services.MoodService;
 import com.cowrycode.smileapp.services.MyTribeMessageService;
 import com.cowrycode.smileapp.services.UserProfileService;
@@ -23,12 +24,15 @@ public class UserController {
     private final MoodService moodService;
     private final MyTribeMessageService myTribeMessageService;
     private final UserProfileService userProfileService;
+    private final AuthService authService;
 
 
-    public UserController(MoodService moodService, MyTribeMessageService myTribeMessageService, UserProfileService userProfileService) {
+    public UserController(MoodService moodService, MyTribeMessageService myTribeMessageService,
+                          UserProfileService userProfileService, AuthService authService) {
         this.moodService = moodService;
         this.myTribeMessageService = myTribeMessageService;
         this.userProfileService = userProfileService;
+        this.authService = authService;
     }
 
     @PostMapping("/create-user")
@@ -64,31 +68,51 @@ public class UserController {
     @PostMapping("/add-device")
     public ResponseEntity<UserProfileDTO> addUserDevice(@RequestBody @Validated UserProfileDTO userProfileDTO , HttpServletRequest request){
         //TODO: GET USERID FROM LOGIN AYTHENTICATION
-        UserProfileDTO updatedProfile = userProfileService.savedDeviceID(1L, userProfileDTO.getDeviceId());
+        UserProfileDTO updatedProfile = userProfileService.savedDeviceID(authService.getIdentifier(request), userProfileDTO.getDeviceId());
         return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
     }
 
     @PostMapping("/tribemessage")
     public ResponseEntity<MyTribeMessageDTO> saveTribeMessage(@RequestBody @Validated MyTribeMessageDTO myTribeMessageDTO, HttpServletRequest request){
-        MyTribeMessageDTO savedMessage = myTribeMessageService.saveTribeMessage(myTribeMessageDTO);
-        return new ResponseEntity<>(savedMessage, HttpStatus.OK);
+        MyTribeMessageDTO savedMessage = myTribeMessageService.saveTribeMessage(myTribeMessageDTO, authService.getIdentifier(request));
+        if(savedMessage != null){
+            return new ResponseEntity<>(savedMessage, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+
     }
 
     @PostMapping("/smilegram-mood")
     public ResponseEntity<SmileGramMoodDTO> saveSmilegramMood(@RequestBody @Validated SmileGramMoodDTO smileGramMoodDTO, HttpServletRequest request){
-        SmileGramMoodDTO savedsmilegram = moodService.saveSmileGramMood(smileGramMoodDTO);
-        return new ResponseEntity<>(savedsmilegram, HttpStatus.OK);
+        SmileGramMoodDTO savedsmilegram = moodService.saveSmileGramMood(smileGramMoodDTO, authService.getIdentifier(request));
+        if(savedsmilegram != null){
+            return new ResponseEntity<>(savedsmilegram, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+
     }
 
     @PostMapping("/pocketbuddy-mood")
     public ResponseEntity<PocketBuddyMoodDTO> savePocketbuddyMood(@RequestBody @Validated PocketBuddyMoodDTO pocketBuddyMoodDTO, HttpServletRequest request){
-        PocketBuddyMoodDTO savedpocketbuddy = moodService.savePocketBuddyMood(pocketBuddyMoodDTO);
-        return new ResponseEntity<>(savedpocketbuddy, HttpStatus.OK);
+        PocketBuddyMoodDTO savedpocketbuddy = moodService.savePocketBuddyMood(pocketBuddyMoodDTO, authService.getIdentifier(request));
+        if(savedpocketbuddy != null){
+            return new ResponseEntity<>(savedpocketbuddy, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+
     }
 
     @PostMapping("/tribe-mood")
     public ResponseEntity<TribeMoodDTO> savePocketbuddyMood(@RequestBody @Validated TribeMoodDTO tribeMoodDTO, HttpServletRequest request){
-        TribeMoodDTO savedtribemood = moodService.saveTribemood(tribeMoodDTO);
-        return new ResponseEntity<>(savedtribemood, HttpStatus.OK);
+        TribeMoodDTO savedtribemood = moodService.saveTribemood(tribeMoodDTO, authService.getIdentifier(request));
+        if(savedtribemood != null){
+            return new ResponseEntity<>(savedtribemood, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+
     }
 }

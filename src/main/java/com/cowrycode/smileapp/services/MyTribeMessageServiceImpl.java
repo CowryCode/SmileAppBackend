@@ -18,7 +18,7 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     }
 
     @Override
-    public MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO) {
+    public MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifer) {
         try{
             MyTribeMessageEntity savedMessage = myTribeMessageRepo.save(myTribeMessageMapper.DTOtoEntity(myTribeMessageDTO));
             return myTribeMessageMapper.EntityToDTO(savedMessage);
