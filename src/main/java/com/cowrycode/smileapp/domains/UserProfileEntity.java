@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -22,7 +22,8 @@ public class UserProfileEntity extends BaseEntity {
     private boolean isconsented;
     private double smilegrampoint;
     private String deviceId;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private TrackerEntity trackerEntity;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    private TrackerEntity trackerEntity;
+    @OneToMany
+    List<TrackerEntity> dailytrackers;
 }

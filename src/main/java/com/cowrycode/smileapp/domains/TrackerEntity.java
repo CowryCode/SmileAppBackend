@@ -17,7 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrackerEntity extends BaseEntity  {
-    Long identifier;
+   // Long identifier;
+    String trackerIdentifier; // This will be date
     LocalDate date;
     @OneToMany
     List<SmileGramMoodEntity> smilegramlist;

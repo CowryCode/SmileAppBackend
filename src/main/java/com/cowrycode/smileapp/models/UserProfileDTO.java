@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -18,6 +20,6 @@ public class UserProfileDTO {
     private boolean isconsented;
     private double smilegrampoint;
     private String deviceId;
-    private TrackerEntity trackerEntity;
-
+//    private TrackerEntity trackerEntity;
+    List<TrackerEntity> dailytrackers;
 }

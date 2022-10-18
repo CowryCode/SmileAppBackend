@@ -16,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 public class TrackEntityDTO {
     private Long id;
-    Long identifier;
+    // Long identifier;
+    String trackerIdentifier; // This will be date
     LocalDate date;
     List<SmileGramMoodEntity> smilegramlist;
     List<PocketBuddyMoodEntity> pocketbuddylist;
