@@ -1,4 +1,4 @@
-package com.cowrycode.smileapp.models.metamodel;
+package com.cowrycode.smileapp.models.metamodels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

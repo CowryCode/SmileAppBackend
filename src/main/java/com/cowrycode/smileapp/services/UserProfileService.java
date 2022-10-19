@@ -1,7 +1,7 @@
 package com.cowrycode.smileapp.services;
 
 import com.cowrycode.smileapp.models.UserProfileDTO;
-import com.cowrycode.smileapp.models.metamodel.LeaderBoard;
+import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 
 import javax.servlet.http.HttpServletRequest;
 

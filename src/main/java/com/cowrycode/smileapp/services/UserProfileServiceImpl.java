@@ -1,13 +1,18 @@
 package com.cowrycode.smileapp.services;
 
+import com.cowrycode.smileapp.domains.TrackerEntity;
 import com.cowrycode.smileapp.domains.UserProfileEntity;
 import com.cowrycode.smileapp.mapper.UserProfileMapper;
 import com.cowrycode.smileapp.models.UserProfileDTO;
-import com.cowrycode.smileapp.models.metamodel.LeaderBoard;
+import com.cowrycode.smileapp.models.metamodels.GlobalProgress;
+import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
+import com.cowrycode.smileapp.models.metamodels.PersonalProgress;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,18 +94,45 @@ public class UserProfileServiceImpl implements UserProfileService {
     public LeaderBoard sortPerformance(Long userID) {
         try {
            UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
-            System.out.println("TRACK 1");
            if(profileDTO != null ){
-               System.out.println("TRACK 2");
-               List<UserProfileEntity> toUsers = userProfileRepo.getTopPerformers();
-               toUsers.forEach(userProfileEntity ->
-                       System.out.println("Name : " + userProfileEntity.getName() + " " + "Score : " + userProfileEntity.getAccumulatedValue()));
+               LeaderBoard leaderBoard = new LeaderBoard();
+               List<UserProfileEntity> topUsers = userProfileRepo.getTopPerformers();
+               if(topUsers != null && topUsers.size() > 0){
+                   List<GlobalProgress> globalProgresses = new ArrayList<>();
+                   double totalValue = 0;
+                   for (int i = 0; i < topUsers.size(); i++){
+                       totalValue += topUsers.get(i).getAccumulatedValue();
+                       globalProgresses.add(new GlobalProgress(topUsers.get(i).getName(),topUsers.get(i).getAccumulatedValue(), 0.0));
+                   }
+
+                   for (int x = 0; x < globalProgresses.size(); x++){
+                       double av = globalProgresses.get(x).getAcumulatedValue();
+                       double globaPerc = (av/totalValue) * 100;
+                       GlobalProgress progress = globalProgresses.get(x);
+                       progress.setGlobalpercent(globaPerc);
+                       globalProgresses.set(x, progress );
+                   }
+
+                   List<TrackerEntity> trackers =  profileDTO.getDailytrackers();
+                   ArrayList<PersonalProgress> personalProgressList = new ArrayList<>();
+
+                   for(int j= 0; j < trackers.size(); j++){
+                       personalProgressList.add(new PersonalProgress(trackers.get(j).getId().intValue(),trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore()));
+                   }
+                   Collections.sort(personalProgressList);
+                   leaderBoard.setPersonalProgresses(personalProgressList);
+                   leaderBoard.setGlobalProgresses(globalProgresses);
+                   return leaderBoard;
+               }else {
+                   return null;
+               }
+
            }else {
-               System.out.println("TRACK 3");
+               return null;
            }
         }catch (Exception e){
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }

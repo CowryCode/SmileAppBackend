@@ -6,7 +6,7 @@ import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.featuresmood.PocketBuddyMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.SmileGramMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.TribeMoodDTO;
-import com.cowrycode.smileapp.models.metamodel.LeaderBoard;
+import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 import com.cowrycode.smileapp.services.AuthService;
 import com.cowrycode.smileapp.services.MoodService;
 import com.cowrycode.smileapp.services.MyTribeMessageService;

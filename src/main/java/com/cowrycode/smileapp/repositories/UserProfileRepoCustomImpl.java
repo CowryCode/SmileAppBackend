@@ -18,7 +18,6 @@ public class UserProfileRepoCustomImpl implements UserProfileRepoCustom {
         try {
             cb = entityManager.getCriteriaBuilder();
 
-
             CriteriaQuery<UserProfileEntity> query = cb.createQuery(UserProfileEntity.class);
             Root<UserProfileEntity> patientProfileRoot = query.from(UserProfileEntity.class);
             query.orderBy(cb.asc(patientProfileRoot.get("accumulatedValue")).reverse());
@@ -31,31 +30,10 @@ public class UserProfileRepoCustomImpl implements UserProfileRepoCustom {
 
             select.where(voidPredicate);
 
-
-
-            return entityManager.createQuery(query).getResultList();
+            return entityManager.createQuery(query).setMaxResults(10).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 }
-
-//  cb = entityManager.getCriteriaBuilder();
-//          CriteriaQuery<PatientProfile> query = cb.createQuery(PatientProfile.class);
-//        Root<PatientProfile> patientProfileRoot = query.from(PatientProfile.class);
-//
-//        Path<String> firstname = patientProfileRoot.get("firstName");
-//        Path<String> lastname = patientProfileRoot.get("lastName");
-//        Path<Integer> age = patientProfileRoot.get("age");
-//
-//
-//        Predicate firstNamePredicate = cb.equal(firstname, firstName);
-//        Predicate lastPredicate = cb.equal(lastname, lastNaame);
-//        Integer objAge = Integer.valueOf(patientAge);
-//        Predicate agePredicate = cb.equal(age, objAge);
-//
-//        query.select(patientProfileRoot)
-//        .where(firstNamePredicate, lastPredicate, agePredicate);
-//
-//        return entityManager.createQuery(query).getResultList();

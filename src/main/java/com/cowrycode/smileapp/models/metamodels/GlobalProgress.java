@@ -1,4 +1,4 @@
-package com.cowrycode.smileapp.models.metamodel;
+package com.cowrycode.smileapp.models.metamodels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class GlobalProgress {
     String username;
-    int acumulatedValue;
+    double acumulatedValue;
     double globalpercent;
 }
