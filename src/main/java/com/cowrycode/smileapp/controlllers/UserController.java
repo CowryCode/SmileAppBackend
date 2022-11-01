@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/smile")
@@ -83,15 +84,15 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/get-tribemessages")
-//    public ResponseEntity<List<MyTribeMessageDTO>> getTribeMessages(HttpServletRequest request){
-//        List<MyTribeMessageDTO> savedMessage = myTribeMessageService.saveTribeMessage(myTribeMessageDTO, authService.getIdentifier(request));
-//        if(savedMessage != null){
-//            return new ResponseEntity<>(savedMessage, HttpStatus.OK);
-//        }else {
-//            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
-//        }
-//    }
+    @GetMapping("/get-tribemessages")
+    public ResponseEntity<List<MyTribeMessageDTO>> getTribeMessages(HttpServletRequest request){
+        List<MyTribeMessageDTO> messages = myTribeMessageService.getTribeMessage(authService.getIdentifier(request));
+        if(messages != null){
+            return new ResponseEntity<>(messages, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
 
     @PostMapping("/smilegram-mood")
     public ResponseEntity<SmileGramMoodDTO> saveSmilegramMood(@RequestBody @Validated SmileGramMoodDTO smileGramMoodDTO, HttpServletRequest request){

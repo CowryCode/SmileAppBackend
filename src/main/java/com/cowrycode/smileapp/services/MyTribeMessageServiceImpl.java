@@ -6,6 +6,9 @@ import com.cowrycode.smileapp.models.MyTribeMessageDTO;
 import com.cowrycode.smileapp.repositories.MyTribeMessageRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     private final MyTribeMessageRepo myTribeMessageRepo;
@@ -25,5 +28,17 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
         }catch (Exception e){
             return null;
         }
+    }
+
+    @Override
+    public List<MyTribeMessageDTO> getTribeMessage(Long userIdentifier) {
+        try {
+            List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userIdentifier);
+            return  messages.stream().map(myTribeMessageMapper::EntityToDTO)
+                    .collect(Collectors.toList());
+        }catch (Exception e){
+            return null;
+        }
+
     }
 }

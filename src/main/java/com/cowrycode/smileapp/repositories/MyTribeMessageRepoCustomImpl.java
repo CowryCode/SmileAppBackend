@@ -15,7 +15,7 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
 
 
     @Override
-    public List<MyTribeMessageEntity> getUnreadSmilePacks(String userID) {
+    public List<MyTribeMessageEntity> getUnreadSmilePacks(Long userID) {
         try {
             cb = entityManager.getCriteriaBuilder();
 
