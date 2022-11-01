@@ -11,6 +11,7 @@ import com.cowrycode.smileapp.services.AuthService;
 import com.cowrycode.smileapp.services.MoodService;
 import com.cowrycode.smileapp.services.MyTribeMessageService;
 import com.cowrycode.smileapp.services.UserProfileService;
+import com.cowrycode.smileapp.utilities.TextExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -67,9 +68,8 @@ public class UserController {
     }
 
     @PostMapping("/add-device")
-    public ResponseEntity<UserProfileDTO> addUserDevice(@RequestBody @Validated UserProfileDTO userProfileDTO , HttpServletRequest request){
-        //TODO: GET USERID FROM LOGIN AYTHENTICATION
-        UserProfileDTO updatedProfile = userProfileService.savedDeviceID(authService.getIdentifier(request), userProfileDTO.getDeviceId());
+    public ResponseEntity<UserProfileDTO> addUserDevice(@RequestBody @Validated TextExchange textExchange , HttpServletRequest request){
+        UserProfileDTO updatedProfile = userProfileService.savedDeviceID(authService.getIdentifier(request), textExchange.getValue());
         return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
     }
 
@@ -81,8 +81,17 @@ public class UserController {
         }else {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
-
     }
+
+//    @GetMapping("/get-tribemessages")
+//    public ResponseEntity<List<MyTribeMessageDTO>> getTribeMessages(HttpServletRequest request){
+//        List<MyTribeMessageDTO> savedMessage = myTribeMessageService.saveTribeMessage(myTribeMessageDTO, authService.getIdentifier(request));
+//        if(savedMessage != null){
+//            return new ResponseEntity<>(savedMessage, HttpStatus.OK);
+//        }else {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+//        }
+//    }
 
     @PostMapping("/smilegram-mood")
     public ResponseEntity<SmileGramMoodDTO> saveSmilegramMood(@RequestBody @Validated SmileGramMoodDTO smileGramMoodDTO, HttpServletRequest request){
@@ -124,6 +133,17 @@ public class UserController {
             return new ResponseEntity<>(board, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
+    @PostMapping("/pushnotification")
+    public ResponseEntity<Boolean> getLeaderboard(@RequestBody @Validated TextExchange textExchange , HttpServletRequest request){
+        Boolean push = userProfileService.pushNotification(authService.getIdentifier(request), textExchange.getValue1(), textExchange.getValue2());
+        if(push){
+            return new ResponseEntity<>(push, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(push, HttpStatus.NOT_IMPLEMENTED);
         }
 
     }

@@ -14,16 +14,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepo userProfileRepo;
+    private final FCMSenderService fcmSenderService;
 
     private UserProfileMapper userProfileMapper = UserProfileMapper.INSTANCE;
 
-    public UserProfileServiceImpl(UserProfileRepo userProfileRepo) {
+    public UserProfileServiceImpl(UserProfileRepo userProfileRepo, FCMSenderService fcmSenderService) {
         this.userProfileRepo = userProfileRepo;
+        this.fcmSenderService = fcmSenderService;
     }
 
     @Override
@@ -76,11 +77,11 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDTO savedDeviceID(Long userID, String deviceID) {
         try {
-            Optional<UserProfileEntity> profile = userProfileRepo.findById(userID);
-            if(profile.isPresent()){
-                UserProfileEntity profileEntity = profile.get();
-                profileEntity.setDeviceId(deviceID);
-                UserProfileEntity updatedprofile =  userProfileRepo.save(profileEntity);
+            UserProfileEntity profile = userProfileRepo.findByidentifier(userID);
+            if(profile != null){
+               // UserProfileEntity profileEntity = profile.get();
+                profile.setDeviceId(deviceID);
+                UserProfileEntity updatedprofile =  userProfileRepo.save(profile);
                 return userProfileMapper.EntitytoDTO(updatedprofile);
             }else {
                 return null;
@@ -107,7 +108,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
                    for (int x = 0; x < globalProgresses.size(); x++){
                        double av = globalProgresses.get(x).getAcumulatedValue();
-                       double globaPerc = (av/totalValue) * 100;
+                       double globaPerc = Math.round ((av/totalValue) * 100);
                        GlobalProgress progress = globalProgresses.get(x);
                        progress.setGlobalpercent(globaPerc);
                        globalProgresses.set(x, progress );
@@ -133,6 +134,21 @@ public class UserProfileServiceImpl implements UserProfileService {
         }catch (Exception e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public Boolean pushNotification(Long userID, String title, String message) {
+        try {
+            UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+            if(profileDTO != null){
+                return fcmSenderService.sendPushnotification("Title", "This is a test", profileDTO.getDeviceId());
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
         }
     }
 }

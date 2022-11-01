@@ -10,4 +10,6 @@ public interface UserProfileService  {
     UserProfileDTO getprofile(HttpServletRequest request);
     UserProfileDTO savedDeviceID (Long userID, String deviceID);
     LeaderBoard sortPerformance(Long userID);
+    Boolean pushNotification(Long userID, String title, String message);
+
 }

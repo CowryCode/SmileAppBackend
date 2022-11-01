@@ -27,7 +27,6 @@ public class UserProfileRepoCustomImpl implements UserProfileRepoCustom {
 
             Predicate voidPredicate = cb.equal(voided, false);
 
-
             select.where(voidPredicate);
 
             return entityManager.createQuery(query).setMaxResults(10).getResultList();

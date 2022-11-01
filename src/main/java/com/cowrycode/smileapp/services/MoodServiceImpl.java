@@ -44,6 +44,7 @@ public class MoodServiceImpl implements MoodService {
 
     @Override
     public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, Long identifier) {
+        System.out.println("GOT IS " + smileGramMoodDTO);
         try {
            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
            if(profile != null){

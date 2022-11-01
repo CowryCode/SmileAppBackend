@@ -11,8 +11,8 @@ public class FCMSender extends Sender {
     public FCMSender(String key) {
         super(key);
     }
-
     // FCM  = Firebase Cloud Messaging
+
     @Override
     protected HttpURLConnection getConnection(String url) throws IOException {
         String fcmUrl = "https://fcm.googleapis.com/fcm/send";
