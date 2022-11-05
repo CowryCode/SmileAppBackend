@@ -1,12 +1,15 @@
 package com.cowrycode.smileapp.controlllers;
 
 
+import com.cowrycode.smileapp.models.EmpathyRequestDTO;
 import com.cowrycode.smileapp.models.MyTribeMessageDTO;
+import com.cowrycode.smileapp.models.UnrepliedTribeCalls;
 import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.featuresmood.PocketBuddyMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.SmileGramMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.TribeMoodDTO;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
+import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
 import com.cowrycode.smileapp.services.AuthService;
 import com.cowrycode.smileapp.services.MoodService;
 import com.cowrycode.smileapp.services.MyTribeMessageService;
@@ -85,10 +88,10 @@ public class UserController {
     }
 
     @GetMapping("/get-tribemessages")
-    public ResponseEntity<List<MyTribeMessageDTO>> getTribeMessages(HttpServletRequest request){
+    public ResponseEntity<UnreadTribeMessagesDTO> getTribeMessages(HttpServletRequest request){
         List<MyTribeMessageDTO> messages = myTribeMessageService.getTribeMessage(authService.getIdentifier(request));
         if(messages != null){
-            return new ResponseEntity<>(messages, HttpStatus.OK);
+            return new ResponseEntity<>(new UnreadTribeMessagesDTO(messages), HttpStatus.OK);
         }else {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
@@ -147,5 +150,25 @@ public class UserController {
             return new ResponseEntity<>(push, HttpStatus.NOT_IMPLEMENTED);
         }
 
+    }
+
+    @PostMapping("/empathyrequest")
+    public ResponseEntity<Boolean> pushEmpathyRequest(@RequestBody @Validated EmpathyRequestDTO empathyRequestDTO , HttpServletRequest request){
+        Boolean req = userProfileService.requestEmpathicMessage(authService.getIdentifier(request), empathyRequestDTO);
+        if(req){
+            return new ResponseEntity<>(req, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(req, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
+    @GetMapping("/get-pending-requests") // For Share Empathy
+    public ResponseEntity<UnrepliedTribeCalls> pullrequests(HttpServletRequest request){
+        List<EmpathyRequestDTO> req = userProfileService.getTribeRequests(authService.getIdentifier(request));
+        if(req != null){
+            return new ResponseEntity<>(new UnrepliedTribeCalls(req), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
     }
 }

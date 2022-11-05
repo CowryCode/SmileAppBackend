@@ -1,12 +1,17 @@
 package com.cowrycode.smileapp.services;
 
+import com.cowrycode.smileapp.domains.EmpathyRequestEntity;
 import com.cowrycode.smileapp.domains.TrackerEntity;
 import com.cowrycode.smileapp.domains.UserProfileEntity;
+import com.cowrycode.smileapp.mapper.EmpathyEntityMapper;
+import com.cowrycode.smileapp.mapper.EmpathyRequestMapper;
 import com.cowrycode.smileapp.mapper.UserProfileMapper;
+import com.cowrycode.smileapp.models.EmpathyRequestDTO;
 import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.metamodels.GlobalProgress;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 import com.cowrycode.smileapp.models.metamodels.PersonalProgress;
+import com.cowrycode.smileapp.repositories.EmpathyRequestRepo;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +19,24 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepo userProfileRepo;
     private final FCMSenderService fcmSenderService;
+    private final EmpathyRequestRepo empathyRequestRepo;
 
     private UserProfileMapper userProfileMapper = UserProfileMapper.INSTANCE;
+    private EmpathyEntityMapper empathyEntityMapper = EmpathyEntityMapper.INSTANCE;
+    private EmpathyRequestMapper empathyRequestMapper = EmpathyRequestMapper.INSTANCE;
 
-    public UserProfileServiceImpl(UserProfileRepo userProfileRepo, FCMSenderService fcmSenderService) {
+    public UserProfileServiceImpl(UserProfileRepo userProfileRepo,
+                                  FCMSenderService fcmSenderService,
+                                  EmpathyRequestRepo empathyRequestRepo) {
         this.userProfileRepo = userProfileRepo;
         this.fcmSenderService = fcmSenderService;
+        this.empathyRequestRepo = empathyRequestRepo;
     }
 
     @Override
@@ -149,6 +161,42 @@ public class UserProfileServiceImpl implements UserProfileService {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public Boolean requestEmpathicMessage(Long userID, EmpathyRequestDTO message) {
+        try {
+            List<UserProfileEntity> profiles = userProfileRepo.getTribeMembers(userID);
+            if(profiles != null){
+                empathyRequestRepo.save(empathyEntityMapper.DTOtoEntity(message));
+                for(int i = 0; i < profiles.size(); i++){
+                    System.out.println("Sent to : " + profiles.get(i).getId() );
+                    fcmSenderService.sendPushnotification("Tribe Call", "Someone feels down", profiles.get(i).getDeviceId());
+                }
+                return true;
+
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+          //  e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<EmpathyRequestDTO> getTribeRequests(Long userID) {
+        try {
+            List<EmpathyRequestEntity> requests = empathyRequestRepo.getUnrespondedMessages(userID);
+            if(requests != null){
+               return requests.stream().map(empathyRequestMapper::entityToDTO).collect(Collectors.toList());
+            }else {
+                return null;
+            }
+        }catch (Exception e){
+             e.printStackTrace();
+            return null;
         }
     }
 }

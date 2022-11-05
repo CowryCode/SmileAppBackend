@@ -35,4 +35,31 @@ public class UserProfileRepoCustomImpl implements UserProfileRepoCustom {
             return null;
         }
     }
+
+    @Override
+    public List<UserProfileEntity> getTribeMembers(Long currentUser) {
+        try {
+            cb = entityManager.getCriteriaBuilder();
+
+            CriteriaQuery<UserProfileEntity> query = cb.createQuery(UserProfileEntity.class);
+            Root<UserProfileEntity> patientProfileRoot = query.from(UserProfileEntity.class);
+            query.orderBy(cb.asc(patientProfileRoot.get("id")).reverse());
+            CriteriaQuery<UserProfileEntity> select = query.select(patientProfileRoot);
+
+            Path<String> voided = patientProfileRoot.get("voided");
+            Path<String> user = patientProfileRoot.get("identifier");
+
+
+            Predicate voidPredicate = cb.equal(voided, false);
+            Predicate userPredicate = cb.notEqual(user, currentUser);
+
+
+            select.where(voidPredicate, userPredicate);
+
+            return entityManager.createQuery(query).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
