@@ -87,6 +87,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/read-message")
+    public ResponseEntity<UnreadTribeMessagesDTO> readTribeMessage(@RequestBody @Validated MyTribeMessageDTO myTribeMessageDTO, HttpServletRequest request){
+        List<MyTribeMessageDTO> unreadmessages = myTribeMessageService.readTribeMessage(myTribeMessageDTO, authService.getIdentifier(request));
+        if(unreadmessages != null){
+            return new ResponseEntity<>(new UnreadTribeMessagesDTO(unreadmessages), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
     @GetMapping("/get-tribemessages")
     public ResponseEntity<UnreadTribeMessagesDTO> getTribeMessages(HttpServletRequest request){
         List<MyTribeMessageDTO> messages = myTribeMessageService.getTribeMessage(authService.getIdentifier(request));
@@ -155,6 +165,16 @@ public class UserController {
     @PostMapping("/empathyrequest")
     public ResponseEntity<Boolean> pushEmpathyRequest(@RequestBody @Validated EmpathyRequestDTO empathyRequestDTO , HttpServletRequest request){
         Boolean req = userProfileService.requestEmpathicMessage(authService.getIdentifier(request), empathyRequestDTO);
+        if(req){
+            return new ResponseEntity<>(req, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(req, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
+    @PostMapping("/sendTribemessage")
+    public ResponseEntity<Boolean> empathyRequestReply(@RequestBody @Validated EmpathyRequestDTO empathyRequestDTO , HttpServletRequest request){
+        Boolean req = userProfileService.replyEmpathicMessage(authService.getIdentifier(request), empathyRequestDTO);
         if(req){
             return new ResponseEntity<>(req, HttpStatus.OK);
         }else {

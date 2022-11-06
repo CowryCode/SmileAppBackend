@@ -24,7 +24,6 @@ public class FCMSenderServiceImpl implements FCMSenderService {
                 Notification.Builder notification = new Notification.Builder("");
                 notification.title(title);
                 notification.body(msg);
-
                 Message message = new  Message.Builder()
                         .collapseKey("message")
                         .timeToLive(3)

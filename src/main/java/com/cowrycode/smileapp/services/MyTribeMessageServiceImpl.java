@@ -39,6 +39,21 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
         }catch (Exception e){
             return null;
         }
+    }
 
+    @Override
+    public List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifier) {
+        try{
+            MyTribeMessageEntity myTribeMessageEntity = myTribeMessageRepo.getReferenceById(myTribeMessageDTO.getId());
+            if(myTribeMessageEntity != null){
+                myTribeMessageEntity.setIsread(myTribeMessageDTO.isIsread());
+                myTribeMessageRepo.save(myTribeMessageEntity);
+                return getTribeMessage(userIdentifier);
+            }else {
+                return null;
+            }
+        }catch (Exception e){
+            return null;
+        }
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 
 
 @Entity
@@ -15,6 +16,7 @@ import javax.persistence.PrePersist;
 @NoArgsConstructor
 public class EmpathyRequestEntity extends BaseEntity {
     private Long senderID;
+    @Transient
     private Long receiverID;
     private String content;
     private String sourceCountry;

@@ -7,4 +7,5 @@ import java.util.List;
 public interface MyTribeMessageService {
     MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifier);
     List<MyTribeMessageDTO> getTribeMessage(Long userIdentifier);
+    List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifier);
 }

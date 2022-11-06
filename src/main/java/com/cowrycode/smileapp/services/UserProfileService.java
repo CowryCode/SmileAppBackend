@@ -14,6 +14,7 @@ public interface UserProfileService  {
     LeaderBoard sortPerformance(Long userID);
     Boolean pushNotification(Long userID, String title, String message);
     Boolean requestEmpathicMessage(Long userID, EmpathyRequestDTO message);
+    Boolean replyEmpathicMessage(Long userID, EmpathyRequestDTO message);
     List<EmpathyRequestDTO> getTribeRequests(Long userID);
 
 }
