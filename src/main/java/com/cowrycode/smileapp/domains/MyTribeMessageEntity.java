@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MyTribeMessageEntity extends BaseEntity {
-    private Long receiverID;
+    private String receiverID;
     private String content;
     private String sourceCountry;
     private boolean isread;
