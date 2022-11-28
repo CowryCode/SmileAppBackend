@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MyTribeMessageDTO {
     private Long id;
-    private Long receiverID;
+    private String receiverID;
     private String content;
     private String sourceCountry;
     private boolean isread;

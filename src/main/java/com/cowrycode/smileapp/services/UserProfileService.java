@@ -10,11 +10,11 @@ import java.util.List;
 public interface UserProfileService  {
     UserProfileDTO saveUserprofile(UserProfileDTO userProfileDTO);
     UserProfileDTO getprofile(HttpServletRequest request);
-    UserProfileDTO savedDeviceID (Long userID, String deviceID);
-    LeaderBoard sortPerformance(Long userID);
-    Boolean pushNotification(Long userID, String title, String message);
-    Boolean requestEmpathicMessage(Long userID, EmpathyRequestDTO message);
-    Boolean replyEmpathicMessage(Long userID, EmpathyRequestDTO message);
-    List<EmpathyRequestDTO> getTribeRequests(Long userID);
+    UserProfileDTO savedDeviceID (String userID, String deviceID);
+    LeaderBoard sortPerformance(String userID);
+    Boolean pushNotification(String userID, String title, String message);
+    Boolean requestEmpathicMessage(String userID, EmpathyRequestDTO message);
+    List<EmpathyRequestDTO> replyEmpathicMessage(String userID, EmpathyRequestDTO message);
+    List<EmpathyRequestDTO> getTribeRequests(String userID);
 
 }

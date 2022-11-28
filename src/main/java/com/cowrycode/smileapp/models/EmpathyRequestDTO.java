@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmpathyRequestDTO {
     private Long id;
-    private Long senderID;
-    private Long receiverID;
+    private String senderID;
+    private String receiverID;
     private String content;
     private String sourceCountry;
     @JsonIgnore

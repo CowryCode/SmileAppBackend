@@ -16,7 +16,8 @@ import java.util.List;
 @Getter
 @Setter
 public class UserProfileEntity extends BaseEntity {
-    private Long identifier;
+    //private Long identifier;
+    private String identifier;
     private String name;
     private String phonenumber;
     private boolean isconsented;

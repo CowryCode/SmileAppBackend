@@ -21,7 +21,7 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     }
 
     @Override
-    public MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifer) {
+    public MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifer) {
         try{
             MyTribeMessageEntity savedMessage = myTribeMessageRepo.save(myTribeMessageMapper.DTOtoEntity(myTribeMessageDTO));
             return myTribeMessageMapper.EntityToDTO(savedMessage);
@@ -31,9 +31,9 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     }
 
     @Override
-    public List<MyTribeMessageDTO> getTribeMessage(Long userIdentifier) {
+    public List<MyTribeMessageDTO> getTribeMessage(String userIdentifier,  boolean isread) {
         try {
-            List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userIdentifier);
+            List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userIdentifier,isread);
             return  messages.stream().map(myTribeMessageMapper::EntityToDTO)
                     .collect(Collectors.toList());
         }catch (Exception e){
@@ -42,13 +42,13 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     }
 
     @Override
-    public List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifier) {
+    public List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifier) {
         try{
             MyTribeMessageEntity myTribeMessageEntity = myTribeMessageRepo.getReferenceById(myTribeMessageDTO.getId());
             if(myTribeMessageEntity != null){
                 myTribeMessageEntity.setIsread(myTribeMessageDTO.isIsread());
                 myTribeMessageRepo.save(myTribeMessageEntity);
-                return getTribeMessage(userIdentifier);
+                return getTribeMessage(userIdentifier, false);
             }else {
                 return null;
             }

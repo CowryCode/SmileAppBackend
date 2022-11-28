@@ -15,7 +15,8 @@ import java.util.List;
 @Setter
 public class UserProfileDTO {
     private Long id;
-    private Long identifier;
+    //private Long identifier;
+    private String identifier;
     private String name;
     private String phonenumber;
     private boolean isconsented;

@@ -37,7 +37,7 @@ public class UserProfileRepoCustomImpl implements UserProfileRepoCustom {
     }
 
     @Override
-    public List<UserProfileEntity> getTribeMembers(Long currentUser) {
+    public List<UserProfileEntity> getTribeMembers(String currentUser) {
         try {
             cb = entityManager.getCriteriaBuilder();
 

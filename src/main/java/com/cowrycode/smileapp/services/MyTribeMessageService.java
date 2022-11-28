@@ -5,7 +5,7 @@ import com.cowrycode.smileapp.models.MyTribeMessageDTO;
 import java.util.List;
 
 public interface MyTribeMessageService {
-    MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifier);
-    List<MyTribeMessageDTO> getTribeMessage(Long userIdentifier);
-    List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, Long userIdentifier);
+    MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifier);
+    List<MyTribeMessageDTO> getTribeMessage(String userIdentifier,  boolean isread);
+    List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifier);
 }

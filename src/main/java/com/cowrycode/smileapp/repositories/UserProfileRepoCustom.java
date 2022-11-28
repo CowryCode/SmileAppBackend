@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface UserProfileRepoCustom {
     List<UserProfileEntity> getTopPerformers();
-    List<UserProfileEntity> getTribeMembers(Long currentUser);
+    List<UserProfileEntity> getTribeMembers(String currentUser);
 }

@@ -14,7 +14,7 @@ public class EmpathyRequestRepoCustomImpl implements EmpathyRequestRepoCustom {
     CriteriaBuilder cb;
 
     @Override
-    public List<EmpathyRequestEntity> getUnrespondedMessages(Long userID) {
+    public List<EmpathyRequestEntity> getUnrespondedMessages(String userID) {
         try {
             cb = entityManager.getCriteriaBuilder();
 

@@ -62,9 +62,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDTO getprofile(HttpServletRequest request) {
         try{
-            String phonenumberToken = extractToken(request);
-            if(phonenumberToken != null){
-                UserProfileEntity profile = userProfileRepo.findByphonenumber(phonenumberToken);
+            String identifier = extractToken(request);
+            if(identifier != null){
+                UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
                 return userProfileMapper.EntitytoDTO(profile);
             }else {
                 return null;
@@ -91,7 +91,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfileDTO savedDeviceID(Long userID, String deviceID) {
+    public UserProfileDTO savedDeviceID(String userID, String deviceID) {
         try {
             UserProfileEntity profile = userProfileRepo.findByidentifier(userID);
             if(profile != null){
@@ -108,7 +108,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public LeaderBoard sortPerformance(Long userID) {
+    public LeaderBoard sortPerformance(String userID) {
         try {
            UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
            if(profileDTO != null ){
@@ -154,7 +154,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Boolean pushNotification(Long userID, String title, String message) {
+    public Boolean pushNotification(String userID, String title, String message) {
         try {
             UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
             if(profileDTO != null){
@@ -169,7 +169,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Boolean requestEmpathicMessage(Long userID, EmpathyRequestDTO message) {
+    public Boolean requestEmpathicMessage(String userID, EmpathyRequestDTO message) {
         try {
             List<UserProfileEntity> profiles = userProfileRepo.getTribeMembers(userID);
             if(profiles != null){
@@ -189,7 +189,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Boolean replyEmpathicMessage(Long userID, EmpathyRequestDTO message) {
+    public List<EmpathyRequestDTO> replyEmpathicMessage(String userID, EmpathyRequestDTO message) {
         try {
             EmpathyRequestEntity empathyRequestEntity = empathyRequestRepo.getReferenceById(message.getId());
             if(empathyRequestEntity != null){
@@ -203,18 +203,18 @@ public class UserProfileServiceImpl implements UserProfileService {
 
                 empathyRequestRepo.save(empathyRequestEntity);
                 myTribeMessageService.saveTribeMessage(myTribeMessageDTO, message.getSenderID());
-                return true;
+                return getTribeRequests(userID);
             }else {
-                return false;
+                return getTribeRequests(userID);
             }
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
     @Override
-    public List<EmpathyRequestDTO> getTribeRequests(Long userID) {
+    public List<EmpathyRequestDTO> getTribeRequests(String userID) {
         try {
             List<EmpathyRequestEntity> requests = empathyRequestRepo.getUnrespondedMessages(userID);
             if(requests != null){

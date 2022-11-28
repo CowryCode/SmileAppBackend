@@ -15,9 +15,9 @@ import javax.persistence.Transient;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmpathyRequestEntity extends BaseEntity {
-    private Long senderID;
+    private String senderID;
     @Transient
-    private Long receiverID;
+    private String receiverID;
     private String content;
     private String sourceCountry;
     private String respondedUsersIDs;

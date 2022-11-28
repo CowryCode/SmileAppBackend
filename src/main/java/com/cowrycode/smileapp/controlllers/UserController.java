@@ -98,8 +98,18 @@ public class UserController {
     }
 
     @GetMapping("/get-tribemessages")
-    public ResponseEntity<UnreadTribeMessagesDTO> getTribeMessages(HttpServletRequest request){
-        List<MyTribeMessageDTO> messages = myTribeMessageService.getTribeMessage(authService.getIdentifier(request));
+    public ResponseEntity<UnreadTribeMessagesDTO> getUnreadTribeMessages(HttpServletRequest request){
+        List<MyTribeMessageDTO> messages = myTribeMessageService.getTribeMessage(authService.getIdentifier(request), false);
+        if(messages != null){
+            return new ResponseEntity<>(new UnreadTribeMessagesDTO(messages), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
+    @GetMapping("/get-read-tribemessages")
+    public ResponseEntity<UnreadTribeMessagesDTO> getReadTribeMessages(HttpServletRequest request){
+        List<MyTribeMessageDTO> messages = myTribeMessageService.getTribeMessage(authService.getIdentifier(request), true);
         if(messages != null){
             return new ResponseEntity<>(new UnreadTribeMessagesDTO(messages), HttpStatus.OK);
         }else {
@@ -173,12 +183,12 @@ public class UserController {
     }
 
     @PostMapping("/sendTribemessage")
-    public ResponseEntity<Boolean> empathyRequestReply(@RequestBody @Validated EmpathyRequestDTO empathyRequestDTO , HttpServletRequest request){
-        Boolean req = userProfileService.replyEmpathicMessage(authService.getIdentifier(request), empathyRequestDTO);
-        if(req){
-            return new ResponseEntity<>(req, HttpStatus.OK);
+    public ResponseEntity<UnrepliedTribeCalls> empathyRequestReply(@RequestBody @Validated EmpathyRequestDTO empathyRequestDTO , HttpServletRequest request){
+        List<EmpathyRequestDTO> req = userProfileService.replyEmpathicMessage(authService.getIdentifier(request), empathyRequestDTO);
+        if(req != null){
+            return new ResponseEntity<>( new UnrepliedTribeCalls(req), HttpStatus.OK);
         }else {
-            return new ResponseEntity<>(req, HttpStatus.NOT_IMPLEMENTED);
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
     }
 

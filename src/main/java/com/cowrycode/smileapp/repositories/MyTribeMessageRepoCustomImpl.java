@@ -15,7 +15,7 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
 
 
     @Override
-    public List<MyTribeMessageEntity> getUnreadSmilePacks(Long userID) {
+    public List<MyTribeMessageEntity> getUnreadSmilePacks(String userID,  boolean isread) {
         try {
             cb = entityManager.getCriteriaBuilder();
 
@@ -28,7 +28,7 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
             Path<String> read = tribemessageroot.get("isread");
 
             Predicate useridPredicate = cb.equal(user, userID);
-            Predicate readPredicate = cb.equal(read, false);
+            Predicate readPredicate = cb.equal(read, isread);
 
             select.where(useridPredicate, readPredicate);
             //TODO: IMPLEMENT PAGINATION
@@ -38,4 +38,6 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
             return null;
         }
     }
+
+
 }

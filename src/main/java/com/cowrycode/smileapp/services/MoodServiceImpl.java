@@ -43,7 +43,7 @@ public class MoodServiceImpl implements MoodService {
     }
 
     @Override
-    public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, Long identifier) {
+    public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, String identifier) {
         System.out.println("GOT IS " + smileGramMoodDTO);
         try {
            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
@@ -95,7 +95,7 @@ public class MoodServiceImpl implements MoodService {
     }
 
     @Override
-    public PocketBuddyMoodDTO savePocketBuddyMood(PocketBuddyMoodDTO pocketBuddyMoodDTO, Long identifier) {
+    public PocketBuddyMoodDTO savePocketBuddyMood(PocketBuddyMoodDTO pocketBuddyMoodDTO, String identifier) {
         try {
             UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
             if(profile != null){
@@ -145,7 +145,7 @@ public class MoodServiceImpl implements MoodService {
     }
 
     @Override
-    public TribeMoodDTO saveTribemood(TribeMoodDTO tribeMoodDTO, Long identifier) {
+    public TribeMoodDTO saveTribemood(TribeMoodDTO tribeMoodDTO, String identifier) {
         try {
             UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
             if(profile != null){

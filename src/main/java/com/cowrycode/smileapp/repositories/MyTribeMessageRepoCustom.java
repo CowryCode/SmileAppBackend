@@ -5,5 +5,5 @@ import com.cowrycode.smileapp.domains.MyTribeMessageEntity;
 import java.util.List;
 
 public interface MyTribeMessageRepoCustom {
-    List<MyTribeMessageEntity> getUnreadSmilePacks(Long userID);
+    List<MyTribeMessageEntity> getUnreadSmilePacks(String userID, boolean isread);
 }
