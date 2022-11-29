@@ -63,11 +63,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserProfileDTO getprofile(HttpServletRequest request) {
         try{
             String identifier = extractToken(request);
-            System.out.println("USER IDENTIFIER : " + identifier);
             if(identifier != null){
-                System.out.println("Got to this point ::::::::::::");
                 UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
-                System.out.println("THE PROFILE IS :: " + profile);
                 return userProfileMapper.EntitytoDTO(profile);
             }else {
                 return null;
