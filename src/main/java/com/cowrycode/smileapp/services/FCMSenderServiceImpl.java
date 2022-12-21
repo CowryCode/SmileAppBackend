@@ -2,6 +2,7 @@ package com.cowrycode.smileapp.services;
 
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Notification;
+import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -31,8 +32,10 @@ public class FCMSenderServiceImpl implements FCMSenderService {
                         .notification(notification.build())
                         .priority(Message.Priority.HIGH)
                         .build();
-                sender.send(message, receiver,1);
-
+              Result result =  sender.send(message, receiver,1);
+                System.out.println("The Result is : " + result.getSuccess());
+                System.out.println("The Result is : " + result.getMessageId());
+                System.out.println("The Result is : " + result.toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -176,7 +176,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             if(profiles != null){
                 empathyRequestRepo.save(empathyEntityMapper.DTOtoEntity(message));
                 for(int i = 0; i < profiles.size(); i++){
-                    fcmSenderService.sendPushnotification("Tribe Call", "Someone feels down", profiles.get(i).getDeviceId());
+                    fcmSenderService.sendPushnotification("Tribe Call", "Someone needs your empathy, please show love", profiles.get(i).getDeviceId());
                 }
                 return true;
 
@@ -191,6 +191,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public List<EmpathyRequestDTO> replyEmpathicMessage(String userID, EmpathyRequestDTO message) {
+        /* The "sender ID" is the ID of the user the requested for the Tribe message Wile
+         * RecieverID is the ID of the euser that sent this empathic message */
         try {
             EmpathyRequestEntity empathyRequestEntity = empathyRequestRepo.getReferenceById(message.getId());
             if(empathyRequestEntity != null){
@@ -204,6 +206,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
                 empathyRequestRepo.save(empathyRequestEntity);
                 myTribeMessageService.saveTribeMessage(myTribeMessageDTO, message.getSenderID());
+                notifyUser(message.getSenderID());
                 return getTribeRequests(userID);
             }else {
                 return getTribeRequests(userID);
@@ -213,6 +216,15 @@ public class UserProfileServiceImpl implements UserProfileService {
             return null;
         }
     }
+
+    private void notifyUser(String userID){
+        try{
+            UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+            if(userProfileEntity != null && userProfileEntity.getDeviceId() != null)  fcmSenderService.sendPushnotification("I Care", "I sent you an empathic note, check the SmileApp", userProfileEntity.getDeviceId());
+        }catch (Exception e){
+
+        }
+   }
 
     @Override
     public List<EmpathyRequestDTO> getTribeRequests(String userID) {

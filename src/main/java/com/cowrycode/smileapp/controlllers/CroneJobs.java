@@ -3,7 +3,7 @@ package com.cowrycode.smileapp.controlllers;
 
 import com.cowrycode.smileapp.domains.UserProfileEntity;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
-import com.cowrycode.smileapp.services.FCMSenderService;
+import com.cowrycode.smileapp.services.UserProfileService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -17,20 +17,24 @@ import java.util.List;
 public class CroneJobs {
 
     final UserProfileRepo userProfileRepo;
-    final FCMSenderService fcmSenderService;
+    private final UserProfileService userProfileService;
 
-    public CroneJobs(UserProfileRepo userProfileRepo, FCMSenderService fcmSenderService) {
+    public CroneJobs(UserProfileRepo userProfileRepo, UserProfileService userProfileService) {
         this.userProfileRepo = userProfileRepo;
-        this.fcmSenderService = fcmSenderService;
+        this.userProfileService = userProfileService;
     }
 
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 25 * * * *")
     public void dailyReminders() {
         try{
             List<UserProfileEntity> users = userProfileRepo.findAll();
-
-
-            System.out.println("CRONE JOB RUN !");
+            for(int x =0; x < users.size(); x++ ){
+                UserProfileEntity profileEntity = users.get(x);
+                if(profileEntity.getDeviceId() != null){
+                    userProfileService.pushNotification(profileEntity.getIdentifier(), "SmileGram", "Have your smiled enough today? Play the SmileGram Game");
+                    System.out.println("CRONE JOB RUN !");
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
