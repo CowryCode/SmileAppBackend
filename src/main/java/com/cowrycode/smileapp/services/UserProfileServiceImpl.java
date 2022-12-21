@@ -159,7 +159,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         try {
             UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
             if(profileDTO != null){
-                return fcmSenderService.sendPushnotification("Title", "This is a test", profileDTO.getDeviceId());
+                return fcmSenderService.sendPushnotification(title, message, profileDTO.getDeviceId());
             }else {
                 return false;
             }

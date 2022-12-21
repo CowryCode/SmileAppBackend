@@ -160,17 +160,6 @@ public class UserController {
 
     }
 
-    @PostMapping("/pushnotification")
-    public ResponseEntity<Boolean> getLeaderboard(@RequestBody @Validated TextExchange textExchange , HttpServletRequest request){
-        Boolean push = userProfileService.pushNotification(authService.getIdentifier(request), textExchange.getValue1(), textExchange.getValue2());
-        if(push){
-            return new ResponseEntity<>(push, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(push, HttpStatus.NOT_IMPLEMENTED);
-        }
-
-    }
-
     @PostMapping("/empathyrequest")
     public ResponseEntity<Boolean> pushEmpathyRequest(@RequestBody @Validated EmpathyRequestDTO empathyRequestDTO , HttpServletRequest request){
         Boolean req = userProfileService.requestEmpathicMessage(authService.getIdentifier(request), empathyRequestDTO);
@@ -200,4 +189,26 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
     }
+
+    @PostMapping("/chat")
+    public ResponseEntity<String> chat(@RequestBody @Validated String chat , HttpServletRequest request){
+        if(true){
+            return new ResponseEntity<>("Demo Response from Server", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("No Responss", HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
+    @PostMapping("/pushnotification")
+    public ResponseEntity<Boolean> getLeaderboard(@RequestBody @Validated TextExchange textExchange , HttpServletRequest request){
+        Boolean push = userProfileService.pushNotification(authService.getIdentifier(request), textExchange.getValue1(), textExchange.getValue2());
+        if(push){
+            return new ResponseEntity<>(push, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(push, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
 }
