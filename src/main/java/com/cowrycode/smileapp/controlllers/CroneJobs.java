@@ -32,7 +32,6 @@ public class CroneJobs {
                 UserProfileEntity profileEntity = users.get(x);
                 if(profileEntity.getDeviceId() != null){
                     userProfileService.pushNotification(profileEntity.getIdentifier(), "SmileGram", "Have your smiled enough today? Play the SmileGram Game");
-                    System.out.println("CRONE JOB RUN !");
                 }
             }
         }catch (Exception e){

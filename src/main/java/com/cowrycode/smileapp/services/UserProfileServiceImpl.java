@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,7 +65,10 @@ public class UserProfileServiceImpl implements UserProfileService {
             String identifier = extractToken(request);
             if(identifier != null){
                 UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
-                return userProfileMapper.EntitytoDTO(profile);
+                UserProfileDTO profileDTO = userProfileMapper.EntitytoDTO(profile);
+                profileDTO.setSmilegrammappoints(generateMapString(profile.getSmilegrampoint()));
+                return profileDTO;
+                //return userProfileMapper.EntitytoDTO(profile);
             }else {
                 return null;
             }
@@ -73,6 +76,16 @@ public class UserProfileServiceImpl implements UserProfileService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    String generateMapString(double smileGramPoints){
+        if (smileGramPoints <= 0) return "0";
+        int countrySize = (int) smileGramPoints % 175; // I75 is number of countries in the Map array on the app, we don't want an overflow
+        String result = "0";
+        for(int x = 1; x<= countrySize; x++ ){
+            result = result + ","+x;
+        }
+        return result;
     }
 
     private String extractToken(HttpServletRequest request){
@@ -115,6 +128,7 @@ public class UserProfileServiceImpl implements UserProfileService {
            if(profileDTO != null ){
                LeaderBoard leaderBoard = new LeaderBoard();
                List<UserProfileEntity> topUsers = userProfileRepo.getTopPerformers();
+               /*GLOBAL TOP USERS*/
                if(topUsers != null && topUsers.size() > 0){
                    List<GlobalProgress> globalProgresses = new ArrayList<>();
                    double totalValue = 0;
@@ -131,13 +145,13 @@ public class UserProfileServiceImpl implements UserProfileService {
                        globalProgresses.set(x, progress );
                    }
 
-                   List<TrackerEntity> trackers =  profileDTO.getDailytrackers();
+                   /*PERSONAL PROGRESS*/
+                   List<TrackerEntity> trackers = sortTrackers(profileDTO.getDailytrackers());
                    ArrayList<PersonalProgress> personalProgressList = new ArrayList<>();
 
                    for(int j= 0; j < trackers.size(); j++){
                        personalProgressList.add(new PersonalProgress(trackers.get(j).getId().intValue(),trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore()));
                    }
-                   Collections.sort(personalProgressList);
                    leaderBoard.setPersonalProgresses(personalProgressList);
                    leaderBoard.setGlobalProgresses(globalProgresses);
                    return leaderBoard;
@@ -152,6 +166,22 @@ public class UserProfileServiceImpl implements UserProfileService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    List<TrackerEntity> sortTrackers(List<TrackerEntity> trackers){
+        PriorityQueue<TrackerEntity> prioority = new PriorityQueue<>(
+                (n1,n2) -> n1.getTrackerIdentifier().compareToIgnoreCase(n2.getTrackerIdentifier())
+        );
+
+        for(int x = 0; x < trackers.size(); x++){
+            prioority.add(trackers.get(x));
+        }
+        List<TrackerEntity> result = new ArrayList<>();
+        while (!prioority.isEmpty()){
+            result.add(prioority.poll());
+        }
+
+        return result;
     }
 
     @Override

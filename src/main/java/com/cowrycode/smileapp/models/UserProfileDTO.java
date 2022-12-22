@@ -21,6 +21,7 @@ public class UserProfileDTO {
     private String phonenumber;
     private boolean isconsented;
     private double smilegrampoint;
+    private String smilegrammappoints;
     private double accumulatedValue;
     @JsonIgnore
     private String deviceId;

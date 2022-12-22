@@ -20,7 +20,8 @@ public class UserProfileEntity extends BaseEntity {
     private String name;
     private String phonenumber;
     private boolean isconsented;
-    private double smilegrampoint; // Use Point to get Map String
+    private double smilegrampoint; // Use Point to get Map String ("smilegrammappoints")
+    private String smilegrammappoints;
     private double accumulatedValue;
     private String deviceId;
     @OneToMany
