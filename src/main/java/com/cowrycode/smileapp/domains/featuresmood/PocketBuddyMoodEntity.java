@@ -21,6 +21,6 @@ public class PocketBuddyMoodEntity extends BaseEntity {
     private LocalDate  endDate;
     private Time endTime;
     private int endMood;
-    private double smileduration; //in minutes
-
+    private double smileduration; //in seconds
+    private int countrycount;
 }

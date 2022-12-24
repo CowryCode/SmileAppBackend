@@ -20,9 +20,9 @@ public class UserProfileDTO {
     private String name;
     private String phonenumber;
     private boolean isconsented;
-    private double smilegrampoint;
+    private double smilegrampoints;
     private String smilegrammappoints;
-    private double accumulatedValue;
+    private double accumulatedValue; // Total Number of country user have painted green
     @JsonIgnore
     private String deviceId;
     @JsonIgnore
