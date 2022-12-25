@@ -215,7 +215,6 @@ public class MoodServiceImpl implements MoodService {
                     }
                 }
 
-
                 // INCREAMENT THE OVERAL SMILE DURATION OF USER (Sec)
                 double accumulatedValue = profile.getAccumulatedValue();
                 if(accumulatedValue > 0){
