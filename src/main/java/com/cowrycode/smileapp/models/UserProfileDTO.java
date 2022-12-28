@@ -1,5 +1,6 @@
 package com.cowrycode.smileapp.models;
 
+import com.cowrycode.smileapp.domains.QuestionnaireBMIScaleEntity;
 import com.cowrycode.smileapp.domains.TrackerEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -27,5 +28,8 @@ public class UserProfileDTO {
     private String deviceId;
     @JsonIgnore
     List<TrackerEntity> dailytrackers;
+    @JsonIgnore
+    List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
+    String chathistory;
     private boolean voided;
 }

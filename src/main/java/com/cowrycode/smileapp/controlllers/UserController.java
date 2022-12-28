@@ -1,10 +1,8 @@
 package com.cowrycode.smileapp.controlllers;
 
 
-import com.cowrycode.smileapp.models.EmpathyRequestDTO;
-import com.cowrycode.smileapp.models.MyTribeMessageDTO;
-import com.cowrycode.smileapp.models.UnrepliedTribeCalls;
-import com.cowrycode.smileapp.models.UserProfileDTO;
+import com.cowrycode.smileapp.controlllers.ChatController.ChatObjectModel;
+import com.cowrycode.smileapp.models.*;
 import com.cowrycode.smileapp.models.featuresmood.PocketBuddyMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.SmileGramMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.TribeMoodDTO;
@@ -190,14 +188,25 @@ public class UserController {
         }
     }
 
-    @PostMapping("/chat")
-    public ResponseEntity<String> chat(@RequestBody @Validated String chat , HttpServletRequest request){
-        if(true){
-            return new ResponseEntity<>("Demo Response from Server", HttpStatus.OK);
+    @PostMapping("/savequestionnaire")
+    public ResponseEntity<QuestionnaireBMIScaleDTO> saveQuestionnaire(@RequestBody @Validated QuestionnaireBMIScaleDTO questionnaireBMIScaleDTO , HttpServletRequest request){
+        QuestionnaireBMIScaleDTO req = userProfileService.saveBMIScale(authService.getIdentifier(request), questionnaireBMIScaleDTO);
+        if(req != null){
+            return new ResponseEntity<>( req, HttpStatus.OK);
         }else {
-            return new ResponseEntity<>("No Responss", HttpStatus.NOT_IMPLEMENTED);
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
+    }
 
+    @PostMapping("/chat")
+    public ResponseEntity<ChatObjectModel> chat(@RequestBody @Validated TextExchange chat , HttpServletRequest request){
+        System.out.println("GOT TO THIS POINT :::::::::::::::::::::::");
+        ChatObjectModel chatObject = userProfileService.sendChat(authService.getIdentifier(request), chat.getValue());
+        if(chatObject != null){
+            return new ResponseEntity<>(chatObject, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
     }
 
     @PostMapping("/pushnotification")

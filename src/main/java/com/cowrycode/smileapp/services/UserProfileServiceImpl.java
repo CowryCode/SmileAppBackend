@@ -1,18 +1,23 @@
 package com.cowrycode.smileapp.services;
 
+import com.cowrycode.smileapp.controlllers.ChatController.ChatObjectModel;
 import com.cowrycode.smileapp.domains.EmpathyRequestEntity;
+import com.cowrycode.smileapp.domains.QuestionnaireBMIScaleEntity;
 import com.cowrycode.smileapp.domains.TrackerEntity;
 import com.cowrycode.smileapp.domains.UserProfileEntity;
 import com.cowrycode.smileapp.mapper.EmpathyEntityMapper;
 import com.cowrycode.smileapp.mapper.EmpathyRequestMapper;
+import com.cowrycode.smileapp.mapper.QuestionnaireBMIScaleMapper;
 import com.cowrycode.smileapp.mapper.UserProfileMapper;
 import com.cowrycode.smileapp.models.EmpathyRequestDTO;
 import com.cowrycode.smileapp.models.MyTribeMessageDTO;
+import com.cowrycode.smileapp.models.QuestionnaireBMIScaleDTO;
 import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.metamodels.GlobalProgress;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 import com.cowrycode.smileapp.models.metamodels.PersonalProgress;
 import com.cowrycode.smileapp.repositories.EmpathyRequestRepo;
+import com.cowrycode.smileapp.repositories.QuestionnaireBMIScaleRepo;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +33,23 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final FCMSenderService fcmSenderService;
     private final EmpathyRequestRepo empathyRequestRepo;
     private final MyTribeMessageService myTribeMessageService;
+    private final QuestionnaireBMIScaleRepo questionnaireBMIScaleRepo;
 
     private UserProfileMapper userProfileMapper = UserProfileMapper.INSTANCE;
     private EmpathyEntityMapper empathyEntityMapper = EmpathyEntityMapper.INSTANCE;
     private EmpathyRequestMapper empathyRequestMapper = EmpathyRequestMapper.INSTANCE;
+    private final QuestionnaireBMIScaleMapper questionnaireBMIScaleMapper = QuestionnaireBMIScaleMapper.INSTANCE;
 
     public UserProfileServiceImpl(UserProfileRepo userProfileRepo,
                                   FCMSenderService fcmSenderService,
                                   EmpathyRequestRepo empathyRequestRepo,
-                                  MyTribeMessageService myTribeMessageService) {
+                                  MyTribeMessageService myTribeMessageService,
+                                  QuestionnaireBMIScaleRepo questionnaireBMIScaleRepo) {
         this.userProfileRepo = userProfileRepo;
         this.fcmSenderService = fcmSenderService;
         this.empathyRequestRepo = empathyRequestRepo;
         this.myTribeMessageService = myTribeMessageService;
+        this.questionnaireBMIScaleRepo = questionnaireBMIScaleRepo;
     }
 
     @Override
@@ -267,6 +276,116 @@ public class UserProfileServiceImpl implements UserProfileService {
             }
         }catch (Exception e){
             // e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ChatObjectModel sendChat(String userID, String chat) {
+        System.out.println("GOT TO THIS POINT ::::::::::::::::: 2");
+        try {
+            UserProfileEntity profileEntity = userProfileRepo.findByidentifier(userID);
+            System.out.println("GOT TO THIS POINT :::::::::::::::::: 3");
+            List<List<Integer>> arr = new ArrayList<>();
+            System.out.println("GOT TO THIS POINT ::::::::::::::::: 4");
+            ChatObjectModel chatObjectModel = new ChatObjectModel();
+            System.out.println("GOT TO THIS POINT :::::::::::::::::: 5");
+            chatObjectModel.setChatContent(tokenArrayToString());
+            System.out.println("GOT TO THIS POINT ::::::::::::::::::: 6");
+            chatObjectModel.setChatHistory(converStringToInteger(tokenArrayToString()));
+            System.out.println("GOT TO THIS POINT :::::::::::::::::::: 7");
+            return  chatObjectModel;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    List<List<Integer>> converStringToInteger(String history){
+        if(history == null ) return null;
+
+          String[] chatHistoryArry = history.split("TTT");
+
+        List<Integer> comments = new ArrayList<>();
+        List<List<Integer>> historyArr = new ArrayList<>();
+
+        for (int x = 0; x < chatHistoryArry.length; x++){
+            System.out.println("COVERSION NUMBER : " + x);
+            String[] commentToken = chatHistoryArry[x].split(",");
+            for(int y = 0; y < commentToken.length ; y++){
+                System.out.println("COVERSION NUMBER : " + x);
+                Integer value;
+                try {
+                    value = Integer.valueOf(commentToken[y]);
+                    if(value != null){
+                        comments.add(value);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    continue;
+                }
+            }
+            historyArr.add(comments);
+            comments = new ArrayList<>();// RE-initialize
+        }
+     return historyArr;
+    }
+
+    private String tokenArrayToString(){
+        System.out.println("GOT TO 5A");
+        List<List<Integer>> sampleTokenArray = new ArrayList<>();
+        List<Integer> ar1 = new ArrayList<>();
+        ar1.add(1);
+        ar1.add(2);
+        ar1.add(3);
+        List<Integer> ar2 = new ArrayList<>();
+        ar2.add(4);
+        ar2.add(5);
+        ar2.add(6);
+        List<Integer> ar3 = new ArrayList<>();
+        ar3.add(7);
+        ar3.add(8);
+        ar3.add(9);
+        sampleTokenArray.add(ar1);
+        sampleTokenArray.add(ar2);
+        sampleTokenArray.add(ar3);
+        String chatHistory = "";
+        String commentTokens = "";
+
+        for(int x = 0; x < sampleTokenArray.size(); x++){
+            System.out.println("GOT TO 5A : " + x);
+            List<Integer> comments = sampleTokenArray.get(x);
+            for(int y = 0; y < comments.size(); y++){
+                System.out.println("GOT TO 5B : " + y);
+                commentTokens = commentTokens + comments.get(y) + ",";
+            }
+            chatHistory = chatHistory + commentTokens + "TTT";
+            commentTokens = ""; // Re-Initialize
+        }
+        return chatHistory;
+    }
+
+
+
+    @Override
+    public QuestionnaireBMIScaleDTO saveBMIScale(String userID, QuestionnaireBMIScaleDTO questionnaireBMIScaleDTO) {
+        try{
+            UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+            if(userProfileEntity != null){
+                List<QuestionnaireBMIScaleEntity> BMIScales = userProfileEntity.getDailyquestionnaires();
+                if(BMIScales == null){
+                    BMIScales = new ArrayList<>();
+                }
+                QuestionnaireBMIScaleEntity savedBMIScale = questionnaireBMIScaleRepo.save(questionnaireBMIScaleMapper.dtoToEntity(questionnaireBMIScaleDTO));
+                BMIScales.add(savedBMIScale);
+                userProfileEntity.setDailyquestionnaires(BMIScales);
+                userProfileRepo.save(userProfileEntity);
+                return questionnaireBMIScaleMapper.entityToDTO(savedBMIScale);
+            }else {
+                return null;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }

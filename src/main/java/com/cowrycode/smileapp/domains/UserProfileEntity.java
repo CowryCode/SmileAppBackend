@@ -26,5 +26,8 @@ public class UserProfileEntity extends BaseEntity {
     private String deviceId;
     @OneToMany
     List<TrackerEntity> dailytrackers;
+    @OneToMany
+    List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
+    String chathistory;
     private boolean voided;
 }

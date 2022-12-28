@@ -45,15 +45,6 @@ public class MoodServiceImpl implements MoodService {
     @Override
     public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, String identifier) {
         try {
-            System.out.println(" Start Date: " + smileGramMoodDTO.getStartDate());
-            System.out.println(" Start Time: " + smileGramMoodDTO.getStartTime());
-            System.out.println(" Start Mood: " + smileGramMoodDTO.getStartMood());
-            System.out.println(" End Date: " + smileGramMoodDTO.getEndDate());
-            System.out.println(" End Time: " + smileGramMoodDTO.getEndTime());
-            System.out.println(" End Mood: " + smileGramMoodDTO.getEndMood());
-            System.out.println(" Smile Duration: " + smileGramMoodDTO.getSmileduration());
-            System.out.println(" Smile Country Count: " + smileGramMoodDTO.getCountrycount());
-
            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
            if(profile != null){
              //  TrackerEntity tracker = profile.getTrackerEntity();
