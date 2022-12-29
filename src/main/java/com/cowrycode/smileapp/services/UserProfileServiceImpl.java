@@ -9,13 +9,11 @@ import com.cowrycode.smileapp.mapper.EmpathyEntityMapper;
 import com.cowrycode.smileapp.mapper.EmpathyRequestMapper;
 import com.cowrycode.smileapp.mapper.QuestionnaireBMIScaleMapper;
 import com.cowrycode.smileapp.mapper.UserProfileMapper;
-import com.cowrycode.smileapp.models.EmpathyRequestDTO;
-import com.cowrycode.smileapp.models.MyTribeMessageDTO;
-import com.cowrycode.smileapp.models.QuestionnaireBMIScaleDTO;
-import com.cowrycode.smileapp.models.UserProfileDTO;
+import com.cowrycode.smileapp.models.*;
 import com.cowrycode.smileapp.models.metamodels.GlobalProgress;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 import com.cowrycode.smileapp.models.metamodels.PersonalProgress;
+import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
 import com.cowrycode.smileapp.repositories.EmpathyRequestRepo;
 import com.cowrycode.smileapp.repositories.QuestionnaireBMIScaleRepo;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
@@ -79,8 +77,17 @@ public class UserProfileServiceImpl implements UserProfileService {
                 UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
                 UserProfileDTO profileDTO = userProfileMapper.EntitytoDTO(profile);
                 profileDTO.setSmilegrammappoints(generateMapString(profile.getSmilegrampoint()));
+
+                //POPULATE OTHER VARIABLES
+                profileDTO.setLeaderBoard(sortPerformance(identifier));
+                UnreadTribeMessagesDTO unreadMessages = new UnreadTribeMessagesDTO(myTribeMessageService.getTribeMessage(identifier, false));
+                profileDTO.setUnreadTribeMessage(unreadMessages);
+                UnreadTribeMessagesDTO readmessages = new UnreadTribeMessagesDTO(myTribeMessageService.getTribeMessage(identifier, true));
+                profileDTO.setReadTribeMessages(readmessages);
+                UnrepliedTribeCalls unrepliedTribeCalls  = new UnrepliedTribeCalls(getTribeRequests(identifier));
+                profileDTO.setUnrepliedTribeCalls(unrepliedTribeCalls);
+
                 return profileDTO;
-                //return userProfileMapper.EntitytoDTO(profile);
             }else {
                 return null;
             }

@@ -20,4 +20,5 @@ public interface UserProfileService  {
     List<EmpathyRequestDTO> getTribeRequests(String userID);
     QuestionnaireBMIScaleDTO saveBMIScale(String userID, QuestionnaireBMIScaleDTO questionnaireBMIScaleDTO);
     ChatObjectModel sendChat(String userID, String chat);
+
 }

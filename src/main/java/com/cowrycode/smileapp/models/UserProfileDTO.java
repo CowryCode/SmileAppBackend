@@ -2,6 +2,8 @@ package com.cowrycode.smileapp.models;
 
 import com.cowrycode.smileapp.domains.QuestionnaireBMIScaleEntity;
 import com.cowrycode.smileapp.domains.TrackerEntity;
+import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
+import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,5 +33,12 @@ public class UserProfileDTO {
     @JsonIgnore
     List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
     String chathistory;
+
+    LeaderBoard leaderBoard;
+    UnreadTribeMessagesDTO unreadTribeMessage;
+    UnreadTribeMessagesDTO readTribeMessages;
+    UnrepliedTribeCalls unrepliedTribeCalls;
+
+
     private boolean voided;
 }
