@@ -199,11 +199,10 @@ public class UserController {
     }
 
     @PostMapping("/chat")
-    public ResponseEntity<ChatObjectModel> chat(@RequestBody @Validated TextExchange chat , HttpServletRequest request){
-        System.out.println("GOT TO THIS POINT :::::::::::::::::::::::");
+    public ResponseEntity<String> chat(@RequestBody @Validated TextExchange chat , HttpServletRequest request){
         ChatObjectModel chatObject = userProfileService.sendChat(authService.getIdentifier(request), chat.getValue());
         if(chatObject != null){
-            return new ResponseEntity<>(chatObject, HttpStatus.OK);
+            return new ResponseEntity<>(chatObject.getChatContent(), HttpStatus.OK);
         }else {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }

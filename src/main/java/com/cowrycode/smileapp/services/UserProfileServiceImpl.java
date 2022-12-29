@@ -34,6 +34,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final EmpathyRequestRepo empathyRequestRepo;
     private final MyTribeMessageService myTribeMessageService;
     private final QuestionnaireBMIScaleRepo questionnaireBMIScaleRepo;
+    private final ApiCallService apiCallService;
 
     private UserProfileMapper userProfileMapper = UserProfileMapper.INSTANCE;
     private EmpathyEntityMapper empathyEntityMapper = EmpathyEntityMapper.INSTANCE;
@@ -44,12 +45,14 @@ public class UserProfileServiceImpl implements UserProfileService {
                                   FCMSenderService fcmSenderService,
                                   EmpathyRequestRepo empathyRequestRepo,
                                   MyTribeMessageService myTribeMessageService,
-                                  QuestionnaireBMIScaleRepo questionnaireBMIScaleRepo) {
+                                  QuestionnaireBMIScaleRepo questionnaireBMIScaleRepo,
+                                  ApiCallService apiCallService) {
         this.userProfileRepo = userProfileRepo;
         this.fcmSenderService = fcmSenderService;
         this.empathyRequestRepo = empathyRequestRepo;
         this.myTribeMessageService = myTribeMessageService;
         this.questionnaireBMIScaleRepo = questionnaireBMIScaleRepo;
+        this.apiCallService = apiCallService;
     }
 
     @Override
@@ -282,19 +285,26 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public ChatObjectModel sendChat(String userID, String chat) {
-        System.out.println("GOT TO THIS POINT ::::::::::::::::: 2");
         try {
             UserProfileEntity profileEntity = userProfileRepo.findByidentifier(userID);
-            System.out.println("GOT TO THIS POINT :::::::::::::::::: 3");
             List<List<Integer>> arr = new ArrayList<>();
-            System.out.println("GOT TO THIS POINT ::::::::::::::::: 4");
             ChatObjectModel chatObjectModel = new ChatObjectModel();
-            System.out.println("GOT TO THIS POINT :::::::::::::::::: 5");
-            chatObjectModel.setChatContent(tokenArrayToString());
-            System.out.println("GOT TO THIS POINT ::::::::::::::::::: 6");
-            chatObjectModel.setChatHistory(converStringToInteger(tokenArrayToString()));
-            System.out.println("GOT TO THIS POINT :::::::::::::::::::: 7");
-            return  chatObjectModel;
+
+             List<List<Integer>> tokenArray =  converStringToInteger(profileEntity.getChathistory());
+             if(tokenArray == null){
+                 chatObjectModel.setChatHistory(new ArrayList<>());
+             }else {
+                 chatObjectModel.setChatHistory(tokenArray);
+             }
+            chatObjectModel.setChatContent(chat);
+
+
+            ChatObjectModel botFeedback = apiCallService.callChatBot(chatObjectModel);
+
+            profileEntity.setChathistory(tokenArrayToString(botFeedback.getChatHistory()));
+            userProfileRepo.save(profileEntity);
+
+            return  botFeedback;
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -310,10 +320,8 @@ public class UserProfileServiceImpl implements UserProfileService {
         List<List<Integer>> historyArr = new ArrayList<>();
 
         for (int x = 0; x < chatHistoryArry.length; x++){
-            System.out.println("COVERSION NUMBER : " + x);
             String[] commentToken = chatHistoryArry[x].split(",");
             for(int y = 0; y < commentToken.length ; y++){
-                System.out.println("COVERSION NUMBER : " + x);
                 Integer value;
                 try {
                     value = Integer.valueOf(commentToken[y]);
@@ -331,32 +339,15 @@ public class UserProfileServiceImpl implements UserProfileService {
      return historyArr;
     }
 
-    private String tokenArrayToString(){
-        System.out.println("GOT TO 5A");
-        List<List<Integer>> sampleTokenArray = new ArrayList<>();
-        List<Integer> ar1 = new ArrayList<>();
-        ar1.add(1);
-        ar1.add(2);
-        ar1.add(3);
-        List<Integer> ar2 = new ArrayList<>();
-        ar2.add(4);
-        ar2.add(5);
-        ar2.add(6);
-        List<Integer> ar3 = new ArrayList<>();
-        ar3.add(7);
-        ar3.add(8);
-        ar3.add(9);
-        sampleTokenArray.add(ar1);
-        sampleTokenArray.add(ar2);
-        sampleTokenArray.add(ar3);
+    private String tokenArrayToString(List<List<Integer>> sampleTokenArray){
+        if(sampleTokenArray == null ) return null;
+
         String chatHistory = "";
         String commentTokens = "";
 
         for(int x = 0; x < sampleTokenArray.size(); x++){
-            System.out.println("GOT TO 5A : " + x);
             List<Integer> comments = sampleTokenArray.get(x);
             for(int y = 0; y < comments.size(); y++){
-                System.out.println("GOT TO 5B : " + y);
                 commentTokens = commentTokens + comments.get(y) + ",";
             }
             chatHistory = chatHistory + commentTokens + "TTT";
