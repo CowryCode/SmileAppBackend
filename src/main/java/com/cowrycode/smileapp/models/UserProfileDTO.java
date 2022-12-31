@@ -26,10 +26,15 @@ public class UserProfileDTO {
     private double smilegrampoints;
     private String smilegrammappoints;
     private double accumulatedValue; // Total Number of country user have painted green
+
+    private int todayTargetValue;
+    private int todayAchievedValue;
+
     @JsonIgnore
     private String deviceId;
     @JsonIgnore
     List<TrackerEntity> dailytrackers;
+
     @JsonIgnore
     List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
     String chathistory;

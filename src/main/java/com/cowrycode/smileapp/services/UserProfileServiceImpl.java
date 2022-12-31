@@ -76,7 +76,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             if(identifier != null){
                 UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
                 UserProfileDTO profileDTO = userProfileMapper.EntitytoDTO(profile);
-                profileDTO.setSmilegrammappoints(generateMapString(profile.getSmilegrampoint()));
+                profileDTO.setSmilegrammappoints(generateMapString(profile.getSmilegrampoints()));
 
                 //POPULATE OTHER VARIABLES
                 profileDTO.setLeaderBoard(sortPerformance(identifier));
@@ -86,6 +86,16 @@ public class UserProfileServiceImpl implements UserProfileService {
                 profileDTO.setReadTribeMessages(readmessages);
                 UnrepliedTribeCalls unrepliedTribeCalls  = new UnrepliedTribeCalls(getTribeRequests(identifier));
                 profileDTO.setUnrepliedTribeCalls(unrepliedTribeCalls);
+
+                System.out.println("******************** BEFORE ************************");
+                System.out.println(" Smile Gram Point : " + profile.getSmilegrampoints());
+                System.out.println(" Last Tracker Target  : " + profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getTargetValue());
+                System.out.println(" Last Tracker Achieved  : " + profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getAchievedScore());
+                System.out.println("******************** AFTER ************************");
+                profileDTO.setTodayAchievedValue(profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getAchievedScore());
+                profileDTO.setTodayTargetValue(profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getTargetValue());
+                System.out.println(" Last Tracker Target  : " + profileDTO.getTodayTargetValue());
+                System.out.println(" Last Tracker Achieved  : " + profileDTO.getTodayAchievedValue());
 
                 return profileDTO;
             }else {

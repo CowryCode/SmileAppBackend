@@ -63,12 +63,16 @@ public class MoodServiceImpl implements MoodService {
                    }
 
                    int achievedPoints = tracker.getAchievedScore();
-                   if(achievedPoints > 0){
-                       achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
-                       tracker.setAchievedScore(achievedPoints);
-                   }else {
-                       tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
-                   }
+
+                   achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
+                   tracker.setAchievedScore(achievedPoints);
+
+//                   if(achievedPoints > 0){
+//                       achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
+//                       tracker.setAchievedScore(achievedPoints);
+//                   }else {
+//                       tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
+//                   }
                }
                SmileGramMoodEntity saveedSmileGram = smileGramMoodRepo.save(smileGramMoodMapper.DTOtoEntity(smileGramMoodDTO));
                grams.add(saveedSmileGram);
@@ -97,7 +101,7 @@ public class MoodServiceImpl implements MoodService {
                }
 
                // INCREAMENT NUMBER OF COUNTRIES PAINTED GREEN
-               double smilegramPoints = profile.getSmilegrampoint();
+               double smilegramPoints = profile.getSmilegrampoints();
                if(smilegramPoints > 0){
                    smilegramPoints = smilegramPoints + smileGramMoodDTO.getCountrycount();
                }else {
@@ -105,7 +109,7 @@ public class MoodServiceImpl implements MoodService {
                }
 
                profile.setAccumulatedValue(accumulatedValue);
-               profile.setSmilegrampoint(smilegramPoints);
+               profile.setSmilegrampoints(smilegramPoints);
                userProfileRepo.save(profile);
                return smileGramMoodMapper.EntityToDTO(saveedSmileGram);
            } else {
