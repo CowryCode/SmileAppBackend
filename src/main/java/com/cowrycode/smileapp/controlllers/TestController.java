@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,9 @@ import java.util.List;
 public class TestController {
     @GetMapping
     public ResponseEntity<String> start(){
+
+        System.out.println("LocalTime : " + LocalDate.now());
+
         List<List<Integer>> arr = new ArrayList<>();
 
         List<Integer> ar1 = new ArrayList<>();

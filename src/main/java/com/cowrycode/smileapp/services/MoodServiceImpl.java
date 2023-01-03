@@ -44,19 +44,24 @@ public class MoodServiceImpl implements MoodService {
 
     @Override
     public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, String identifier) {
+        System.out.println("IDENTIFIER IS : " + smileGramMoodDTO.getEndDate());
         try {
            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
            if(profile != null){
-             //  TrackerEntity tracker = profile.getTrackerEntity();
+               System.out.println("TRACKER GOT TO HERE 1");
                TrackerEntity tracker = trackerRepo.findBytrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
+               System.out.println("TRACKER GOT TO HERE 2");
                List<SmileGramMoodEntity> grams;
                if(tracker == null){
+                   System.out.println("TRACKER GOT TO HERE 3");
                    TrackerEntity newtrackerEntity = new TrackerEntity();
                    newtrackerEntity.setTrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
                   // tracker =  trackerRepo.save(new TrackerEntity());
                    tracker =  trackerRepo.save(newtrackerEntity);
+                   tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
                    grams = new ArrayList<>();
                }else {
+                   System.out.println("TRACKER GOT TO HERE 4");
                    grams = tracker.getSmilegramlist();
                    if(grams == null){
                        grams = new ArrayList<>();
@@ -66,13 +71,6 @@ public class MoodServiceImpl implements MoodService {
 
                    achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
                    tracker.setAchievedScore(achievedPoints);
-
-//                   if(achievedPoints > 0){
-//                       achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
-//                       tracker.setAchievedScore(achievedPoints);
-//                   }else {
-//                       tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
-//                   }
                }
                SmileGramMoodEntity saveedSmileGram = smileGramMoodRepo.save(smileGramMoodMapper.DTOtoEntity(smileGramMoodDTO));
                grams.add(saveedSmileGram);

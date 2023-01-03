@@ -16,10 +16,12 @@ import com.cowrycode.smileapp.models.metamodels.PersonalProgress;
 import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
 import com.cowrycode.smileapp.repositories.EmpathyRequestRepo;
 import com.cowrycode.smileapp.repositories.QuestionnaireBMIScaleRepo;
+import com.cowrycode.smileapp.repositories.TrackerRepo;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -34,6 +36,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final QuestionnaireBMIScaleRepo questionnaireBMIScaleRepo;
     private final ApiCallService apiCallService;
 
+    private final TrackerRepo trackerRepo;
+
     private UserProfileMapper userProfileMapper = UserProfileMapper.INSTANCE;
     private EmpathyEntityMapper empathyEntityMapper = EmpathyEntityMapper.INSTANCE;
     private EmpathyRequestMapper empathyRequestMapper = EmpathyRequestMapper.INSTANCE;
@@ -44,13 +48,14 @@ public class UserProfileServiceImpl implements UserProfileService {
                                   EmpathyRequestRepo empathyRequestRepo,
                                   MyTribeMessageService myTribeMessageService,
                                   QuestionnaireBMIScaleRepo questionnaireBMIScaleRepo,
-                                  ApiCallService apiCallService) {
+                                  ApiCallService apiCallService, TrackerRepo trackerRepo) {
         this.userProfileRepo = userProfileRepo;
         this.fcmSenderService = fcmSenderService;
         this.empathyRequestRepo = empathyRequestRepo;
         this.myTribeMessageService = myTribeMessageService;
         this.questionnaireBMIScaleRepo = questionnaireBMIScaleRepo;
         this.apiCallService = apiCallService;
+        this.trackerRepo = trackerRepo;
     }
 
     @Override
@@ -87,15 +92,33 @@ public class UserProfileServiceImpl implements UserProfileService {
                 UnrepliedTribeCalls unrepliedTribeCalls  = new UnrepliedTribeCalls(getTribeRequests(identifier));
                 profileDTO.setUnrepliedTribeCalls(unrepliedTribeCalls);
 
-                System.out.println("******************** BEFORE ************************");
-                System.out.println(" Smile Gram Point : " + profile.getSmilegrampoints());
-                System.out.println(" Last Tracker Target  : " + profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getTargetValue());
-                System.out.println(" Last Tracker Achieved  : " + profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getAchievedScore());
-                System.out.println("******************** AFTER ************************");
-                profileDTO.setTodayAchievedValue(profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getAchievedScore());
-                profileDTO.setTodayTargetValue(profile.getDailytrackers().get(profile.getDailytrackers().size() - 1).getTargetValue());
-                System.out.println(" Last Tracker Target  : " + profileDTO.getTodayTargetValue());
-                System.out.println(" Last Tracker Achieved  : " + profileDTO.getTodayAchievedValue());
+                List<TrackerEntity> trackers = profile.getDailytrackers();
+                TrackerEntity lasttracker;
+                if(trackers != null && trackers.size() > 0){
+                    lasttracker = trackers.get(profile.getDailytrackers().size() - 1);
+                    if(lasttracker != null && !(lasttracker.getTrackerIdentifier().equals(LocalDate.now().toString()))){
+                        TrackerEntity trc = new TrackerEntity();
+                        trc.setTrackerIdentifier(LocalDate.now().toString()); // Tracker for today
+                        trc.setTargetValue(20); // Target for today
+                        lasttracker = trackerRepo.save(trc);
+                        trackers.add(lasttracker);
+                        profile.setDailytrackers(trackers);
+                        userProfileRepo.save(profile);
+                    }else {
+
+                    }
+                }else {
+                    trackers = new ArrayList<>();
+                    TrackerEntity trc = new TrackerEntity();
+                    trc.setTrackerIdentifier(LocalDate.now().toString()); // Tracker for today
+                    trc.setTargetValue(20); // Target for today
+                    lasttracker = trackerRepo.save(trc);
+                    trackers.add(lasttracker);
+                    profile.setDailytrackers(trackers);
+                    userProfileRepo.save(profile);
+                }
+                profileDTO.setTodayTargetValue(lasttracker.getTargetValue());
+                profileDTO.setTodayAchievedValue(lasttracker.getAchievedScore());
 
                 return profileDTO;
             }else {
