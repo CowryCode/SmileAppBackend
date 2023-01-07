@@ -1,12 +1,15 @@
 package com.cowrycode.smileapp.controlllers;
 
+import net.bytebuddy.implementation.bind.annotation.Super;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.PriorityQueue;
 
 @RestController
@@ -14,42 +17,29 @@ import java.util.PriorityQueue;
 public class TestController {
     @GetMapping
     public ResponseEntity<String> start(){
-        PriorityQueue<HolderObj> substrings = new PriorityQueue<HolderObj>(
-                (n1,n2)->n1.count - n2.count
-                );
-        HashSet<Character> checker = new HashSet<>();
+        PriorityQueue<C1> queue = new PriorityQueue<>(
+                (n1, n2) -> n2.datesubmitted.compareTo(n1.datesubmitted)
+        );
+        queue.add(new C1(1, LocalDateTime.of(LocalDate.now(), LocalTime.of(5,6,0))));
+        queue.add(new C1(2, LocalDateTime.of(LocalDate.now(), LocalTime.of(6,6,0))));
+        queue.add(new C1(3, LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10,6,0))));
+        queue.add(new C1(4, LocalDateTime.of(LocalDate.now(), LocalTime.of(8,6,0))));
+        queue.add(new C1(5, LocalDateTime.of(LocalDate.now(), LocalTime.of(9,6,0))));
+        queue.add(new C1(6, LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10,6,0))));
+        queue.add(new C1(7, LocalDateTime.of(LocalDate.now(), LocalTime.of(11,6,0))));
+        queue.add(new C1(8, LocalDateTime.of(LocalDate.now(), LocalTime.of(12,6,0))));
+        queue.add(new C1(9, LocalDateTime.of(LocalDate.now(), LocalTime.of(13,6,0))));
+        queue.add(new C1(10, LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10,7,0))));
+        queue.add(new C1(11, LocalDateTime.of(LocalDate.now(), LocalTime.of(15,6,0))));
+        queue.add(new C1(12, LocalDateTime.of(LocalDate.now(), LocalTime.of(16,6,0))));
+        queue.add(new C1(13, LocalDateTime.of(LocalDate.now(), LocalTime.of(17,6,0))));
 
-        String text = "nndNfdfdf";
-
-        char[] vals = text.toCharArray();
-
-        int counter = 0;
-        String strbulder = "";
-        for (int i =0; i < vals.length; i++){
-            if(!checker.contains(vals[i])){
-                checker.add(vals[i]);
-                strbulder = strbulder + vals[i];
-                counter++;
-            }else {
-                if(counter > 0){
-                    HolderObj obj =  new HolderObj(strbulder, counter);
-                    substrings.add(obj);
-                    strbulder = "";
-                    counter = 0;
-                    checker.clear();
-                }
-                checker.add(vals[i]);
-                strbulder = strbulder + vals[i];
-                counter++;
-            }
-
+        int index = 1;
+        while (index <= 5){
+            C1 c1 = queue.poll();
+            index++;
+            System.out.println("ID : " + c1.id + " Date : " + c1.datesubmitted.toString());
         }
-
-        while (substrings.size() > 0){
-            HolderObj vv = substrings.poll();
-            System.out.println(" Sub : " + vv.text + "  Count : " + vv.count);
-        }
-
 
         return new ResponseEntity<>("App have started", HttpStatus.OK);
     }
@@ -57,11 +47,12 @@ public class TestController {
 }
 
 
-class HolderObj{
-    String text;
-    int count;
-    public HolderObj(String text, int count) {
-        this.text = text;
-        this.count = count;
+class C1 {
+    int id;
+    LocalDateTime datesubmitted;
+    C1(int id, LocalDateTime dateTime){
+        this.id = id;
+        this.datesubmitted = dateTime;
     }
+
 }
