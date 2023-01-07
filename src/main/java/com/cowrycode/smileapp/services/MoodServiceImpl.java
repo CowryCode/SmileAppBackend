@@ -44,24 +44,36 @@ public class MoodServiceImpl implements MoodService {
 
     @Override
     public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, String identifier) {
+<<<<<<< HEAD
+=======
+        System.out.println("IDENTIFIER IS : " + smileGramMoodDTO.getEndDate());
+>>>>>>> refs/remotes/origin/main
         try {
            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
            if(profile != null){
-             //  TrackerEntity tracker = profile.getTrackerEntity();
+               System.out.println("TRACKER GOT TO HERE 1");
                TrackerEntity tracker = trackerRepo.findBytrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
+               System.out.println("TRACKER GOT TO HERE 2");
                List<SmileGramMoodEntity> grams;
                if(tracker == null){
+                   System.out.println("TRACKER GOT TO HERE 3");
                    TrackerEntity newtrackerEntity = new TrackerEntity();
                    newtrackerEntity.setTrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
                   // tracker =  trackerRepo.save(new TrackerEntity());
                    tracker =  trackerRepo.save(newtrackerEntity);
+                   tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
                    grams = new ArrayList<>();
                }else {
-                 //  grams = profile.getTrackerEntity().getSmilegramlist();
+                   System.out.println("TRACKER GOT TO HERE 4");
                    grams = tracker.getSmilegramlist();
                    if(grams == null){
                        grams = new ArrayList<>();
                    }
+
+                   int achievedPoints = tracker.getAchievedScore();
+
+                   achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
+                   tracker.setAchievedScore(achievedPoints);
                }
                SmileGramMoodEntity saveedSmileGram = smileGramMoodRepo.save(smileGramMoodMapper.DTOtoEntity(smileGramMoodDTO));
                grams.add(saveedSmileGram);
@@ -74,15 +86,32 @@ public class MoodServiceImpl implements MoodService {
                    trackerEntityList = new ArrayList<>();
                    trackerEntityList.add(tracker);
                    profile.setDailytrackers(trackerEntityList);
-                   userProfileRepo.save(profile);
                }else {
                    if(!trackerEntityList.contains(tracker)){
                        trackerEntityList.add(tracker);
                        profile.setDailytrackers(trackerEntityList);
-                       userProfileRepo.save(profile);
                    }
                }
 
+               // INCREAMENT THE OVERAL SMILE DURATION OF USER (Sec)
+               double accumulatedValue = profile.getAccumulatedValue();
+               if(accumulatedValue > 0){
+                   accumulatedValue = accumulatedValue + smileGramMoodDTO.getSmileduration();
+               }else {
+                   accumulatedValue = smileGramMoodDTO.getSmileduration();
+               }
+
+               // INCREAMENT NUMBER OF COUNTRIES PAINTED GREEN
+               double smilegramPoints = profile.getSmilegrampoints();
+               if(smilegramPoints > 0){
+                   smilegramPoints = smilegramPoints + smileGramMoodDTO.getCountrycount();
+               }else {
+                   smilegramPoints = smileGramMoodDTO.getCountrycount();
+               }
+
+               profile.setAccumulatedValue(accumulatedValue);
+               profile.setSmilegrampoints(smilegramPoints);
+               userProfileRepo.save(profile);
                return smileGramMoodMapper.EntityToDTO(saveedSmileGram);
            } else {
                return null;
@@ -125,14 +154,14 @@ public class MoodServiceImpl implements MoodService {
                     trackerEntityList = new ArrayList<>();
                     trackerEntityList.add(tracker);
                     profile.setDailytrackers(trackerEntityList);
-                    userProfileRepo.save(profile);
                 }else {
                     if(!trackerEntityList.contains(tracker)){
                         trackerEntityList.add(tracker);
                         profile.setDailytrackers(trackerEntityList);
-                        userProfileRepo.save(profile);
                     }
                 }
+
+                userProfileRepo.save(profile);
                 return pocketBuddyMoodMapper.EntityToDTO(saveedPocketBuddy);
             } else {
                 return null;
@@ -175,14 +204,22 @@ public class MoodServiceImpl implements MoodService {
                     trackerEntityList = new ArrayList<>();
                     trackerEntityList.add(tracker);
                     profile.setDailytrackers(trackerEntityList);
-                    userProfileRepo.save(profile);
                 }else {
                     if(!trackerEntityList.contains(tracker)){
                         trackerEntityList.add(tracker);
                         profile.setDailytrackers(trackerEntityList);
-                        userProfileRepo.save(profile);
                     }
                 }
+
+                // INCREAMENT THE OVERAL SMILE DURATION OF USER (Sec)
+                double accumulatedValue = profile.getAccumulatedValue();
+                if(accumulatedValue > 0){
+                    accumulatedValue = accumulatedValue + tribeMoodDTO.getSmileduration();
+                }else {
+                    accumulatedValue = tribeMoodDTO.getSmileduration();
+                }
+                profile.setAccumulatedValue(accumulatedValue);
+                userProfileRepo.save(profile);
                 return tribeMoodMapper.EntitytoDTO(saveedTribemoood);
             } else {
                 return null;

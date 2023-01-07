@@ -19,7 +19,7 @@ public class TrackEntityDTO {
     String trackerIdentifier; // This will be date
     LocalDate date;
     int targetValue;
-    int achievedScore;
+    int achievedScore; // This is number of country user have painted green per day
     List<SmileGramMoodEntity> smilegramlist;
     List<PocketBuddyMoodEntity> pocketbuddylist;
     List<TribeMoodEntity> myTribeList;

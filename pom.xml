@@ -104,6 +104,12 @@
         </dependency>
         <!--   End of Dependencies for Firebase Cloud Messaging-->
 
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.2.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

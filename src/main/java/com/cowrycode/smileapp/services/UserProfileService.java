@@ -1,6 +1,8 @@
 package com.cowrycode.smileapp.services;
 
+import com.cowrycode.smileapp.controlllers.ChatController.ChatObjectModel;
 import com.cowrycode.smileapp.models.EmpathyRequestDTO;
+import com.cowrycode.smileapp.models.QuestionnaireBMIScaleDTO;
 import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 
@@ -16,5 +18,7 @@ public interface UserProfileService  {
     Boolean requestEmpathicMessage(String userID, EmpathyRequestDTO message);
     List<EmpathyRequestDTO> replyEmpathicMessage(String userID, EmpathyRequestDTO message);
     List<EmpathyRequestDTO> getTribeRequests(String userID);
+    QuestionnaireBMIScaleDTO saveBMIScale(String userID, QuestionnaireBMIScaleDTO questionnaireBMIScaleDTO);
+    ChatObjectModel sendChat(String userID, String chat);
 
 }

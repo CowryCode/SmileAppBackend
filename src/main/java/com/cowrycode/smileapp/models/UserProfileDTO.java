@@ -1,6 +1,9 @@
 package com.cowrycode.smileapp.models;
 
+import com.cowrycode.smileapp.domains.QuestionnaireBMIScaleEntity;
 import com.cowrycode.smileapp.domains.TrackerEntity;
+import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
+import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,11 +23,27 @@ public class UserProfileDTO {
     private String name;
     private String phonenumber;
     private boolean isconsented;
-    private double smilegrampoint;
-    private double accumulatedValue;
+    private double smilegrampoints;
+    private String smilegrammappoints;
+    private double accumulatedValue; // Total Number of country user have painted green
+
+    private int todayTargetValue;
+    private int todayAchievedValue;
+
     @JsonIgnore
     private String deviceId;
     @JsonIgnore
     List<TrackerEntity> dailytrackers;
+
+    @JsonIgnore
+    List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
+    String chathistory;
+
+    LeaderBoard leaderBoard;
+    UnreadTribeMessagesDTO unreadTribeMessage;
+    UnreadTribeMessagesDTO readTribeMessages;
+    UnrepliedTribeCalls unrepliedTribeCalls;
+
+
     private boolean voided;
 }

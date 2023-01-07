@@ -31,8 +31,7 @@ public class FCMSenderServiceImpl implements FCMSenderService {
                         .notification(notification.build())
                         .priority(Message.Priority.HIGH)
                         .build();
-                sender.send(message, receiver,1);
-
+               sender.send(message, receiver,1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
