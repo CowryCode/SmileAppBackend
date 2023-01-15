@@ -5,18 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class PersonalProgress implements Comparable<PersonalProgress>{
+public class PersonalProgress{
     int id;
     int TargetValue;
     int scoredValue;
-
-    @Override
-    public int compareTo(PersonalProgress o) {
-        int compareID = o.getId();
-        return this.id - compareID;
-    }
+    String identifier;
 }

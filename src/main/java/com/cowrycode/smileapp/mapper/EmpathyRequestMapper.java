@@ -11,5 +11,5 @@ public interface EmpathyRequestMapper {
     EmpathyRequestMapper INSTANCE = Mappers.getMapper(EmpathyRequestMapper.class);
 
     EmpathyRequestDTO entityToDTO(EmpathyRequestEntity empathyRequestEntity);
-    EmpathyRequestEntity DTOtoEntity(EmpathyRequestDTO empathyRequestDTO);
+   // EmpathyRequestEntity DTOtoEntity(EmpathyRequestDTO empathyRequestDTO);
 }

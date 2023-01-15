@@ -17,27 +17,27 @@ public class TestController {
     @GetMapping
     public ResponseEntity<String> start(){
 
-        System.out.println("LocalTime : " + LocalDate.now());
-
-        List<List<Integer>> arr = new ArrayList<>();
-
-        List<Integer> ar1 = new ArrayList<>();
-        ar1.add(1);
-        ar1.add(2);
-        ar1.add(3);
-        List<Integer> ar2 = new ArrayList<>();
-        ar2.add(4);
-        ar2.add(5);
-        ar2.add(6);
-        arr.add(ar1);
-        arr.add(ar2);
-
-        ChatObjectModel chatObjectModel = new ChatObjectModel();
-        chatObjectModel.setChatContent("This is the content");
-        chatObjectModel.setChatHistory(arr);
-
-        System.out.println(" ARRAY IN STRING : " + chatObjectModel.getChatHistory().toString());
-        System.out.println(" Object To STRING : " + chatObjectModel.toString());
+//        System.out.println("LocalTime : " + LocalDate.now());
+//
+//        List<List<Integer>> arr = new ArrayList<>();
+//
+//        List<Integer> ar1 = new ArrayList<>();
+//        ar1.add(1);
+//        ar1.add(2);
+//        ar1.add(3);
+//        List<Integer> ar2 = new ArrayList<>();
+//        ar2.add(4);
+//        ar2.add(5);
+//        ar2.add(6);
+//        arr.add(ar1);
+//        arr.add(ar2);
+//
+//        ChatObjectModel chatObjectModel = new ChatObjectModel();
+//        chatObjectModel.setChatContent("This is the content");
+//        chatObjectModel.setChatHistory(arr);
+//
+//        System.out.println(" ARRAY IN STRING : " + chatObjectModel.getChatHistory().toString());
+//        System.out.println(" Object To STRING : " + chatObjectModel.toString());
 
         return new ResponseEntity<>("App have started", HttpStatus.OK);
     }

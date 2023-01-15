@@ -8,10 +8,7 @@ import com.cowrycode.smileapp.models.featuresmood.SmileGramMoodDTO;
 import com.cowrycode.smileapp.models.featuresmood.TribeMoodDTO;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
-import com.cowrycode.smileapp.services.AuthService;
-import com.cowrycode.smileapp.services.MoodService;
-import com.cowrycode.smileapp.services.MyTribeMessageService;
-import com.cowrycode.smileapp.services.UserProfileService;
+import com.cowrycode.smileapp.services.*;
 import com.cowrycode.smileapp.utilities.TextExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +27,16 @@ public class UserController {
     private final UserProfileService userProfileService;
     private final AuthService authService;
 
+    private final ApiCallService apiCallService;
+
 
     public UserController(MoodService moodService, MyTribeMessageService myTribeMessageService,
-                          UserProfileService userProfileService, AuthService authService) {
+                          UserProfileService userProfileService, AuthService authService, ApiCallService apiCallService) {
         this.moodService = moodService;
         this.myTribeMessageService = myTribeMessageService;
         this.userProfileService = userProfileService;
         this.authService = authService;
+        this.apiCallService = apiCallService;
     }
 
     @PostMapping("/create-user")
@@ -64,6 +64,7 @@ public class UserController {
                 return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
             }
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
     }
@@ -198,11 +199,21 @@ public class UserController {
         }
     }
 
+//    @PostMapping("/chat")
+//    public ResponseEntity<String> chat(@RequestBody @Validated TextExchange chat , HttpServletRequest request){
+//        ChatObjectModel chatObject = userProfileService.sendChat(authService.getIdentifier(request), chat.getValue());
+//        if(chatObject != null){
+//            return new ResponseEntity<>(chatObject.getChatContent(), HttpStatus.OK);
+//        }else {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+//        }
+//    }
+
     @PostMapping("/chat")
     public ResponseEntity<String> chat(@RequestBody @Validated TextExchange chat , HttpServletRequest request){
-        ChatObjectModel chatObject = userProfileService.sendChat(authService.getIdentifier(request), chat.getValue());
-        if(chatObject != null){
-            return new ResponseEntity<>(chatObject.getChatContent(), HttpStatus.OK);
+        String response = apiCallService.callChatGPT(chat.getValue());
+        if(response != null){
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }

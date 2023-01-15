@@ -18,13 +18,13 @@ import com.cowrycode.smileapp.repositories.EmpathyRequestRepo;
 import com.cowrycode.smileapp.repositories.QuestionnaireBMIScaleRepo;
 import com.cowrycode.smileapp.repositories.TrackerRepo;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
+import com.cowrycode.smileapp.utilities.Variables;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,6 +79,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         try{
             String identifier = extractToken(request);
             if(identifier != null){
+                Variables variables = new Variables();
                 UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
                 UserProfileDTO profileDTO = userProfileMapper.EntitytoDTO(profile);
                 profileDTO.setSmilegrammappoints(generateMapString(profile.getSmilegrampoints()));
@@ -99,7 +100,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                     if(lasttracker != null && !(lasttracker.getTrackerIdentifier().equals(LocalDate.now().toString()))){
                         TrackerEntity trc = new TrackerEntity();
                         trc.setTrackerIdentifier(LocalDate.now().toString()); // Tracker for today
-                        trc.setTargetValue(20); // Target for today
+                        trc.setTargetValue(variables.SmileGramDailyTarget); // Target for today
                         lasttracker = trackerRepo.save(trc);
                         trackers.add(lasttracker);
                         profile.setDailytrackers(trackers);
@@ -111,7 +112,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                     trackers = new ArrayList<>();
                     TrackerEntity trc = new TrackerEntity();
                     trc.setTrackerIdentifier(LocalDate.now().toString()); // Tracker for today
-                    trc.setTargetValue(20); // Target for today
+                    trc.setTargetValue(variables.SmileGramDailyTarget); // Target for today
                     lasttracker = trackerRepo.save(trc);
                     trackers.add(lasttracker);
                     profile.setDailytrackers(trackers);
@@ -198,11 +199,16 @@ public class UserProfileServiceImpl implements UserProfileService {
                    }
 
                    /*PERSONAL PROGRESS*/
-                   List<TrackerEntity> trackers = sortTrackers(profileDTO.getDailytrackers());
+                   List<TrackerEntity> trackers = sortTrackers(profileDTO.getDailytrackers(), profileDTO.getDateCreated().toLocalDate());
                    ArrayList<PersonalProgress> personalProgressList = new ArrayList<>();
 
                    for(int j= 0; j < trackers.size(); j++){
-                       personalProgressList.add(new PersonalProgress(trackers.get(j).getId().intValue(),trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore()));
+                       if(trackers.get(j) == null){
+                           personalProgressList.add(null);
+                       }else {
+                         //  personalProgressList.add(new PersonalProgress(trackers.get(j).getId().intValue(), trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore()));
+                           personalProgressList.add(new PersonalProgress(j, trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore(), trackers.get(j).getTrackerIdentifier()));
+                       }
                    }
                    leaderBoard.setPersonalProgresses(personalProgressList);
                    leaderBoard.setGlobalProgresses(globalProgresses);
@@ -220,15 +226,49 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
     }
 
-    List<TrackerEntity> sortTrackers(List<TrackerEntity> trackers){
+    List<TrackerEntity> sortTrackers(List<TrackerEntity> trackers, LocalDate patientTienCreationDate){
+        Variables variables = new Variables();
         PriorityQueue<TrackerEntity> prioority = new PriorityQueue<>(
                 (n1,n2) -> n1.getTrackerIdentifier().compareToIgnoreCase(n2.getTrackerIdentifier())
         );
+//        for(int x = 0; x < trackers.size(); x++){
+//
+//            prioority.add(trackers.get(x));
+//        }
+//        List<TrackerEntity> result = new ArrayList<>();
+        //        while (!prioority.isEmpty()){
+//            result.add(prioority.poll());
+//        }
+    //    return result;
+        HashMap<String, TrackerEntity> expectedResults = new HashMap<>();
+
+        for(int i = 0; i < variables.numberofDaysStudyRuns; i++){
+            expectedResults.put(patientTienCreationDate.plusDays(i).toString(), null);
+        }
 
         for(int x = 0; x < trackers.size(); x++){
-            prioority.add(trackers.get(x));
+            if(expectedResults.containsKey(trackers.get(x).getTrackerIdentifier())){
+                expectedResults.put(trackers.get(x).getTrackerIdentifier(), trackers.get(x));
+            }
         }
+
         List<TrackerEntity> result = new ArrayList<>();
+
+        for (Map.Entry<String, TrackerEntity> tracker : expectedResults.entrySet()){
+            if(tracker.getValue() != null){
+               // result.add(tracker.getValue());
+                prioority.add(tracker.getValue());
+            }else {
+                TrackerEntity trackerEnt = new TrackerEntity();
+                trackerEnt.setTrackerIdentifier(tracker.getKey());
+                trackerEnt.setTargetValue(variables.SmileGramDailyTarget);
+                trackerEnt.setAchievedScore(0);
+                trackerEnt.setDate(LocalDate.parse(tracker.getKey()));
+               // result.add(trackerEnt);
+                prioority.add(trackerEnt);
+            }
+        }
+
         while (!prioority.isEmpty()){
             result.add(prioority.poll());
         }
