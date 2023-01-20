@@ -10,6 +10,8 @@ import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
 import com.cowrycode.smileapp.services.*;
 import com.cowrycode.smileapp.utilities.TextExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +31,7 @@ public class UserController {
 
     private final ApiCallService apiCallService;
 
-
+    Logger logger = LoggerFactory.getLogger(UserController.class);
     public UserController(MoodService moodService, MyTribeMessageService myTribeMessageService,
                           UserProfileService userProfileService, AuthService authService, ApiCallService apiCallService) {
         this.moodService = moodService;
@@ -117,6 +119,7 @@ public class UserController {
 
     @PostMapping("/smilegram-mood")
     public ResponseEntity<SmileGramMoodDTO> saveSmilegramMood(@RequestBody @Validated SmileGramMoodDTO smileGramMoodDTO, HttpServletRequest request){
+        System.out.println("USER ID IS : " + authService.getIdentifier(request));
         SmileGramMoodDTO savedsmilegram = moodService.saveSmileGramMood(smileGramMoodDTO, authService.getIdentifier(request));
         if(savedsmilegram != null){
             return new ResponseEntity<>(savedsmilegram, HttpStatus.OK);
