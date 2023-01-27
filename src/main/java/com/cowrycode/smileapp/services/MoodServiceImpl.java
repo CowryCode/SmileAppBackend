@@ -57,7 +57,6 @@ public class MoodServiceImpl implements MoodService {
                TrackerEntity tracker = trackerRepo.findById(trackerID).orElse(null);
                List<SmileGramMoodEntity> grams;
                if(tracker == null){
-
                    TrackerEntity newtrackerEntity = new TrackerEntity();
                    newtrackerEntity.setTrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
                   // tracker =  trackerRepo.save(new TrackerEntity());
@@ -77,6 +76,10 @@ public class MoodServiceImpl implements MoodService {
                    * Hence the subtraction in country count (Country count representing number of country painted)   */
                    if(smileGramMoodDTO.getCountrycount() > achievedPoints ){
                        tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
+                       smileGramMoodDTO.setCountrycount(smileGramMoodDTO.getCountrycount() - achievedPoints);
+                   }else if(smileGramMoodDTO.getCountrycount() < achievedPoints ){
+                       smileGramMoodDTO.setCountrycount(smileGramMoodDTO.getCountrycount());
+                   }else {
                        smileGramMoodDTO.setCountrycount(smileGramMoodDTO.getCountrycount() - achievedPoints);
                    }
                   // achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
@@ -151,9 +154,9 @@ public class MoodServiceImpl implements MoodService {
         try {
             UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
             if(profile != null){
-                Long trackerID = findTrackerID(profile, identifier);
+                Long trackerID = findTrackerID(profile, pocketBuddyMoodDTO.getEndDate().toString());
+              //  Long trackerID = findTrackerID(profile, identifier);
                 TrackerEntity tracker = trackerRepo.findById(trackerID).orElse(null);
-               // TrackerEntity tracker = trackerRepo.findBytrackerIdentifier(pocketBuddyMoodDTO.getEndDate().toString());
                 List<PocketBuddyMoodEntity> pocketbuddies;
                 if(tracker == null){
                     TrackerEntity newtrackerEntity = new TrackerEntity();
@@ -202,9 +205,9 @@ public class MoodServiceImpl implements MoodService {
         try {
             UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
             if(profile != null){
-                Long trackerID = findTrackerID(profile, identifier);
+                Long trackerID = findTrackerID(profile, tribeMoodDTO.getEndDate().toString());
+               // Long trackerID = findTrackerID(profile, identifier);
                 TrackerEntity tracker = trackerRepo.findById(trackerID).orElse(null);
-               // TrackerEntity tracker = trackerRepo.findBytrackerIdentifier(tribeMoodDTO.getEndDate().toString());
                 List<TribeMoodEntity> tribemoods;
                 if(tracker == null){
                     TrackerEntity newtrackerEntity = new TrackerEntity();
