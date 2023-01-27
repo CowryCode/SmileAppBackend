@@ -105,8 +105,6 @@ public class UserProfileServiceImpl implements UserProfileService {
                         trackers.add(lasttracker);
                         profile.setDailytrackers(trackers);
                         userProfileRepo.save(profile);
-                    }else {
-
                     }
                 }else {
                     trackers = new ArrayList<>();
@@ -118,7 +116,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                     profile.setDailytrackers(trackers);
                     userProfileRepo.save(profile);
                 }
-                profileDTO.setTodayTargetValue(lasttracker.getTargetValue());
+                profileDTO.setTodayTargetValue(variables.SmileGramDailyTarget);
                 profileDTO.setTodayAchievedValue(lasttracker.getAchievedScore());
 
                 return profileDTO;

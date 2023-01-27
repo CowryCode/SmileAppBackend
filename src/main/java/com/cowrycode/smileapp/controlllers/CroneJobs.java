@@ -24,18 +24,18 @@ public class CroneJobs {
         this.userProfileService = userProfileService;
     }
 
-    @Scheduled(cron = "0 25 * * * *")
-    public void dailyReminders() {
-        try{
-            List<UserProfileEntity> users = userProfileRepo.findAll();
-            for(int x =0; x < users.size(); x++ ){
-                UserProfileEntity profileEntity = users.get(x);
-                if(profileEntity.getDeviceId() != null){
-                    userProfileService.pushNotification(profileEntity.getIdentifier(), "SmileGram", "Have your smiled enough today? Play the SmileGram Game");
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+//    @Scheduled(cron = "0 25 * * * *")
+//    public void dailyReminders() {
+//        try{
+//            List<UserProfileEntity> users = userProfileRepo.findAll();
+//            for(int x =0; x < users.size(); x++ ){
+//                UserProfileEntity profileEntity = users.get(x);
+//                if(profileEntity.getDeviceId() != null){
+//                    userProfileService.pushNotification(profileEntity.getIdentifier(), "SmileGram", "Have your smiled enough today? Play the SmileGram Game");
+//                }
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
 }

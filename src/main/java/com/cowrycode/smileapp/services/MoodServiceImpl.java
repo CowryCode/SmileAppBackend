@@ -52,8 +52,8 @@ public class MoodServiceImpl implements MoodService {
         try {
            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
            if(profile != null){
-               Long trackerID = findTrackerID(profile, identifier);
-              // TrackerEntity tracker = trackerRepo.findBytrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
+               Long trackerID = findTrackerID(profile, smileGramMoodDTO.getEndDate().toString());
+             //  Long trackerID = findTrackerID(profile, identifier);
                TrackerEntity tracker = trackerRepo.findById(trackerID).orElse(null);
                List<SmileGramMoodEntity> grams;
                if(tracker == null){
@@ -72,9 +72,14 @@ public class MoodServiceImpl implements MoodService {
                    }
 
                    int achievedPoints = tracker.getAchievedScore();
-
-                   achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
-                   tracker.setAchievedScore(achievedPoints);
+                   /* The "smileGramMoodDTO.getCountrycount()" has acummulation of the user's today's achievement
+                   * which goes to the TrackerEntity while this particular smileGramMoodDTO has only the achievement at this point
+                   * Hence the subtraction in country count (Country count representing number of country painted)   */
+                   if(smileGramMoodDTO.getCountrycount() > achievedPoints ){
+                       tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
+                       smileGramMoodDTO.setCountrycount(smileGramMoodDTO.getCountrycount() - achievedPoints);
+                   }
+                  // achievedPoints = achievedPoints + smileGramMoodDTO.getCountrycount();
                }
 
                SmileGramMoodEntity saveedSmileGram = smileGramMoodRepo.save(smileGramMoodMapper.DTOtoEntity(smileGramMoodDTO));
@@ -130,6 +135,7 @@ public class MoodServiceImpl implements MoodService {
     }
 
     Long findTrackerID(UserProfileEntity userProfile, String identifier){
+
         List<TrackerEntity> trackerEntityList = userProfile.getDailytrackers();
         if(trackerEntityList == null || trackerEntityList.size() < 1) return 0L;
         Long result = 0L;

@@ -119,7 +119,7 @@ public class UserController {
 
     @PostMapping("/smilegram-mood")
     public ResponseEntity<SmileGramMoodDTO> saveSmilegramMood(@RequestBody @Validated SmileGramMoodDTO smileGramMoodDTO, HttpServletRequest request){
-        System.out.println("USER ID IS : " + authService.getIdentifier(request));
+        System.out.println("THe mood saved : " + smileGramMoodDTO.toString());
         SmileGramMoodDTO savedsmilegram = moodService.saveSmileGramMood(smileGramMoodDTO, authService.getIdentifier(request));
         if(savedsmilegram != null){
             return new ResponseEntity<>(savedsmilegram, HttpStatus.OK);
