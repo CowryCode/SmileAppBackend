@@ -22,6 +22,7 @@ public class TrackerEntity extends BaseEntity  {
     LocalDate date;
     int targetValue; // Daily Target for user
     int achievedScore;
+    boolean submittedDailyQuestionnaire;
     @OneToMany
     List<SmileGramMoodEntity> smilegramlist;
     @OneToMany

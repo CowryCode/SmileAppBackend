@@ -448,6 +448,15 @@ public class UserProfileServiceImpl implements UserProfileService {
                 QuestionnaireBMIScaleEntity savedBMIScale = questionnaireBMIScaleRepo.save(questionnaireBMIScaleMapper.dtoToEntity(questionnaireBMIScaleDTO));
                 BMIScales.add(savedBMIScale);
                 userProfileEntity.setDailyquestionnaires(BMIScales);
+
+                Long trackerID = findTrackerID(userProfileEntity, savedBMIScale.getDateCreated().toLocalDate().toString());
+                TrackerEntity tracker = trackerRepo.findById(trackerID).orElse(null);
+
+                if(tracker != null){
+                    tracker.setSubmittedDailyQuestionnaire(true);
+                }
+
+                trackerRepo.save(tracker);
                 userProfileRepo.save(userProfileEntity);
                 return questionnaireBMIScaleMapper.entityToDTO(savedBMIScale);
             }else {
@@ -457,5 +466,17 @@ public class UserProfileServiceImpl implements UserProfileService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    Long findTrackerID(UserProfileEntity userProfile, String identifier){
+
+        List<TrackerEntity> trackerEntityList = userProfile.getDailytrackers();
+        if(trackerEntityList == null || trackerEntityList.size() < 1) return 0L;
+        Long result = 0L;
+        for (int x = 0; x < trackerEntityList.size(); x++){
+            if(trackerEntityList.get(x).getTrackerIdentifier().equals(identifier))
+                result = trackerEntityList.get(x).getId();
+        }
+        return result;
     }
 }

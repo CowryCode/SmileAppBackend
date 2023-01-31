@@ -20,6 +20,7 @@ public class TrackEntityDTO {
     LocalDate date;
     int targetValue;
     int achievedScore; // This is number of country user have painted green per day
+    boolean submittedDailyQuestionnaire;
     List<SmileGramMoodEntity> smilegramlist;
     List<PocketBuddyMoodEntity> pocketbuddylist;
     List<TribeMoodEntity> myTribeList;
