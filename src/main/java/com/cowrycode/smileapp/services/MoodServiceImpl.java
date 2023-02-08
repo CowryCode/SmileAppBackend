@@ -59,11 +59,13 @@ public class MoodServiceImpl implements MoodService {
                if(tracker == null){
                    TrackerEntity newtrackerEntity = new TrackerEntity();
                    newtrackerEntity.setTrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
-                  // tracker =  trackerRepo.save(new TrackerEntity());
+                   newtrackerEntity.setTodayAccumulatedSpentTime(smileGramMoodDTO.getTimeSpentSec());
                    tracker =  trackerRepo.save(newtrackerEntity);
                    tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
                    grams = new ArrayList<>();
                }else {
+                   double ttspent = tracker.getTodayAccumulatedSpentTime();
+                   tracker.setTodayAccumulatedSpentTime(ttspent + smileGramMoodDTO.getTimeSpentSec());
 
                    grams = tracker.getSmilegramlist();
                    if(grams == null){
@@ -89,6 +91,7 @@ public class MoodServiceImpl implements MoodService {
                grams.add(saveedSmileGram);
                tracker.setSmilegramlist(grams);
                tracker.setDate(smileGramMoodDTO.getEndDate());
+
                trackerRepo.save(tracker);
               // profile.setTrackerEntity(tracker);
                List<TrackerEntity> trackerEntityList = profile.getDailytrackers();
@@ -114,12 +117,17 @@ public class MoodServiceImpl implements MoodService {
                    accumulatedValue = smileGramMoodDTO.getSmileduration();
                }
                // INCREAMENT NUMBER OF COUNTRIES PAINTED GREEN
-               double smilegramPoints = profile.getSmilegrampoints();
+               int smilegramPoints = profile.getSmilegrampoints();
                if(smilegramPoints > 0){
                    smilegramPoints = smilegramPoints + smileGramMoodDTO.getCountrycount();
                }else {
                    smilegramPoints = smileGramMoodDTO.getCountrycount();
                }
+
+               //INCREAMENT TOTAL TIME USER HAVE SPENT IN THE APP (seconds)
+               double tts = profile.getAccumulatedTimeSpentOnApp();
+               double updateTTS = tts + smileGramMoodDTO.getTimeSpentSec();
+               profile.setAccumulatedTimeSpentOnApp(updateTTS);
 
                profile.setAccumulatedValue(accumulatedValue);
                profile.setSmilegrampoints(smilegramPoints);
@@ -161,11 +169,14 @@ public class MoodServiceImpl implements MoodService {
                 if(tracker == null){
                     TrackerEntity newtrackerEntity = new TrackerEntity();
                     newtrackerEntity.setTrackerIdentifier(pocketBuddyMoodDTO.getEndDate().toString());
+                    newtrackerEntity.setTodayAccumulatedSpentTime(pocketBuddyMoodDTO.getTimeSpentSec());
                     // tracker =  trackerRepo.save(new TrackerEntity());
                     tracker =  trackerRepo.save(newtrackerEntity);
                     pocketbuddies = new ArrayList<>();
                 }else {
-                  //  pocketbuddies = profile.getTrackerEntity().getPocketbuddylist();
+                    double ttspent = tracker.getTodayAccumulatedSpentTime();
+                    tracker.setTodayAccumulatedSpentTime(ttspent + pocketBuddyMoodDTO.getTimeSpentSec());
+
                     pocketbuddies = tracker.getPocketbuddylist();
                     if(pocketbuddies == null){
                         pocketbuddies = new ArrayList<>();
@@ -188,6 +199,11 @@ public class MoodServiceImpl implements MoodService {
                         profile.setDailytrackers(trackerEntityList);
                     }
                 }
+
+                //INCREAMENT TOTAL TIME USER HAVE SPENT IN THE APP (seconds)
+                double tts = profile.getAccumulatedTimeSpentOnApp();
+                double updateTTS = tts + pocketBuddyMoodDTO.getTimeSpentSec();
+                profile.setAccumulatedTimeSpentOnApp(updateTTS);
 
                 userProfileRepo.save(profile);
                 return pocketBuddyMoodMapper.EntityToDTO(saveedPocketBuddy);
@@ -212,11 +228,13 @@ public class MoodServiceImpl implements MoodService {
                 if(tracker == null){
                     TrackerEntity newtrackerEntity = new TrackerEntity();
                     newtrackerEntity.setTrackerIdentifier(tribeMoodDTO.getEndDate().toString());
+                    newtrackerEntity.setTodayAccumulatedSpentTime(tribeMoodDTO.getTimeSpentSec());
                     // tracker =  trackerRepo.save(new TrackerEntity());
                     tracker =  trackerRepo.save(newtrackerEntity);
                     tribemoods = new ArrayList<>();
                 }else {
-                   // tribemoods = profile.getTrackerEntity().getMyTribeList();
+                    double ttspent = tracker.getTodayAccumulatedSpentTime();
+                    tracker.setTodayAccumulatedSpentTime(ttspent + tribeMoodDTO.getTimeSpentSec());
                     tribemoods = tracker.getMyTribeList();
                     if(tribemoods == null){
                         tribemoods = new ArrayList<>();
@@ -240,13 +258,19 @@ public class MoodServiceImpl implements MoodService {
                     }
                 }
 
-                // INCREAMENT THE OVERAL SMILE DURATION OF USER (Sec)
+                // INCREMENT THE OVERALL SMILE DURATION OF USER (Sec)
                 double accumulatedValue = profile.getAccumulatedValue();
                 if(accumulatedValue > 0){
                     accumulatedValue = accumulatedValue + tribeMoodDTO.getSmileduration();
                 }else {
                     accumulatedValue = tribeMoodDTO.getSmileduration();
                 }
+
+                //INCREMENT TOTAL TIME USER HAVE SPENT IN THE APP (seconds)
+                double tts = profile.getAccumulatedTimeSpentOnApp();
+                double updateTTS = tts + tribeMoodDTO.getTimeSpentSec();
+                profile.setAccumulatedTimeSpentOnApp(updateTTS);
+
                 profile.setAccumulatedValue(accumulatedValue);
                 userProfileRepo.save(profile);
                 return tribeMoodMapper.EntitytoDTO(saveedTribemoood);

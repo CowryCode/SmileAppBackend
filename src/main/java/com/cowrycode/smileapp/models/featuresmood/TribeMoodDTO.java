@@ -20,4 +20,5 @@ public class TribeMoodDTO {
     private int endMood; // Mood as at the time this feature was used
     private double smileduration; // Smile duration while using this feature (in seconds)
     private int countrycount;
+    private double timeSpentSec; // This is the time user spend on this feature, measured in seconds
 }

@@ -23,4 +23,5 @@ public class PocketBuddyMoodEntity extends BaseEntity {
     private int endMood;
     private double smileduration; //in seconds
     private int countrycount;
+    private double timeSpentSec; // This is the time user spend on this feature, measured in seconds
 }

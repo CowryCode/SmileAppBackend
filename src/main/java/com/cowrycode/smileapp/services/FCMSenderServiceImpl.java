@@ -17,33 +17,52 @@ public class FCMSenderServiceImpl implements FCMSenderService {
         String serverToken = env.getProperty("notification-token");
 
         String receiver = reciepientMobileTOKEN;
-        Thread t = new Thread(() -> {
-            //super.run();
-            try {
-                Sender sender = new FCMSender(serverToken);
-                Notification.Builder notification = new Notification.Builder("");
-                notification.title(title);
-                notification.body(msg);
-                Message message = new  Message.Builder()
-                        .collapseKey("message")
-                        .timeToLive(3)
-                        .addData("message", "SmileApp")
-                        .notification(notification.build())
-                        .priority(Message.Priority.HIGH)
-                        .build();
-               sender.send(message, receiver,1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        t.start();
+
         try {
-            t.join();
+            Sender sender = new FCMSender(serverToken);
+            Notification.Builder notification = new Notification.Builder("");
+            notification.title(title);
+            notification.body(msg);
+            Message message = new  Message.Builder()
+                    .collapseKey("message")
+                    .timeToLive(3)
+                    .addData("message", "SmileApp")
+                    .notification(notification.build())
+                    .priority(Message.Priority.HIGH)
+                    .build();
+            sender.send(message, receiver,1);
             return true;
-        }
-        catch (InterruptedException iex) {
-            iex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
+
+//        Thread t = new Thread(() -> {
+//            try {
+//                Sender sender = new FCMSender(serverToken);
+//                Notification.Builder notification = new Notification.Builder("");
+//                notification.title(title);
+//                notification.body(msg);
+//                Message message = new  Message.Builder()
+//                        .collapseKey("message")
+//                        .timeToLive(3)
+//                        .addData("message", "SmileApp")
+//                        .notification(notification.build())
+//                        .priority(Message.Priority.HIGH)
+//                        .build();
+//               sender.send(message, receiver,1);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//        t.start();
+//        try {
+//            t.join();
+//            return true;
+//        }
+//        catch (InterruptedException iex) {
+//            iex.printStackTrace();
+//            return false;
+//        }
     }
 }

@@ -23,6 +23,8 @@ public class TrackerEntity extends BaseEntity  {
     int targetValue; // Daily Target for user
     int achievedScore;
     boolean submittedDailyQuestionnaire;
+    double todayAccumulatedSpentTime;
+
     @OneToMany
     List<SmileGramMoodEntity> smilegramlist;
     @OneToMany

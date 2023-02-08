@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class UserProfileEntity extends BaseEntity {
     private String name;
     private String phonenumber;
     private boolean isconsented;
-    private double smilegrampoints; // Total number of Countries painted Green: Use Point to get Map String ("smilegrammappoints")
+    private int smilegrampoints; // Total number of Countries painted Green: Use Point to get Map String ("smilegrammappoints")
     private String smilegrammappoints;
     private double accumulatedValue; // Accumulated duration user has smiled (Sec.)
     private String deviceId;
@@ -35,6 +36,12 @@ public class UserProfileEntity extends BaseEntity {
     List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
     String chathistory;
 
+    double accumulatedTimeSpentOnApp;
+
+    @Transient
+    double todayAccumulatedSpentTime;
+    @Transient
+    private boolean submittedBMI;
     @Transient
     LeaderBoard leaderBoard;
     @Transient

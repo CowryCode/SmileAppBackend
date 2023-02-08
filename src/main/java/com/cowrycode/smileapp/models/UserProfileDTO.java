@@ -23,12 +23,13 @@ public class UserProfileDTO {
     private String name;
     private String phonenumber;
     private boolean isconsented;
-    private double smilegrampoints;
+    private int smilegrampoints;
     private String smilegrammappoints;
     private double accumulatedValue; // Total Number of country user have painted green
 
     private int todayTargetValue;
     private int todayAchievedValue;
+    double todayAccumulatedSpentTime;
 
     @JsonIgnore
     private String deviceId;
@@ -38,6 +39,10 @@ public class UserProfileDTO {
     @JsonIgnore
     List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
     String chathistory;
+
+    double accumulatedTimeSpentOnApp;
+
+    private boolean submittedBMI;
 
     LeaderBoard leaderBoard;
     UnreadTribeMessagesDTO unreadTribeMessage;

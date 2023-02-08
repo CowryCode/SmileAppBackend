@@ -78,10 +78,13 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserProfileDTO getprofile(HttpServletRequest request) {
         try{
             String identifier = extractToken(request);
+
             if(identifier != null){
                 Variables variables = new Variables();
                 UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
                 UserProfileDTO profileDTO = userProfileMapper.EntitytoDTO(profile);
+
+
                 profileDTO.setSmilegrammappoints(generateMapString(profile.getSmilegrampoints()));
 
                 //POPULATE OTHER VARIABLES
@@ -118,6 +121,12 @@ public class UserProfileServiceImpl implements UserProfileService {
                 }
                 profileDTO.setTodayTargetValue(variables.SmileGramDailyTarget);
                 profileDTO.setTodayAchievedValue(lasttracker.getAchievedScore());
+
+                profileDTO.setSubmittedBMI(lasttracker.isSubmittedDailyQuestionnaire());
+
+                profileDTO.setTodayAccumulatedSpentTime(lasttracker.getTodayAccumulatedSpentTime());
+
+                profileDTO.setSmilegrampoints( profile.getSmilegrampoints() % 175); // I75 is number of countries in the Map array on the app, we don't want an overflow
 
                 return profileDTO;
             }else {
@@ -223,21 +232,12 @@ public class UserProfileServiceImpl implements UserProfileService {
             return null;
         }
     }
-
     List<TrackerEntity> sortTrackers(List<TrackerEntity> trackers, LocalDate patientTienCreationDate){
         Variables variables = new Variables();
         PriorityQueue<TrackerEntity> prioority = new PriorityQueue<>(
                 (n1,n2) -> n1.getTrackerIdentifier().compareToIgnoreCase(n2.getTrackerIdentifier())
         );
-//        for(int x = 0; x < trackers.size(); x++){
-//
-//            prioority.add(trackers.get(x));
-//        }
-//        List<TrackerEntity> result = new ArrayList<>();
-        //        while (!prioority.isEmpty()){
-//            result.add(prioority.poll());
-//        }
-    //    return result;
+
         HashMap<String, TrackerEntity> expectedResults = new HashMap<>();
 
         for(int i = 0; i < variables.numberofDaysStudyRuns; i++){
@@ -299,7 +299,6 @@ public class UserProfileServiceImpl implements UserProfileService {
                     fcmSenderService.sendPushnotification("Tribe Call", "Someone needs your empathy, please show love", profiles.get(i).getDeviceId());
                 }
                 return true;
-
             }else {
                 return false;
             }
@@ -351,7 +350,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         try {
             List<EmpathyRequestEntity> requests = empathyRequestRepo.getUnrespondedMessages(userID);
             if(requests != null){
-               return requests.stream().map(empathyRequestMapper::entityToDTO).collect(Collectors.toList());
+              // return requests.stream().map(empathyRequestMapper::entityToDTO).collect(Collectors.toList());
+                List<EmpathyRequestDTO> requestDTOs = requests.stream().map(empathyRequestMapper::entityToDTO).collect(Collectors.toList());
+                Collections.shuffle(requestDTOs);
+                return requestDTOs;
             }else {
                 return null;
             }
