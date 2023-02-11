@@ -4,6 +4,7 @@ package com.cowrycode.smileapp.models;
 import com.cowrycode.smileapp.domains.featuresmood.PocketBuddyMoodEntity;
 import com.cowrycode.smileapp.domains.featuresmood.SmileGramMoodEntity;
 import com.cowrycode.smileapp.domains.featuresmood.TribeMoodEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,11 @@ public class TrackEntityDTO {
     boolean submittedDailyQuestionnaire;
     double todayAccumulatedSpentTime;
 
+    @JsonIgnore
     List<SmileGramMoodEntity> smilegramlist;
+    @JsonIgnore
     List<PocketBuddyMoodEntity> pocketbuddylist;
+    @JsonIgnore
     List<TribeMoodEntity> myTribeList;
 
 }

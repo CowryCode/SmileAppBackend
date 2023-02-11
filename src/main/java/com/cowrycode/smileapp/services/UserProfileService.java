@@ -21,4 +21,8 @@ public interface UserProfileService  {
     QuestionnaireBMIScaleDTO saveBMIScale(String userID, QuestionnaireBMIScaleDTO questionnaireBMIScaleDTO);
     ChatObjectModel sendChat(String userID, String chat);
 
+    List<UserProfileDTO> getALlUsers(String user);
+
+    String getNextParticipantID(Long opinioID);
+
 }

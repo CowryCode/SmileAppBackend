@@ -50,7 +50,8 @@ public class MoodServiceImpl implements MoodService {
     @Override
     public SmileGramMoodDTO saveSmileGramMood(SmileGramMoodDTO smileGramMoodDTO, String identifier) {
         try {
-           UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+          // UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+           UserProfileEntity profile = userProfileRepo.findByIdentifierOrName(identifier, identifier);
            if(profile != null){
                Long trackerID = findTrackerID(profile, smileGramMoodDTO.getEndDate().toString());
              //  Long trackerID = findTrackerID(profile, identifier);
@@ -160,7 +161,8 @@ public class MoodServiceImpl implements MoodService {
     @Override
     public PocketBuddyMoodDTO savePocketBuddyMood(PocketBuddyMoodDTO pocketBuddyMoodDTO, String identifier) {
         try {
-            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+           // UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+            UserProfileEntity profile = userProfileRepo.findByIdentifierOrName(identifier, identifier);
             if(profile != null){
                 Long trackerID = findTrackerID(profile, pocketBuddyMoodDTO.getEndDate().toString());
               //  Long trackerID = findTrackerID(profile, identifier);
@@ -219,7 +221,8 @@ public class MoodServiceImpl implements MoodService {
     @Override
     public TribeMoodDTO saveTribemood(TribeMoodDTO tribeMoodDTO, String identifier) {
         try {
-            UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+           // UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+            UserProfileEntity profile = userProfileRepo.findByIdentifierOrName(identifier, identifier);
             if(profile != null){
                 Long trackerID = findTrackerID(profile, tribeMoodDTO.getEndDate().toString());
                // Long trackerID = findTrackerID(profile, identifier);

@@ -233,4 +233,26 @@ public class UserController {
 
     }
 
+    @GetMapping("/get-all-users")
+    public ResponseEntity<List<UserProfileDTO>> getAllUsers(HttpServletRequest request){
+        List<UserProfileDTO> users = userProfileService.getALlUsers(authService.getIdentifier(request));
+        if(users != null){
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(users, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
+    @GetMapping("/get-next-participantID/{opinoID}")
+    public ResponseEntity<String> getNextParticipantID(@PathVariable Long opinoID, HttpServletRequest request){
+        String pID = userProfileService.getNextParticipantID(opinoID);
+        if(pID != null){
+            return new ResponseEntity<>(pID, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(pID, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
 }

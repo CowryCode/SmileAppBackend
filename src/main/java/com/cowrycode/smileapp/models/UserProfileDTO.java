@@ -33,7 +33,7 @@ public class UserProfileDTO {
 
     @JsonIgnore
     private String deviceId;
-    @JsonIgnore
+
     List<TrackerEntity> dailytrackers;
 
     @JsonIgnore

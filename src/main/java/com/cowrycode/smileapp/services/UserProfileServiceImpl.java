@@ -61,7 +61,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDTO saveUserprofile(UserProfileDTO userProfileDTO) {
         try {
-            UserProfileEntity savedProfile = userProfileRepo.findByidentifier(userProfileDTO.getIdentifier());
+           // UserProfileEntity savedProfile = userProfileRepo.findByidentifier(userProfileDTO.getIdentifier());
+            UserProfileEntity savedProfile = userProfileRepo.findByIdentifierOrName(userProfileDTO.getIdentifier(),userProfileDTO.getIdentifier());
             if(savedProfile == null){
                 savedProfile = userProfileRepo.save(userProfileMapper.DTOtoEntity(userProfileDTO));
                 return userProfileMapper.EntitytoDTO(savedProfile);
@@ -81,7 +82,10 @@ public class UserProfileServiceImpl implements UserProfileService {
 
             if(identifier != null){
                 Variables variables = new Variables();
-                UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+
+               // UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+                UserProfileEntity profile = userProfileRepo.findByIdentifierOrName(identifier, identifier);
+
                 UserProfileDTO profileDTO = userProfileMapper.EntitytoDTO(profile);
 
 
@@ -167,7 +171,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDTO savedDeviceID(String userID, String deviceID) {
         try {
-            UserProfileEntity profile = userProfileRepo.findByidentifier(userID);
+           // UserProfileEntity profile = userProfileRepo.findByidentifier(userID);
+            UserProfileEntity profile = userProfileRepo.findByIdentifierOrName(userID, userID);
             if(profile != null){
                // UserProfileEntity profileEntity = profile.get();
                 profile.setDeviceId(deviceID);
@@ -184,7 +189,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public LeaderBoard sortPerformance(String userID) {
         try {
-           UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+          // UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+           UserProfileEntity profileDTO = userProfileRepo.findByIdentifierOrName(userID, userID);
            if(profileDTO != null ){
                LeaderBoard leaderBoard = new LeaderBoard();
                List<UserProfileEntity> topUsers = userProfileRepo.getTopPerformers();
@@ -277,7 +283,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public Boolean pushNotification(String userID, String title, String message) {
         try {
-            UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+           // UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+            UserProfileEntity profileDTO = userProfileRepo.findByIdentifierOrName(userID, userID);
             if(profileDTO != null){
                 return fcmSenderService.sendPushnotification(title, message, profileDTO.getDeviceId());
             }else {
@@ -338,7 +345,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private void notifyUser(String userID){
         try{
-            UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+           // UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
             if(userProfileEntity != null && userProfileEntity.getDeviceId() != null)  fcmSenderService.sendPushnotification("I Care", "I sent you an empathic note, check the SmileApp", userProfileEntity.getDeviceId());
         }catch (Exception e){
 
@@ -366,7 +374,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public ChatObjectModel sendChat(String userID, String chat) {
         try {
-            UserProfileEntity profileEntity = userProfileRepo.findByidentifier(userID);
+           // UserProfileEntity profileEntity = userProfileRepo.findByidentifier(userID);
+            UserProfileEntity profileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
             List<List<Integer>> arr = new ArrayList<>();
             ChatObjectModel chatObjectModel = new ChatObjectModel();
 
@@ -441,7 +450,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public QuestionnaireBMIScaleDTO saveBMIScale(String userID, QuestionnaireBMIScaleDTO questionnaireBMIScaleDTO) {
         try{
-            UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+           // UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
             if(userProfileEntity != null){
                 List<QuestionnaireBMIScaleEntity> BMIScales = userProfileEntity.getDailyquestionnaires();
                 if(BMIScales == null){
@@ -480,5 +490,45 @@ public class UserProfileServiceImpl implements UserProfileService {
                 result = trackerEntityList.get(x).getId();
         }
         return result;
+    }
+
+    @Override
+    public List<UserProfileDTO> getALlUsers(String user) {
+        try{
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(user,user);
+            if(userProfileEntity == null) return null;
+            List<UserProfileEntity> users = userProfileRepo.findAllByDeviceIdIsNotNull();
+
+            return  users.stream().map(userProfileMapper::EntitytoDTO).collect(Collectors.toList());
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public String getNextParticipantID(Long opinioID) {
+        try{
+            List<UserProfileEntity> participants = userProfileRepo.findAll();
+            if(participants.size() > 0 ){
+               return getLastParticipantID(participants) + "D" + opinioID; // D stands for DaL, to prefix Opinio ID
+            }else {
+                return null;
+            }
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    String getLastParticipantID(List<UserProfileEntity> participants){
+        PriorityQueue<UserProfileEntity> pq = new PriorityQueue<>(
+                (n1,n2) -> Integer.valueOf(n2.getId().toString()) - Integer.valueOf(n1.getId().toString())
+        );
+        pq.addAll(participants);
+
+        UserProfileEntity lastParticipant = pq.poll();
+        if(lastParticipant.getId() == null ) return null;
+
+        return "S" + (lastParticipant.getId() + 1); // S stands for SmileApp, to prefix SmileApp ID
+
     }
 }
