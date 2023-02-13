@@ -15,4 +15,5 @@ public class MyTribeMessageEntity extends BaseEntity {
     private String content;
     private String sourceCountry;
     private boolean isread;
+    private boolean isapproved;
 }

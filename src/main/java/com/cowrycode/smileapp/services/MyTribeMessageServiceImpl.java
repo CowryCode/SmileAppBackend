@@ -48,6 +48,30 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     }
 
     @Override
+    public List<MyTribeMessageDTO> getUnapprovedTribeMessage() {
+        try {
+            List<MyTribeMessageEntity> messages = myTribeMessageRepo.findMyTribeMessageEntitiesByIsapprovedFalseAndIsreadFalse();
+            return  messages.stream().map(myTribeMessageMapper::EntityToDTO)
+                    .collect(Collectors.toList());
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public boolean approveTribeMessage(Long messageID) {
+        try {
+            MyTribeMessageEntity message = myTribeMessageRepo.findById(messageID).orElse(null);
+            if(message == null ) return false;
+            message.setIsapproved(true);
+            myTribeMessageRepo.save(message);
+            return  true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
     public List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifier) {
         try{
             MyTribeMessageEntity myTribeMessageEntity = myTribeMessageRepo.getReferenceById(myTribeMessageDTO.getId());

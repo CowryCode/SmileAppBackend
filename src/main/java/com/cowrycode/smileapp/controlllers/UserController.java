@@ -107,6 +107,28 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
         }
     }
+    @CrossOrigin(origins = "http://localhost:3000/")
+    @GetMapping("/get-unapproved-tribemessages")
+    public ResponseEntity<List<MyTribeMessageDTO>> getUnApprovedTribeMessages(HttpServletRequest request){
+        List<MyTribeMessageDTO> messages = myTribeMessageService.getUnapprovedTribeMessage();
+        if(messages != null){
+            return new ResponseEntity<>(messages, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000/")
+    @GetMapping("/approved-message")
+    public ResponseEntity<Boolean> approvedTribeMessage(HttpServletRequest request){
+        Long messagID = authService.getIdentifierLong(request);
+        boolean response = myTribeMessageService.approveTribeMessage(messagID);
+        if(response){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
 
     @GetMapping("/get-read-tribemessages")
     public ResponseEntity<UnreadTribeMessagesDTO> getReadTribeMessages(HttpServletRequest request){

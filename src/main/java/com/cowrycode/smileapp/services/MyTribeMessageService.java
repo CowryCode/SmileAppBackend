@@ -8,4 +8,7 @@ public interface MyTribeMessageService {
     MyTribeMessageDTO saveTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifier);
     List<MyTribeMessageDTO> getTribeMessage(String userIdentifier,  boolean isread);
     List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifier);
+    List<MyTribeMessageDTO> getUnapprovedTribeMessage();
+
+    boolean approveTribeMessage(Long messageID);
 }

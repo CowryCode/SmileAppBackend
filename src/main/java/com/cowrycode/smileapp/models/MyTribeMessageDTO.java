@@ -13,4 +13,5 @@ public class MyTribeMessageDTO {
     private String content;
     private String sourceCountry;
     private boolean isread;
+    private boolean isapproved;
 }
