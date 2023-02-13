@@ -1,9 +1,11 @@
 package com.cowrycode.smileapp.services;
 
 import com.cowrycode.smileapp.domains.MyTribeMessageEntity;
+import com.cowrycode.smileapp.domains.UserProfileEntity;
 import com.cowrycode.smileapp.mapper.MyTribeMessageMapper;
 import com.cowrycode.smileapp.models.MyTribeMessageDTO;
 import com.cowrycode.smileapp.repositories.MyTribeMessageRepo;
+import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +14,13 @@ import java.util.stream.Collectors;
 @Service
 public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     private final MyTribeMessageRepo myTribeMessageRepo;
+    private final UserProfileRepo userProfileRepo;
 
     private MyTribeMessageMapper myTribeMessageMapper = MyTribeMessageMapper.INSTANCE;
 
-
-    public MyTribeMessageServiceImpl(MyTribeMessageRepo myTribeMessageRepo) {
+    public MyTribeMessageServiceImpl(MyTribeMessageRepo myTribeMessageRepo, UserProfileRepo userProfileRepo) {
         this.myTribeMessageRepo = myTribeMessageRepo;
+        this.userProfileRepo = userProfileRepo;
     }
 
     @Override
@@ -33,7 +36,10 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     @Override
     public List<MyTribeMessageDTO> getTribeMessage(String userIdentifier,  boolean isread) {
         try {
-            List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userIdentifier,isread);
+           // List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userIdentifier,isread);
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userIdentifier, userIdentifier);
+            if(userProfileEntity == null) return null;
+            List<MyTribeMessageEntity> messages = myTribeMessageRepo.findMyTribeMessageEntitiesByReceiverIDOrReceiverIDAndIsreadFalse(userProfileEntity.getIdentifier(), userProfileEntity.getName());
             return  messages.stream().map(myTribeMessageMapper::EntityToDTO)
                     .collect(Collectors.toList());
         }catch (Exception e){

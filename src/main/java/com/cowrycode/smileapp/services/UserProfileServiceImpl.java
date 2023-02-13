@@ -61,29 +61,34 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDTO saveUserprofile(UserProfileDTO userProfileDTO) {
         try {
-           // UserProfileEntity savedProfile = userProfileRepo.findByidentifier(userProfileDTO.getIdentifier());
-            UserProfileEntity savedProfile = userProfileRepo.findByIdentifierOrName(userProfileDTO.getIdentifier(),userProfileDTO.getIdentifier());
-            if(savedProfile == null){
-                savedProfile = userProfileRepo.save(userProfileMapper.DTOtoEntity(userProfileDTO));
+            // UserProfileEntity savedProfile = userProfileRepo.findByidentifier(userProfileDTO.getIdentifier());
+            UserProfileEntity savedProfile = userProfileRepo.findByIdentifierOrName(userProfileDTO.getIdentifier(), userProfileDTO.getIdentifier());
+            if (savedProfile == null) {
+               // userProfileDTO.setName(getNextParticipantID(userProfileDTO.getDalOpinioID()));
+                UserProfileEntity profile = new UserProfileEntity();
+                profile.setName(getNextParticipantID(userProfileDTO.getDalOpinioID()));
+                profile.setIdentifier(userProfileDTO.getIdentifier());
+                savedProfile = userProfileRepo.save(profile);
                 return userProfileMapper.EntitytoDTO(savedProfile);
-            }else {
+            } else {
                 return userProfileMapper.EntitytoDTO(savedProfile);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
     public UserProfileDTO getprofile(HttpServletRequest request) {
-        try{
+        try {
             String identifier = extractToken(request);
 
-            if(identifier != null){
+            if (identifier != null) {
                 Variables variables = new Variables();
 
-               // UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
+                // UserProfileEntity profile = userProfileRepo.findByidentifier(identifier);
                 UserProfileEntity profile = userProfileRepo.findByIdentifierOrName(identifier, identifier);
 
                 UserProfileDTO profileDTO = userProfileMapper.EntitytoDTO(profile);
@@ -97,14 +102,14 @@ public class UserProfileServiceImpl implements UserProfileService {
                 profileDTO.setUnreadTribeMessage(unreadMessages);
                 UnreadTribeMessagesDTO readmessages = new UnreadTribeMessagesDTO(myTribeMessageService.getTribeMessage(identifier, true));
                 profileDTO.setReadTribeMessages(readmessages);
-                UnrepliedTribeCalls unrepliedTribeCalls  = new UnrepliedTribeCalls(getTribeRequests(identifier));
+                UnrepliedTribeCalls unrepliedTribeCalls = new UnrepliedTribeCalls(getTribeRequests(identifier));
                 profileDTO.setUnrepliedTribeCalls(unrepliedTribeCalls);
 
                 List<TrackerEntity> trackers = profile.getDailytrackers();
                 TrackerEntity lasttracker;
-                if(trackers != null && trackers.size() > 0){
+                if (trackers != null && trackers.size() > 0) {
                     lasttracker = trackers.get(profile.getDailytrackers().size() - 1);
-                    if(lasttracker != null && !(lasttracker.getTrackerIdentifier().equals(LocalDate.now().toString()))){
+                    if (lasttracker != null && !(lasttracker.getTrackerIdentifier().equals(LocalDate.now().toString()))) {
                         TrackerEntity trc = new TrackerEntity();
                         trc.setTrackerIdentifier(LocalDate.now().toString()); // Tracker for today
                         trc.setTargetValue(variables.SmileGramDailyTarget); // Target for today
@@ -113,7 +118,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                         profile.setDailytrackers(trackers);
                         userProfileRepo.save(profile);
                     }
-                }else {
+                } else {
                     trackers = new ArrayList<>();
                     TrackerEntity trc = new TrackerEntity();
                     trc.setTrackerIdentifier(LocalDate.now().toString()); // Tracker for today
@@ -130,39 +135,39 @@ public class UserProfileServiceImpl implements UserProfileService {
 
                 profileDTO.setTodayAccumulatedSpentTime(lasttracker.getTodayAccumulatedSpentTime());
 
-                profileDTO.setSmilegrampoints( profile.getSmilegrampoints() % 175); // I75 is number of countries in the Map array on the app, we don't want an overflow
+                profileDTO.setSmilegrampoints(profile.getSmilegrampoints() % 175); // I75 is number of countries in the Map array on the app, we don't want an overflow
 
                 return profileDTO;
-            }else {
+            } else {
                 return null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    String generateMapString(double smileGramPoints){
+    String generateMapString(double smileGramPoints) {
         if (smileGramPoints <= 0) return "0";
         int countrySize = (int) smileGramPoints % 175; // I75 is number of countries in the Map array on the app, we don't want an overflow
         String result = "0";
-        for(int x = 1; x<= countrySize; x++ ){
-            result = result + ","+x;
+        for (int x = 1; x <= countrySize; x++) {
+            result = result + "," + x;
         }
         return result;
     }
 
-    private String extractToken(HttpServletRequest request){
-        try{
-            String header = request.getHeader("Authorization" );
+    private String extractToken(HttpServletRequest request) {
+        try {
+            String header = request.getHeader("Authorization");
             String token;
-            if(header.startsWith("Bearer ")){
+            if (header.startsWith("Bearer ")) {
                 token = header.substring(7).trim();
                 return token;
-            }else {
+            } else {
                 return null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
 
@@ -171,17 +176,17 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDTO savedDeviceID(String userID, String deviceID) {
         try {
-           // UserProfileEntity profile = userProfileRepo.findByidentifier(userID);
+            // UserProfileEntity profile = userProfileRepo.findByidentifier(userID);
             UserProfileEntity profile = userProfileRepo.findByIdentifierOrName(userID, userID);
-            if(profile != null){
-               // UserProfileEntity profileEntity = profile.get();
+            if (profile != null) {
+                // UserProfileEntity profileEntity = profile.get();
                 profile.setDeviceId(deviceID);
-                UserProfileEntity updatedprofile =  userProfileRepo.save(profile);
+                UserProfileEntity updatedprofile = userProfileRepo.save(profile);
                 return userProfileMapper.EntitytoDTO(updatedprofile);
-            }else {
+            } else {
                 return null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -189,91 +194,92 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public LeaderBoard sortPerformance(String userID) {
         try {
-          // UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
-           UserProfileEntity profileDTO = userProfileRepo.findByIdentifierOrName(userID, userID);
-           if(profileDTO != null ){
-               LeaderBoard leaderBoard = new LeaderBoard();
-               List<UserProfileEntity> topUsers = userProfileRepo.getTopPerformers();
-               /*GLOBAL TOP USERS*/
-               if(topUsers != null && topUsers.size() > 0){
-                   List<GlobalProgress> globalProgresses = new ArrayList<>();
-                   double totalValue = 0;
-                   for (int i = 0; i < topUsers.size(); i++){
-                       totalValue += topUsers.get(i).getAccumulatedValue();
-                       globalProgresses.add(new GlobalProgress(topUsers.get(i).getName(),topUsers.get(i).getAccumulatedValue(), 0.0));
-                   }
+            // UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+            UserProfileEntity profileDTO = userProfileRepo.findByIdentifierOrName(userID, userID);
+            if (profileDTO != null) {
+                LeaderBoard leaderBoard = new LeaderBoard();
+                List<UserProfileEntity> topUsers = userProfileRepo.getTopPerformers();
+                /*GLOBAL TOP USERS*/
+                if (topUsers != null && topUsers.size() > 0) {
+                    List<GlobalProgress> globalProgresses = new ArrayList<>();
+                    double totalValue = 0;
+                    for (int i = 0; i < topUsers.size(); i++) {
+                        totalValue += topUsers.get(i).getAccumulatedValue();
+                        globalProgresses.add(new GlobalProgress(topUsers.get(i).getName(), topUsers.get(i).getAccumulatedValue(), 0.0));
+                    }
 
-                   for (int x = 0; x < globalProgresses.size(); x++){
-                       double av = globalProgresses.get(x).getAcumulatedValue();
-                       double globaPerc = Math.round ((av/totalValue) * 100);
-                       GlobalProgress progress = globalProgresses.get(x);
-                       progress.setGlobalpercent(globaPerc);
-                       globalProgresses.set(x, progress );
-                   }
+                    for (int x = 0; x < globalProgresses.size(); x++) {
+                        double av = globalProgresses.get(x).getAcumulatedValue();
+                        double globaPerc = Math.round((av / totalValue) * 100);
+                        GlobalProgress progress = globalProgresses.get(x);
+                        progress.setGlobalpercent(globaPerc);
+                        globalProgresses.set(x, progress);
+                    }
 
-                   /*PERSONAL PROGRESS*/
-                   List<TrackerEntity> trackers = sortTrackers(profileDTO.getDailytrackers(), profileDTO.getDateCreated().toLocalDate());
-                   ArrayList<PersonalProgress> personalProgressList = new ArrayList<>();
+                    /*PERSONAL PROGRESS*/
+                    List<TrackerEntity> trackers = sortTrackers(profileDTO.getDailytrackers(), profileDTO.getDateCreated().toLocalDate());
+                    ArrayList<PersonalProgress> personalProgressList = new ArrayList<>();
 
-                   for(int j= 0; j < trackers.size(); j++){
-                       if(trackers.get(j) == null){
-                           personalProgressList.add(null);
-                       }else {
-                         //  personalProgressList.add(new PersonalProgress(trackers.get(j).getId().intValue(), trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore()));
-                           personalProgressList.add(new PersonalProgress(j, trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore(), trackers.get(j).getTrackerIdentifier()));
-                       }
-                   }
-                   leaderBoard.setPersonalProgresses(personalProgressList);
-                   leaderBoard.setGlobalProgresses(globalProgresses);
-                   return leaderBoard;
-               }else {
-                   return null;
-               }
+                    for (int j = 0; j < trackers.size(); j++) {
+                        if (trackers.get(j) == null) {
+                            personalProgressList.add(null);
+                        } else {
+                            //  personalProgressList.add(new PersonalProgress(trackers.get(j).getId().intValue(), trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore()));
+                            personalProgressList.add(new PersonalProgress(j, trackers.get(j).getTargetValue(), trackers.get(j).getAchievedScore(), trackers.get(j).getTrackerIdentifier()));
+                        }
+                    }
+                    leaderBoard.setPersonalProgresses(personalProgressList);
+                    leaderBoard.setGlobalProgresses(globalProgresses);
+                    return leaderBoard;
+                } else {
+                    return null;
+                }
 
-           }else {
-               return null;
-           }
-        }catch (Exception e){
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-    List<TrackerEntity> sortTrackers(List<TrackerEntity> trackers, LocalDate patientTienCreationDate){
+
+    List<TrackerEntity> sortTrackers(List<TrackerEntity> trackers, LocalDate patientTienCreationDate) {
         Variables variables = new Variables();
         PriorityQueue<TrackerEntity> prioority = new PriorityQueue<>(
-                (n1,n2) -> n1.getTrackerIdentifier().compareToIgnoreCase(n2.getTrackerIdentifier())
+                (n1, n2) -> n1.getTrackerIdentifier().compareToIgnoreCase(n2.getTrackerIdentifier())
         );
 
         HashMap<String, TrackerEntity> expectedResults = new HashMap<>();
 
-        for(int i = 0; i < variables.numberofDaysStudyRuns; i++){
+        for (int i = 0; i < variables.numberofDaysStudyRuns; i++) {
             expectedResults.put(patientTienCreationDate.plusDays(i).toString(), null);
         }
 
-        for(int x = 0; x < trackers.size(); x++){
-            if(expectedResults.containsKey(trackers.get(x).getTrackerIdentifier())){
+        for (int x = 0; x < trackers.size(); x++) {
+            if (expectedResults.containsKey(trackers.get(x).getTrackerIdentifier())) {
                 expectedResults.put(trackers.get(x).getTrackerIdentifier(), trackers.get(x));
             }
         }
 
         List<TrackerEntity> result = new ArrayList<>();
 
-        for (Map.Entry<String, TrackerEntity> tracker : expectedResults.entrySet()){
-            if(tracker.getValue() != null){
-               // result.add(tracker.getValue());
+        for (Map.Entry<String, TrackerEntity> tracker : expectedResults.entrySet()) {
+            if (tracker.getValue() != null) {
+                // result.add(tracker.getValue());
                 prioority.add(tracker.getValue());
-            }else {
+            } else {
                 TrackerEntity trackerEnt = new TrackerEntity();
                 trackerEnt.setTrackerIdentifier(tracker.getKey());
                 trackerEnt.setTargetValue(variables.SmileGramDailyTarget);
                 trackerEnt.setAchievedScore(0);
                 trackerEnt.setDate(LocalDate.parse(tracker.getKey()));
-               // result.add(trackerEnt);
+                // result.add(trackerEnt);
                 prioority.add(trackerEnt);
             }
         }
 
-        while (!prioority.isEmpty()){
+        while (!prioority.isEmpty()) {
             result.add(prioority.poll());
         }
 
@@ -283,14 +289,14 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public Boolean pushNotification(String userID, String title, String message) {
         try {
-           // UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
+            // UserProfileEntity profileDTO = userProfileRepo.findByidentifier(userID);
             UserProfileEntity profileDTO = userProfileRepo.findByIdentifierOrName(userID, userID);
-            if(profileDTO != null){
+            if (profileDTO != null) {
                 return fcmSenderService.sendPushnotification(title, message, profileDTO.getDeviceId());
-            }else {
+            } else {
                 return false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -300,17 +306,17 @@ public class UserProfileServiceImpl implements UserProfileService {
     public Boolean requestEmpathicMessage(String userID, EmpathyRequestDTO message) {
         try {
             List<UserProfileEntity> profiles = userProfileRepo.getTribeMembers(userID);
-            if(profiles != null){
+            if (profiles != null) {
                 empathyRequestRepo.save(empathyEntityMapper.DTOtoEntity(message));
-                for(int i = 0; i < profiles.size(); i++){
+                for (int i = 0; i < profiles.size(); i++) {
                     fcmSenderService.sendPushnotification("Tribe Call", "Someone needs your empathy, please show love", profiles.get(i).getDeviceId());
                 }
                 return true;
-            }else {
+            } else {
                 return false;
             }
-        }catch (Exception e){
-          //  e.printStackTrace();
+        } catch (Exception e) {
+            //  e.printStackTrace();
             return false;
         }
     }
@@ -321,7 +327,7 @@ public class UserProfileServiceImpl implements UserProfileService {
          * RecieverID is the ID of the euser that sent this empathic message */
         try {
             EmpathyRequestEntity empathyRequestEntity = empathyRequestRepo.getReferenceById(message.getId());
-            if(empathyRequestEntity != null){
+            if (empathyRequestEntity != null) {
                 empathyRequestEntity.setRespondedUsersIDs(empathyRequestEntity.getRespondedUsersIDs() + "," + message.getReceiverID());
 
                 MyTribeMessageDTO myTribeMessageDTO = new MyTribeMessageDTO();
@@ -334,38 +340,40 @@ public class UserProfileServiceImpl implements UserProfileService {
                 myTribeMessageService.saveTribeMessage(myTribeMessageDTO, message.getSenderID());
                 notifyUser(message.getSenderID());
                 return getTribeRequests(userID);
-            }else {
+            } else {
                 return getTribeRequests(userID);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private void notifyUser(String userID){
-        try{
-           // UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+    private void notifyUser(String userID) {
+        try {
             UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
-            if(userProfileEntity != null && userProfileEntity.getDeviceId() != null)  fcmSenderService.sendPushnotification("I Care", "I sent you an empathic note, check the SmileApp", userProfileEntity.getDeviceId());
-        }catch (Exception e){
+            if (userProfileEntity != null && userProfileEntity.getDeviceId() != null)
+                fcmSenderService.sendPushnotification("I Care", "I sent you an empathic note, check the SmileApp", userProfileEntity.getDeviceId());
+        } catch (Exception e) {
 
         }
-   }
+    }
 
     @Override
     public List<EmpathyRequestDTO> getTribeRequests(String userID) {
         try {
-            List<EmpathyRequestEntity> requests = empathyRequestRepo.getUnrespondedMessages(userID);
-            if(requests != null){
-              // return requests.stream().map(empathyRequestMapper::entityToDTO).collect(Collectors.toList());
+           // List<EmpathyRequestEntity> requests = empathyRequestRepo.getUnrespondedMessages(userID);
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
+            if(userProfileEntity == null) return null;
+            List<EmpathyRequestEntity> requests = empathyRequestRepo.findEmpathyRequestEntitiesBySenderIDIsNotIgnoreCaseAndSenderIDIsNotIgnoreCase(userProfileEntity.getIdentifier(), userProfileEntity.getName());
+            if (requests != null) {
                 List<EmpathyRequestDTO> requestDTOs = requests.stream().map(empathyRequestMapper::entityToDTO).collect(Collectors.toList());
                 Collections.shuffle(requestDTOs);
                 return requestDTOs;
-            }else {
+            } else {
                 return null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             // e.printStackTrace();
             return null;
         }
@@ -374,17 +382,17 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public ChatObjectModel sendChat(String userID, String chat) {
         try {
-           // UserProfileEntity profileEntity = userProfileRepo.findByidentifier(userID);
+            // UserProfileEntity profileEntity = userProfileRepo.findByidentifier(userID);
             UserProfileEntity profileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
             List<List<Integer>> arr = new ArrayList<>();
             ChatObjectModel chatObjectModel = new ChatObjectModel();
 
-             List<List<Integer>> tokenArray =  converStringToInteger(profileEntity.getChathistory());
-             if(tokenArray == null){
-                 chatObjectModel.setChatHistory(new ArrayList<>());
-             }else {
-                 chatObjectModel.setChatHistory(tokenArray);
-             }
+            List<List<Integer>> tokenArray = converStringToInteger(profileEntity.getChathistory());
+            if (tokenArray == null) {
+                chatObjectModel.setChatHistory(new ArrayList<>());
+            } else {
+                chatObjectModel.setChatHistory(tokenArray);
+            }
             chatObjectModel.setChatContent(chat);
 
 
@@ -393,31 +401,31 @@ public class UserProfileServiceImpl implements UserProfileService {
             profileEntity.setChathistory(tokenArrayToString(botFeedback.getChatHistory()));
             userProfileRepo.save(profileEntity);
 
-            return  botFeedback;
-        }catch (Exception e){
+            return botFeedback;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    List<List<Integer>> converStringToInteger(String history){
-        if(history == null ) return null;
+    List<List<Integer>> converStringToInteger(String history) {
+        if (history == null) return null;
 
-          String[] chatHistoryArry = history.split("TTT");
+        String[] chatHistoryArry = history.split("TTT");
 
         List<Integer> comments = new ArrayList<>();
         List<List<Integer>> historyArr = new ArrayList<>();
 
-        for (int x = 0; x < chatHistoryArry.length; x++){
+        for (int x = 0; x < chatHistoryArry.length; x++) {
             String[] commentToken = chatHistoryArry[x].split(",");
-            for(int y = 0; y < commentToken.length ; y++){
+            for (int y = 0; y < commentToken.length; y++) {
                 Integer value;
                 try {
                     value = Integer.valueOf(commentToken[y]);
-                    if(value != null){
+                    if (value != null) {
                         comments.add(value);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     continue;
                 }
@@ -425,18 +433,18 @@ public class UserProfileServiceImpl implements UserProfileService {
             historyArr.add(comments);
             comments = new ArrayList<>();// RE-initialize
         }
-     return historyArr;
+        return historyArr;
     }
 
-    private String tokenArrayToString(List<List<Integer>> sampleTokenArray){
-        if(sampleTokenArray == null ) return null;
+    private String tokenArrayToString(List<List<Integer>> sampleTokenArray) {
+        if (sampleTokenArray == null) return null;
 
         String chatHistory = "";
         String commentTokens = "";
 
-        for(int x = 0; x < sampleTokenArray.size(); x++){
+        for (int x = 0; x < sampleTokenArray.size(); x++) {
             List<Integer> comments = sampleTokenArray.get(x);
-            for(int y = 0; y < comments.size(); y++){
+            for (int y = 0; y < comments.size(); y++) {
                 commentTokens = commentTokens + comments.get(y) + ",";
             }
             chatHistory = chatHistory + commentTokens + "TTT";
@@ -446,15 +454,13 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
 
-
     @Override
     public QuestionnaireBMIScaleDTO saveBMIScale(String userID, QuestionnaireBMIScaleDTO questionnaireBMIScaleDTO) {
-        try{
-           // UserProfileEntity userProfileEntity = userProfileRepo.findByidentifier(userID);
+        try {
             UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
-            if(userProfileEntity != null){
+            if (userProfileEntity != null) {
                 List<QuestionnaireBMIScaleEntity> BMIScales = userProfileEntity.getDailyquestionnaires();
-                if(BMIScales == null){
+                if (BMIScales == null) {
                     BMIScales = new ArrayList<>();
                 }
                 QuestionnaireBMIScaleEntity savedBMIScale = questionnaireBMIScaleRepo.save(questionnaireBMIScaleMapper.dtoToEntity(questionnaireBMIScaleDTO));
@@ -464,29 +470,29 @@ public class UserProfileServiceImpl implements UserProfileService {
                 Long trackerID = findTrackerID(userProfileEntity, savedBMIScale.getDateCreated().toLocalDate().toString());
                 TrackerEntity tracker = trackerRepo.findById(trackerID).orElse(null);
 
-                if(tracker != null){
+                if (tracker != null) {
                     tracker.setSubmittedDailyQuestionnaire(true);
                 }
 
                 trackerRepo.save(tracker);
                 userProfileRepo.save(userProfileEntity);
                 return questionnaireBMIScaleMapper.entityToDTO(savedBMIScale);
-            }else {
+            } else {
                 return null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    Long findTrackerID(UserProfileEntity userProfile, String identifier){
+    Long findTrackerID(UserProfileEntity userProfile, String identifier) {
 
         List<TrackerEntity> trackerEntityList = userProfile.getDailytrackers();
-        if(trackerEntityList == null || trackerEntityList.size() < 1) return 0L;
+        if (trackerEntityList == null || trackerEntityList.size() < 1) return 0L;
         Long result = 0L;
-        for (int x = 0; x < trackerEntityList.size(); x++){
-            if(trackerEntityList.get(x).getTrackerIdentifier().equals(identifier))
+        for (int x = 0; x < trackerEntityList.size(); x++) {
+            if (trackerEntityList.get(x).getTrackerIdentifier().equals(identifier))
                 result = trackerEntityList.get(x).getId();
         }
         return result;
@@ -494,39 +500,67 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public List<UserProfileDTO> getALlUsers(String user) {
-        try{
-            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(user,user);
-            if(userProfileEntity == null) return null;
-            List<UserProfileEntity> users = userProfileRepo.findAllByDeviceIdIsNotNull();
+        try {
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(user, user);
+            if (userProfileEntity == null) return null;
+            //  List<UserProfileEntity> users = userProfileRepo.findAllByDeviceIdIsNotNull();
+            List<UserProfileEntity> users = userProfileRepo.findAll();
+            return users.stream().map(userProfileMapper::EntitytoDTO).collect(Collectors.toList());
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-            return  users.stream().map(userProfileMapper::EntitytoDTO).collect(Collectors.toList());
-        }catch (Exception e){
+    @Override
+    public List<UserProfileDTO> getAllAppDownloadedUsers(String user) {
+        try {
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(user, user);
+            if (userProfileEntity == null) return null;
+            List<UserProfileEntity> users = userProfileRepo.findAllByDeviceIdIsNotNull();
+            return users.stream().map(userProfileMapper::EntitytoDTO).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<UserProfileDTO> getALlUsersNotDownloadedApp(String user) {
+        try {
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(user, user);
+            if (userProfileEntity == null) return null;
+            List<UserProfileEntity> users = userProfileRepo.findAllByDeviceIdIsNull();
+            return users.stream().map(userProfileMapper::EntitytoDTO).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
     public String getNextParticipantID(Long opinioID) {
-        try{
+        try {
             List<UserProfileEntity> participants = userProfileRepo.findAll();
-            if(participants.size() > 0 ){
-               return getLastParticipantID(participants) + "D" + opinioID; // D stands for DaL, to prefix Opinio ID
-            }else {
-                return null;
+            System.out.println(" Number of Users : " + participants.size());
+            if (participants.size() > 0) {
+                return getLastParticipantID(participants) + "D" + opinioID; // D stands for DaL, to prefix Opinio ID
+            } else {
+                return "S1" + "D" + opinioID;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
-    String getLastParticipantID(List<UserProfileEntity> participants){
+    String getLastParticipantID(List<UserProfileEntity> participants) {
         PriorityQueue<UserProfileEntity> pq = new PriorityQueue<>(
-                (n1,n2) -> Integer.valueOf(n2.getId().toString()) - Integer.valueOf(n1.getId().toString())
+                (n1, n2) -> Integer.valueOf(n2.getId().toString()) - Integer.valueOf(n1.getId().toString())
         );
         pq.addAll(participants);
 
         UserProfileEntity lastParticipant = pq.poll();
-        if(lastParticipant.getId() == null ) return null;
+        if (lastParticipant.getId() == null) return null;
 
         return "S" + (lastParticipant.getId() + 1); // S stands for SmileApp, to prefix SmileApp ID
 

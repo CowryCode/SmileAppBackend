@@ -24,6 +24,7 @@ public class TrackerEntity extends BaseEntity  {
     int achievedScore;
     boolean submittedDailyQuestionnaire;
     double todayAccumulatedSpentTime;
+    double todayAccumulatedSmileDuration;
 
     @OneToMany
     List<SmileGramMoodEntity> smilegramlist;

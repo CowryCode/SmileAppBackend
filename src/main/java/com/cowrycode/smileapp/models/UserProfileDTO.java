@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -40,6 +41,8 @@ public class UserProfileDTO {
     List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
     String chathistory;
 
+    Long dalOpinioID;
+
     double accumulatedTimeSpentOnApp;
 
     private boolean submittedBMI;
@@ -49,6 +52,7 @@ public class UserProfileDTO {
     UnreadTribeMessagesDTO readTribeMessages;
     UnrepliedTribeCalls unrepliedTribeCalls;
 
+    private LocalDateTime dateCreated;
 
     private boolean voided;
 }

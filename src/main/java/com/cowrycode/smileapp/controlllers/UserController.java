@@ -41,6 +41,7 @@ public class UserController {
         this.apiCallService = apiCallService;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000/")
     @PostMapping("/create-user")
     public ResponseEntity<UserProfileDTO> createUser(@RequestBody @Validated UserProfileDTO userProfileDTO , HttpServletRequest request){
         try{
@@ -232,7 +233,31 @@ public class UserController {
         }
 
     }
+    @CrossOrigin(origins = "http://localhost:3000/")
+    @GetMapping("/get-all-appdownloaded-users")
+    public ResponseEntity<List<UserProfileDTO>> getAllAppDownloadedUsers(HttpServletRequest request){
+        List<UserProfileDTO> users = userProfileService.getAllAppDownloadedUsers(authService.getIdentifier(request));
+        if(users != null){
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(users, HttpStatus.NOT_IMPLEMENTED);
+        }
 
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000/")
+    @GetMapping("/get-all-app-not-downloaded-users")
+    public ResponseEntity<List<UserProfileDTO>> getAllAppNotDownloadedUsers(HttpServletRequest request){
+        List<UserProfileDTO> users = userProfileService.getALlUsersNotDownloadedApp(authService.getIdentifier(request));
+        if(users != null){
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(users, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000/")
     @GetMapping("/get-all-users")
     public ResponseEntity<List<UserProfileDTO>> getAllUsers(HttpServletRequest request){
         List<UserProfileDTO> users = userProfileService.getALlUsers(authService.getIdentifier(request));
@@ -244,6 +269,7 @@ public class UserController {
 
     }
 
+    @CrossOrigin(origins = "http://localhost:3000/")
     @GetMapping("/get-next-participantID/{opinoID}")
     public ResponseEntity<String> getNextParticipantID(@PathVariable Long opinoID, HttpServletRequest request){
         String pID = userProfileService.getNextParticipantID(opinoID);

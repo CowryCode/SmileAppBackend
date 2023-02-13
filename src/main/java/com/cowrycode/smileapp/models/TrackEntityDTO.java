@@ -23,6 +23,7 @@ public class TrackEntityDTO {
     int achievedScore; // This is number of country user have painted green per day
     boolean submittedDailyQuestionnaire;
     double todayAccumulatedSpentTime;
+    double todayAccumulatedSmileDuration;
 
     @JsonIgnore
     List<SmileGramMoodEntity> smilegramlist;
@@ -30,5 +31,4 @@ public class TrackEntityDTO {
     List<PocketBuddyMoodEntity> pocketbuddylist;
     @JsonIgnore
     List<TribeMoodEntity> myTribeList;
-
 }

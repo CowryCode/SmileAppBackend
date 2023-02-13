@@ -34,7 +34,11 @@ public class UserProfileEntity extends BaseEntity {
 
     @OneToMany
     List<QuestionnaireBMIScaleEntity> dailyquestionnaires;
+
     String chathistory;
+
+    @Transient
+    Long dalOpinioID;
 
     double accumulatedTimeSpentOnApp;
 

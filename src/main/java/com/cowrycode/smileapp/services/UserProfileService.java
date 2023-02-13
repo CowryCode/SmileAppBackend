@@ -22,6 +22,8 @@ public interface UserProfileService  {
     ChatObjectModel sendChat(String userID, String chat);
 
     List<UserProfileDTO> getALlUsers(String user);
+    List<UserProfileDTO> getALlUsersNotDownloadedApp(String user);
+    List<UserProfileDTO> getAllAppDownloadedUsers(String user);
 
     String getNextParticipantID(Long opinioID);
 

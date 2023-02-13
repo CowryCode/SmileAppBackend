@@ -9,5 +9,6 @@ public interface UserProfileRepo extends JpaRepository<UserProfileEntity, Long>,
     UserProfileEntity findByIdentifierOrName(String identifier, String name);
 
     List<UserProfileEntity> findAllByDeviceIdIsNotNull();
+    List<UserProfileEntity> findAllByDeviceIdIsNull();
     UserProfileEntity findByphonenumber(String phonenumber);
 }

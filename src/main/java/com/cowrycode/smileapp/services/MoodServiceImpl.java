@@ -61,12 +61,17 @@ public class MoodServiceImpl implements MoodService {
                    TrackerEntity newtrackerEntity = new TrackerEntity();
                    newtrackerEntity.setTrackerIdentifier(smileGramMoodDTO.getEndDate().toString());
                    newtrackerEntity.setTodayAccumulatedSpentTime(smileGramMoodDTO.getTimeSpentSec());
+                   newtrackerEntity.setTodayAccumulatedSmileDuration(smileGramMoodDTO.getSmileduration());
+
                    tracker =  trackerRepo.save(newtrackerEntity);
                    tracker.setAchievedScore(smileGramMoodDTO.getCountrycount());
                    grams = new ArrayList<>();
                }else {
                    double ttspent = tracker.getTodayAccumulatedSpentTime();
                    tracker.setTodayAccumulatedSpentTime(ttspent + smileGramMoodDTO.getTimeSpentSec());
+
+                   double ttsmileduration = tracker.getTodayAccumulatedSmileDuration();
+                   tracker.setTodayAccumulatedSmileDuration(ttsmileduration + smileGramMoodDTO.getSmileduration());
 
                    grams = tracker.getSmilegramlist();
                    if(grams == null){
@@ -232,12 +237,17 @@ public class MoodServiceImpl implements MoodService {
                     TrackerEntity newtrackerEntity = new TrackerEntity();
                     newtrackerEntity.setTrackerIdentifier(tribeMoodDTO.getEndDate().toString());
                     newtrackerEntity.setTodayAccumulatedSpentTime(tribeMoodDTO.getTimeSpentSec());
+                    newtrackerEntity.setTodayAccumulatedSmileDuration(tribeMoodDTO.getSmileduration());
                     // tracker =  trackerRepo.save(new TrackerEntity());
                     tracker =  trackerRepo.save(newtrackerEntity);
                     tribemoods = new ArrayList<>();
                 }else {
                     double ttspent = tracker.getTodayAccumulatedSpentTime();
                     tracker.setTodayAccumulatedSpentTime(ttspent + tribeMoodDTO.getTimeSpentSec());
+
+                    double ttsmileduration = tracker.getTodayAccumulatedSmileDuration();
+                    tracker.setTodayAccumulatedSmileDuration(ttsmileduration + tribeMoodDTO.getSmileduration());
+
                     tribemoods = tracker.getMyTribeList();
                     if(tribemoods == null){
                         tribemoods = new ArrayList<>();
