@@ -16,11 +16,20 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     private final MyTribeMessageRepo myTribeMessageRepo;
     private final UserProfileRepo userProfileRepo;
 
+    private final FCMSenderService fcmSenderService;
+
     private MyTribeMessageMapper myTribeMessageMapper = MyTribeMessageMapper.INSTANCE;
 
-    public MyTribeMessageServiceImpl(MyTribeMessageRepo myTribeMessageRepo, UserProfileRepo userProfileRepo) {
+//    public MyTribeMessageServiceImpl(MyTribeMessageRepo myTribeMessageRepo, UserProfileRepo userProfileRepo) {
+//        this.myTribeMessageRepo = myTribeMessageRepo;
+//        this.userProfileRepo = userProfileRepo;
+//    }
+
+
+    public MyTribeMessageServiceImpl(MyTribeMessageRepo myTribeMessageRepo, UserProfileRepo userProfileRepo, FCMSenderService fcmSenderService) {
         this.myTribeMessageRepo = myTribeMessageRepo;
         this.userProfileRepo = userProfileRepo;
+        this.fcmSenderService = fcmSenderService;
     }
 
     @Override
@@ -39,7 +48,7 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
            // List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userIdentifier,isread);
             UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userIdentifier, userIdentifier);
             if(userProfileEntity == null) return null;
-            List<MyTribeMessageEntity> messages = myTribeMessageRepo.findMyTribeMessageEntitiesByReceiverIDOrReceiverIDAndIsreadFalse(userProfileEntity.getIdentifier(), userProfileEntity.getName());
+            List<MyTribeMessageEntity> messages = myTribeMessageRepo.findMyTribeMessageEntitiesByReceiverIDOrReceiverIDAndIsapprovedTrue(userProfileEntity.getIdentifier(), userProfileEntity.getName());
             return  messages.stream().map(myTribeMessageMapper::EntityToDTO)
                     .collect(Collectors.toList());
         }catch (Exception e){
@@ -59,15 +68,36 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
     }
 
     @Override
-    public boolean approveTribeMessage(Long messageID) {
+    public List<MyTribeMessageDTO> approveTribeMessage(Long messageID, String recieverID) {
         try {
             MyTribeMessageEntity message = myTribeMessageRepo.findById(messageID).orElse(null);
-            if(message == null ) return false;
+            if(message == null ) return null;
             message.setIsapproved(true);
             myTribeMessageRepo.save(message);
-            return  true;
+            notifyUser(recieverID);
+            return  getUnapprovedTribeMessage() ;
         }catch (Exception e){
-            return false;
+            return null;
+        }
+    }
+
+    private void notifyUser(String userID) {
+        try {
+            UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
+            if (userProfileEntity != null && userProfileEntity.getDeviceId() != null)
+                fcmSenderService.sendPushnotification("I Care", "I sent you an empathic note, check the SmileApp", userProfileEntity.getDeviceId());
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Override
+    public List<MyTribeMessageDTO>  deleteTribeMessage(Long messageID) {
+        try {
+            myTribeMessageRepo.deleteById(messageID);
+            return  getUnapprovedTribeMessage();
+        }catch (Exception e){
+            return null;
         }
     }
 

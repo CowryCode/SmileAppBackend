@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MyTribeMessageRepo extends JpaRepository<MyTribeMessageEntity, Long>, MyTribeMessageRepoCustom {
     List<MyTribeMessageEntity> findMyTribeMessageEntitiesByReceiverIDOrReceiverIDAndIsreadFalse(String userIdentifier,String name);
-
+    List<MyTribeMessageEntity> findMyTribeMessageEntitiesByReceiverIDOrReceiverIDAndIsapprovedTrue(String userIdentifier,String name);
     List<MyTribeMessageEntity> findMyTribeMessageEntitiesByIsapprovedFalseAndIsreadFalse();
 }

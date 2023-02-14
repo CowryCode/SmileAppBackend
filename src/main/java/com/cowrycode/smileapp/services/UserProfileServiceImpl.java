@@ -338,7 +338,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
                 empathyRequestRepo.save(empathyRequestEntity);
                 myTribeMessageService.saveTribeMessage(myTribeMessageDTO, message.getSenderID());
-                notifyUser(message.getSenderID());
+               // notifyUser(message.getSenderID());
                 return getTribeRequests(userID);
             } else {
                 return getTribeRequests(userID);
@@ -541,7 +541,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     public String getNextParticipantID(Long opinioID) {
         try {
             List<UserProfileEntity> participants = userProfileRepo.findAll();
-            System.out.println(" Number of Users : " + participants.size());
             if (participants.size() > 0) {
                 return getLastParticipantID(participants) + "D" + opinioID; // D stands for DaL, to prefix Opinio ID
             } else {

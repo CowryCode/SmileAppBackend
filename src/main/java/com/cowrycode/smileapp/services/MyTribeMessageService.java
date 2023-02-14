@@ -10,5 +10,7 @@ public interface MyTribeMessageService {
     List<MyTribeMessageDTO> readTribeMessage(MyTribeMessageDTO myTribeMessageDTO, String userIdentifier);
     List<MyTribeMessageDTO> getUnapprovedTribeMessage();
 
-    boolean approveTribeMessage(Long messageID);
+    List<MyTribeMessageDTO> approveTribeMessage(Long messageID, String recieverID);
+
+    List<MyTribeMessageDTO>  deleteTribeMessage(Long messageID);
 }

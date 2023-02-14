@@ -119,11 +119,23 @@ public class UserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000/")
-    @GetMapping("/approved-message")
-    public ResponseEntity<Boolean> approvedTribeMessage(HttpServletRequest request){
+    @PostMapping("/approved-message")
+    public ResponseEntity<List<MyTribeMessageDTO>> approvedTribeMessage(@RequestBody @Validated  MyTribeMessageDTO message, HttpServletRequest request){
         Long messagID = authService.getIdentifierLong(request);
-        boolean response = myTribeMessageService.approveTribeMessage(messagID);
-        if(response){
+        List<MyTribeMessageDTO> response = myTribeMessageService.approveTribeMessage(message.getId(), message.getReceiverID());
+        if(response != null){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000/")
+    @GetMapping("/delete-message")
+    public ResponseEntity<List<MyTribeMessageDTO>> deleteTribeMessage(HttpServletRequest request){
+        Long messagID = authService.getIdentifierLong(request);
+        List<MyTribeMessageDTO> response = myTribeMessageService.deleteTribeMessage(messagID);
+        if(response != null){
             return new ResponseEntity<>(response, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(response, HttpStatus.NOT_IMPLEMENTED);
