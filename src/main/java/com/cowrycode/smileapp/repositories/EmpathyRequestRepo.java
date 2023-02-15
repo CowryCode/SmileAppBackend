@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface EmpathyRequestRepo extends JpaRepository<EmpathyRequestEntity, Long> , EmpathyRequestRepoCustom{
     List<EmpathyRequestEntity> findEmpathyRequestEntitiesBySenderIDIsNotIgnoreCaseAndSenderIDIsNotIgnoreCase(String identifier, String name);
+
 }

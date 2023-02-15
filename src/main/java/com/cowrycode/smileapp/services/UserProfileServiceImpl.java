@@ -362,10 +362,13 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public List<EmpathyRequestDTO> getTribeRequests(String userID) {
         try {
+
            // List<EmpathyRequestEntity> requests = empathyRequestRepo.getUnrespondedMessages(userID);
             UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userID, userID);
             if(userProfileEntity == null) return null;
-            List<EmpathyRequestEntity> requests = empathyRequestRepo.findEmpathyRequestEntitiesBySenderIDIsNotIgnoreCaseAndSenderIDIsNotIgnoreCase(userProfileEntity.getIdentifier(), userProfileEntity.getName());
+            // List<EmpathyRequestEntity> requests = empathyRequestRepo.findEmpathyRequestEntitiesBySenderIDIsNotIgnoreCaseAndSenderIDIsNotIgnoreCase(userProfileEntity.getIdentifier(), userProfileEntity.getName());
+            List<EmpathyRequestEntity> requests = empathyRequestRepo.getUnrespondedMessages(userProfileEntity.getName(), userProfileEntity.getIdentifier());
+
             if (requests != null) {
                 List<EmpathyRequestDTO> requestDTOs = requests.stream().map(empathyRequestMapper::entityToDTO).collect(Collectors.toList());
                 Collections.shuffle(requestDTOs);

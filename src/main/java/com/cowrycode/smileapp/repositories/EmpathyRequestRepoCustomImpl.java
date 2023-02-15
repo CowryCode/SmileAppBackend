@@ -14,7 +14,7 @@ public class EmpathyRequestRepoCustomImpl implements EmpathyRequestRepoCustom {
     CriteriaBuilder cb;
 
     @Override
-    public List<EmpathyRequestEntity> getUnrespondedMessages(String userID) {
+    public List<EmpathyRequestEntity> getUnrespondedMessages(String userID, String usernaame) {
         try {
             cb = entityManager.getCriteriaBuilder();
 
@@ -30,7 +30,11 @@ public class EmpathyRequestRepoCustomImpl implements EmpathyRequestRepoCustom {
            // Predicate useridPredicate = cb.like(users, "%" + userID + "%" );
             Predicate useridPredicate = cb.notLike(users, "%" + userID + "%" );
             Predicate sendersPredicate = cb.notEqual(senders,  userID );
-            select.where(useridPredicate, sendersPredicate);
+
+            Predicate userNamePredicate = cb.notLike(users, "%" + usernaame + "%" );
+            Predicate sendersNamePredicate = cb.notEqual(senders,  usernaame );
+
+            select.where(useridPredicate, sendersPredicate, userNamePredicate, sendersNamePredicate);
             //TODO: IMPLEMENT PAGINATION
             return entityManager.createQuery(query).setMaxResults(10).getResultList();
         } catch (Exception e) {
