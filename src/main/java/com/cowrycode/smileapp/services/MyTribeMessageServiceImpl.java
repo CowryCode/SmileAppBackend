@@ -48,7 +48,8 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
            // List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userIdentifier,isread);
             UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(userIdentifier, userIdentifier);
             if(userProfileEntity == null) return null;
-            List<MyTribeMessageEntity> messages = myTribeMessageRepo.findMyTribeMessageEntitiesByReceiverIDOrReceiverIDAndIsapprovedTrue(userProfileEntity.getIdentifier(), userProfileEntity.getName());
+            //List<MyTribeMessageEntity> messages = myTribeMessageRepo.findMyTribeMessageEntitiesByReceiverIDOrReceiverIDAndIsapprovedTrue(userProfileEntity.getIdentifier(), userProfileEntity.getName());
+            List<MyTribeMessageEntity> messages = myTribeMessageRepo.getUnreadSmilePacks(userProfileEntity.getIdentifier(), userProfileEntity.getName(),isread);
             return  messages.stream().map(myTribeMessageMapper::EntityToDTO)
                     .collect(Collectors.toList());
         }catch (Exception e){
@@ -97,6 +98,7 @@ public class MyTribeMessageServiceImpl implements MyTribeMessageService {
             myTribeMessageRepo.deleteById(messageID);
             return  getUnapprovedTribeMessage();
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }

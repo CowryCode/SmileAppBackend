@@ -134,6 +134,7 @@ public class UserController {
     @GetMapping("/delete-message")
     public ResponseEntity<List<MyTribeMessageDTO>> deleteTribeMessage(HttpServletRequest request){
         Long messagID = authService.getIdentifierLong(request);
+        System.out.println("Message ID is " + messagID);
         List<MyTribeMessageDTO> response = myTribeMessageService.deleteTribeMessage(messagID);
         if(response != null){
             return new ResponseEntity<>(response, HttpStatus.OK);

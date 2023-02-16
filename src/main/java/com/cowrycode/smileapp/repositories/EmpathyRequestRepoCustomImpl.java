@@ -5,6 +5,9 @@ import com.cowrycode.smileapp.domains.EmpathyRequestEntity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class EmpathyRequestRepoCustomImpl implements EmpathyRequestRepoCustom {
@@ -27,14 +30,20 @@ public class EmpathyRequestRepoCustomImpl implements EmpathyRequestRepoCustom {
             Path<String> senders = empathyrequest.get("senderID");
 
 
-           // Predicate useridPredicate = cb.like(users, "%" + userID + "%" );
+            Path<LocalDateTime> date_created = empathyrequest.get("dateCreated");
+
+            LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+            LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
+
+            Predicate dateDD = cb.between(date_created, start, end);
+
             Predicate useridPredicate = cb.notLike(users, "%" + userID + "%" );
             Predicate sendersPredicate = cb.notEqual(senders,  userID );
 
             Predicate userNamePredicate = cb.notLike(users, "%" + usernaame + "%" );
             Predicate sendersNamePredicate = cb.notEqual(senders,  usernaame );
 
-            select.where(useridPredicate, sendersPredicate, userNamePredicate, sendersNamePredicate);
+            select.where(useridPredicate, sendersPredicate, userNamePredicate, sendersNamePredicate, dateDD);
             //TODO: IMPLEMENT PAGINATION
             return entityManager.createQuery(query).setMaxResults(10).getResultList();
         } catch (Exception e) {

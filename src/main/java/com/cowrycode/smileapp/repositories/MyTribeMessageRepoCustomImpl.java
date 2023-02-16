@@ -15,7 +15,7 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
 
 
     @Override
-    public List<MyTribeMessageEntity> getUnreadSmilePacks(String userID,  boolean isread) {
+    public List<MyTribeMessageEntity> getUnreadSmilePacks(String userID, String userName,  boolean isread) {
         try {
             cb = entityManager.getCriteriaBuilder();
 
@@ -25,12 +25,21 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
             CriteriaQuery<MyTribeMessageEntity> select = query.select(tribemessageroot);
 
             Path<String> user = tribemessageroot.get("receiverID");
+
             Path<String> read = tribemessageroot.get("isread");
+            Path<Boolean> isapproved = tribemessageroot.get("isapproved");
+
 
             Predicate useridPredicate = cb.equal(user, userID);
-            Predicate readPredicate = cb.equal(read, isread);
+            Predicate userNamePredicate = cb.equal(user, userName);
 
-            select.where(useridPredicate, readPredicate);
+            Predicate identifierPredicate = cb.or(useridPredicate, userNamePredicate);
+
+            Predicate readPredicate = cb.equal(read, isread);
+            Predicate approvePredicate = cb.equal(isapproved, true);
+
+           // select.where(useridPredicate, readPredicate, approvePredicate);
+            select.where(identifierPredicate, readPredicate, approvePredicate);
             //TODO: IMPLEMENT PAGINATION
             return entityManager.createQuery(query).setMaxResults(10).getResultList();
         } catch (Exception e) {

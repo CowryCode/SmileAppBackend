@@ -238,7 +238,6 @@ public class MoodServiceImpl implements MoodService {
                     newtrackerEntity.setTrackerIdentifier(tribeMoodDTO.getEndDate().toString());
                     newtrackerEntity.setTodayAccumulatedSpentTime(tribeMoodDTO.getTimeSpentSec());
                     newtrackerEntity.setTodayAccumulatedSmileDuration(tribeMoodDTO.getSmileduration());
-                    // tracker =  trackerRepo.save(new TrackerEntity());
                     tracker =  trackerRepo.save(newtrackerEntity);
                     tribemoods = new ArrayList<>();
                 }else {

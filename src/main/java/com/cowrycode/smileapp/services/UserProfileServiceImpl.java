@@ -148,13 +148,18 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     String generateMapString(double smileGramPoints) {
-        if (smileGramPoints <= 0) return "0";
-        int countrySize = (int) smileGramPoints % 175; // I75 is number of countries in the Map array on the app, we don't want an overflow
-        String result = "0";
-        for (int x = 1; x <= countrySize; x++) {
-            result = result + "," + x;
+        try{
+            if (smileGramPoints <= 0) return "0";
+            int countrySize = (int) smileGramPoints % 175; // I75 is number of countries in the Map array on the app, we don't want an overflow
+            String result = "0";
+            for (int x = 1; x <= countrySize; x++) {
+                result = result + "," + x;
+            }
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "0";
         }
-        return result;
     }
 
     private String extractToken(HttpServletRequest request) {
@@ -520,6 +525,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(user, user);
             if (userProfileEntity == null) return null;
             List<UserProfileEntity> users = userProfileRepo.findAllByDeviceIdIsNotNull();
+            Collections.reverse(users);
             return users.stream().map(userProfileMapper::EntitytoDTO).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -533,6 +539,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             UserProfileEntity userProfileEntity = userProfileRepo.findByIdentifierOrName(user, user);
             if (userProfileEntity == null) return null;
             List<UserProfileEntity> users = userProfileRepo.findAllByDeviceIdIsNull();
+            Collections.reverse(users);
             return users.stream().map(userProfileMapper::EntitytoDTO).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
