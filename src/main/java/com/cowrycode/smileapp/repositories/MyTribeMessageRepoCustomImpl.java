@@ -27,7 +27,7 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
             Path<String> user = tribemessageroot.get("receiverID");
 
             Path<String> read = tribemessageroot.get("isread");
-            Path<Boolean> isapproved = tribemessageroot.get("isapproved");
+//            Path<Boolean> isapproved = tribemessageroot.get("isapproved");
 
 
             Predicate useridPredicate = cb.equal(user, userID);
@@ -36,10 +36,10 @@ public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {
             Predicate identifierPredicate = cb.or(useridPredicate, userNamePredicate);
 
             Predicate readPredicate = cb.equal(read, isread);
-            Predicate approvePredicate = cb.equal(isapproved, true);
+//            Predicate approvePredicate = cb.equal(isapproved, true);
 
            // select.where(useridPredicate, readPredicate, approvePredicate);
-            select.where(identifierPredicate, readPredicate, approvePredicate);
+            select.where(identifierPredicate, readPredicate);
             //TODO: IMPLEMENT PAGINATION
             return entityManager.createQuery(query).setMaxResults(10).getResultList();
         } catch (Exception e) {
