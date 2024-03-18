@@ -1,10 +1,12 @@
 package com.cowrycode.smileapp.services.easyfeed;
 
 import com.cowrycode.smileapp.config.CustomException;
-import com.cowrycode.smileapp.domains.easyfeed.BreastMilkData;
+import com.cowrycode.smileapp.domains.easyfeed.*;
 import com.cowrycode.smileapp.mapper.easyfeed.BreastMilkDataMapper;
-import com.cowrycode.smileapp.models.easyfeed.BreastMilkDataDTO;
-import com.cowrycode.smileapp.repositories.easyfeed.BreastMilkDataRepo;
+import com.cowrycode.smileapp.mapper.easyfeed.JournalDataMapper;
+import com.cowrycode.smileapp.mapper.easyfeed.UserProfileMapper;
+import com.cowrycode.smileapp.models.easyfeed.*;
+import com.cowrycode.smileapp.repositories.easyfeed.*;
 import com.cowrycode.smileapp.services.easyfeed.utilities.EasyFeedUserStatus;
 import com.cowrycode.smileapp.services.easyfeed.utilities.FeedingData;
 import com.cowrycode.smileapp.services.easyfeed.utilities.FeedingRanking;
@@ -24,9 +26,31 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     //    DATE          NAME    DATA
     Map<LocalDate, Map<String, FeedingData>> feedingDataMap;
 
-    public EasyFeedServiceImpl(BreastMilkDataRepo breastMilkDataRepo) {
+    private final EasyFeedUserProfilerRepo easyFeedUserProfilerRepo;
+    private final FeedBackRepo feedBackRepo;
+    private final HeightDataRepo heightDataRepo;
+    private final JournalDataRepo journalDataRepo;
+    private final WeightDataRepo weightDataRepo;
+
+    private JournalDataMapper journalDataMapper = JournalDataMapper.INSTANCE;
+    private UserProfileMapper userProfileMapper = UserProfileMapper.INSTANCE;
+
+    public EasyFeedServiceImpl(BreastMilkDataRepo breastMilkDataRepo,
+                               EasyFeedUserProfilerRepo easyFeedUserProfilerRepo,
+                               FeedBackRepo feedBackRepo,
+                               HeightDataRepo heightDataRepo,
+                               JournalDataRepo journalDataRepo,
+                               WeightDataRepo weightDataRepo
+
+    ) {
         this.breastMilkDataRepo = breastMilkDataRepo;
         feedingDataMap = new HashMap<>();
+
+        this.easyFeedUserProfilerRepo = easyFeedUserProfilerRepo;
+        this.feedBackRepo = feedBackRepo;
+        this.heightDataRepo = heightDataRepo;
+        this.journalDataRepo = journalDataRepo;
+        this.weightDataRepo = weightDataRepo;
     }
 
     @Override
@@ -54,7 +78,6 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         }
         return organizeDataByUser(currentUserID);
     }
-
     private LeaderBoard organizeDataByUser(String userID){
         try{
             // AGGREGATE USER DATA
@@ -196,4 +219,33 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         feedingDataMap.put(datecreated, usersData);
         // NEW ENDS HERE
     }
+    @Override
+    public boolean saveHeightData(HeightDataDTO heightDataDTO) {
+        heightDataRepo.save(new HeightData(heightDataDTO.getUserID(), heightDataDTO.getHeight()));
+        return true;
+    }
+    @Override
+    public boolean saveWeigthtData(WeightDataDTO weightDataDTO) {
+        weightDataRepo.save(new WeightData(weightDataDTO.getUserID(), weightDataDTO.getWeight()));
+        return true;
+    }
+
+    @Override
+    public boolean saveFeedBack(FeedBackDTO feedBackDTO) {
+        feedBackRepo.save(new FeedBack(feedBackDTO.getUserID(),feedBackDTO.getFeedback()));
+        return true;
+    }
+    @Override
+    public boolean saveEasyFeedUserProfile(EasyFeedUserprofileDTO easyFeedUserprofileDTO) {
+        easyFeedUserProfilerRepo.save(userProfileMapper.DTOtoDAO(easyFeedUserprofileDTO));
+        return true;
+    }
+
+    @Override
+    public boolean saveJournalData(JournalDataDTO journalDataDTO) {
+        journalDataRepo.save(new JournalData(journalDataDTO.getUserID(), journalDataDTO.getJournal()));
+        return true;
+    }
+
+
 }

@@ -1,7 +1,7 @@
 package com.cowrycode.smileapp.controlllers.easyfeed;
 
 import com.cowrycode.smileapp.models.UserProfileDTO;
-import com.cowrycode.smileapp.models.easyfeed.BreastMilkDataDTO;
+import com.cowrycode.smileapp.models.easyfeed.*;
 import com.cowrycode.smileapp.services.FCMSenderService;
 import com.cowrycode.smileapp.services.easyfeed.EasyFeedService;
 import com.cowrycode.smileapp.services.easyfeed.utilities.LeaderBoard;
@@ -38,6 +38,46 @@ public class EasyFeedController {
      //  LeaderBoard result =   easyFeedService.getLeaderBoard(Long.valueOf(userID));
        LeaderBoard result =   easyFeedService.getLeaderBoard(userID);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/save-height")
+    public ResponseEntity<String> saveHeight(@RequestBody @Validated HeightDataDTO heightDataDTO){
+        easyFeedService.saveHeightData(heightDataDTO);
+        // maxVowels("abciiidef", 3);
+        return new ResponseEntity<>("Save successfully", HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/save-weight")
+    public ResponseEntity<String> saveWeight(@RequestBody @Validated WeightDataDTO weightDataDTO){
+        easyFeedService.saveWeigthtData(weightDataDTO);
+        // maxVowels("abciiidef", 3);
+        return new ResponseEntity<>("Save successfully", HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/save-feedback")
+    public ResponseEntity<String> saveFeedback(@RequestBody @Validated FeedBackDTO feedBackDTO){
+        easyFeedService.saveFeedBack(feedBackDTO);
+        // maxVowels("abciiidef", 3);
+        return new ResponseEntity<>("Save successfully", HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/save-userprofile")
+    public ResponseEntity<String> saveEasyFeedUserProfile(@RequestBody @Validated EasyFeedUserprofileDTO easyFeedUserprofileDTO){
+        easyFeedService.saveEasyFeedUserProfile(easyFeedUserprofileDTO);
+        // maxVowels("abciiidef", 3);
+        return new ResponseEntity<>("Save successfully", HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/save-journal")
+    public ResponseEntity<String> saveJournalData(@RequestBody @Validated JournalDataDTO journalDataDTO){
+        easyFeedService.saveJournalData(journalDataDTO);
+        // maxVowels("abciiidef", 3);
+        return new ResponseEntity<>("Save successfully", HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "*")
