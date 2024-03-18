@@ -1,13 +1,13 @@
 package com.cowrycode.smileapp.domains;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.PrePersist;
-import javax.persistence.Transient;
 
 
 @Entity

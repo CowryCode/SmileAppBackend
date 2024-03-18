@@ -1,13 +1,13 @@
 package com.cowrycode.smileapp.domains;
 
-        import lombok.Data;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Data;
 
-        import javax.persistence.GeneratedValue;
-        import javax.persistence.GenerationType;
-        import javax.persistence.Id;
-        import javax.persistence.MappedSuperclass;
-        import java.io.Serializable;
-        import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @MappedSuperclass

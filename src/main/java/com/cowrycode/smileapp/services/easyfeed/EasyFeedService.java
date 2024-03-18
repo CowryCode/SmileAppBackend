@@ -5,5 +5,6 @@ import com.cowrycode.smileapp.services.easyfeed.utilities.LeaderBoard;
 
 public interface EasyFeedService {
     void saveMilkData(BreastMilkDataDTO breastMilkDataDTO);
+    //LeaderBoard getLeaderBoard(Long userID);
     LeaderBoard getLeaderBoard(String userID);
 }

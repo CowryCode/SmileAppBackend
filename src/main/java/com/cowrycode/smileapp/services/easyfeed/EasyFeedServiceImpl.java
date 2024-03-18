@@ -31,7 +31,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
 
     @Override
     public void saveMilkData(BreastMilkDataDTO breastMilkDataDTO) {
-
+        breastMilkDataRepo.save(mapper.DTOtoEntity(breastMilkDataDTO));
         //getLeaderBoard("admin1@gmail.com");
     }
 
@@ -39,11 +39,20 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     public LeaderBoard getLeaderBoard(String userID) {
         List<BreastMilkData> bdata = breastMilkDataRepo.findAll();
 
+        //BreastMilkData bmd = breastMilkDataRepo.findById(userID).orElse(null);
+        BreastMilkData bmd = breastMilkDataRepo.findBreastMilkDataByUserID(userID);
+
         bdata.stream().forEach((breastMilkData)->{
-            this.separateDate(breastMilkData, userID);
+            this.separateDate(breastMilkData);
         });
 
-       return organizeDataByUser(userID);
+        String currentUserID;
+        if(bmd != null){
+            currentUserID = bmd.getUserID();
+        }else{
+            currentUserID = null;
+        }
+        return organizeDataByUser(currentUserID);
     }
 
     private LeaderBoard organizeDataByUser(String userID){
@@ -57,13 +66,8 @@ public class EasyFeedServiceImpl implements EasyFeedService{
 
             System.out.println(":::::::::::::::::: DATA DETAILS OF USERS :::::::::::::::::");
             for (Map.Entry<LocalDate, Map<String, FeedingData>>  ent : feedingDataMap.entrySet()) {
-                System.out.println("For : " + ent.getKey() + " ************************ " + ent.getValue().size());
                 for (Map.Entry<String, FeedingData> data : ent.getValue().entrySet()) {
-                    System.out.println("User : " + data.getValue().getUserID() +
-                            " Breast Feeding : " + data.getValue().getBreastFeedingCount() +
-                            " Bottling : " + data.getValue().getBottlingCount() +
-                            " Pumping : " + data.getValue().getPumpingCount());
-
+                    System.out.println("GIVEN UID : " + data.getValue().getUserID() + " Pulled ID : " + userID );
                     if(data.getValue().getUserID().equals(userID)){
                         if(ent.getKey().equals(LocalDate.now())){
                             userStatus.setTodayBreastFeedingCount(data.getValue().getBreastFeedingCount());
@@ -119,27 +123,47 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     }
 
     private LeaderBoard rankUsers(EasyFeedUserStatus userStatus, List<FeedingRanking > usersAVG ){
-        // Create a priority queue with a custom comparator
-        PriorityQueue<FeedingRanking> bfRanking = new PriorityQueue<>(Comparator.comparingInt(FeedingRanking::getBreastAvgFeedingRank).reversed());
-        bfRanking.addAll(usersAVG);
-
-        PriorityQueue<FeedingRanking> bottleRanking = new PriorityQueue<>(Comparator.comparingInt(FeedingRanking::getBottlingAvgRank).reversed());
-        bottleRanking.addAll(usersAVG);
-
-        PriorityQueue<FeedingRanking> pumpRanking = new PriorityQueue<>(Comparator.comparingInt(FeedingRanking::getPumpingAvgRank).reversed());
-        pumpRanking.addAll(usersAVG);
 
         LeaderBoard leaderBoard = new LeaderBoard();
         leaderBoard.setUserStatus(userStatus);
-        leaderBoard.setBreastFeedingRanking(new ArrayList<>(bfRanking));
-        leaderBoard.setBottlingRanking(new ArrayList<>(bottleRanking));
-        leaderBoard.setPumpingRanking(new ArrayList<>(pumpRanking));
+        // Create a priority queue with a custom comparator
+        PriorityQueue<FeedingRanking> bfRanking =
+                new PriorityQueue<FeedingRanking>((a,b) ->  b.getBreastAvgFeedingRank() - a.getBreastAvgFeedingRank());
+        bfRanking.addAll(usersAVG);
+        ArrayList<FeedingRanking> bfRankingSorted = new ArrayList<>();
+        while (!bfRanking.isEmpty()){
+            bfRankingSorted.add(bfRanking.poll());
+        }
+        leaderBoard.setBreastFeedingRanking(bfRankingSorted);
+
+        PriorityQueue<FeedingRanking> bottleRanking =
+                new PriorityQueue<FeedingRanking>((a,b) ->  b.getBottlingAvgRank() - a.getBottlingAvgRank());
+        bottleRanking.addAll(usersAVG);
+        ArrayList<FeedingRanking> bottleRankingSorted = new ArrayList<>();
+        while (!bottleRanking.isEmpty()){
+            bottleRankingSorted.add(bottleRanking.poll());
+        }
+        leaderBoard.setBottlingRanking(bottleRankingSorted);
+
+        PriorityQueue<FeedingRanking> pumpRanking =
+                new PriorityQueue<FeedingRanking>((a,b) ->  b.getPumpingAvgRank() - a.getPumpingAvgRank());
+        pumpRanking.addAll(usersAVG);
+        ArrayList<FeedingRanking> pumpRankingSorted = new ArrayList<>();
+        while (!pumpRanking.isEmpty()){
+            pumpRankingSorted.add(pumpRanking.poll());
+        }
+        leaderBoard.setPumpingRanking(pumpRankingSorted);
+        leaderBoard.setUserStatus(userStatus);
+
+        //leaderBoard.setBreastFeedingRanking(new ArrayList<>(bfRanking));
+        //leaderBoard.setBottlingRanking(new ArrayList<>(bottleRanking));
+        //leaderBoard.setPumpingRanking(new ArrayList<>(pumpRanking));
 
         return leaderBoard;
 
     }
 
-    private void separateDate(BreastMilkData breastMilkData, String currenUser){
+    private void separateDate(BreastMilkData breastMilkData){
         if(breastMilkData == null ) return;
         if (breastMilkData.getDateCreated() == null) return;
 

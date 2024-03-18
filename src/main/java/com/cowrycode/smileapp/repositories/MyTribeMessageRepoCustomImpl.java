@@ -1,10 +1,11 @@
 package com.cowrycode.smileapp.repositories;
 
 import com.cowrycode.smileapp.domains.MyTribeMessageEntity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+
 import java.util.List;
 
 public class MyTribeMessageRepoCustomImpl implements MyTribeMessageRepoCustom {

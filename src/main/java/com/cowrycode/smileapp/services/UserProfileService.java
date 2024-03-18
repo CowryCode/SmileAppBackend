@@ -5,8 +5,8 @@ import com.cowrycode.smileapp.models.EmpathyRequestDTO;
 import com.cowrycode.smileapp.models.QuestionnaireBMIScaleDTO;
 import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface UserProfileService  {

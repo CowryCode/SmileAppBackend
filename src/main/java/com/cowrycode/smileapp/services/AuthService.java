@@ -1,6 +1,7 @@
 package com.cowrycode.smileapp.services;
 
-import javax.servlet.http.HttpServletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
     String getIdentifier(HttpServletRequest request);

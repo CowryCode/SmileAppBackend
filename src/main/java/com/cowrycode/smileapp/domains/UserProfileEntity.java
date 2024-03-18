@@ -4,15 +4,15 @@ package com.cowrycode.smileapp.domains;
 import com.cowrycode.smileapp.models.UnrepliedTribeCalls;
 import com.cowrycode.smileapp.models.metamodels.LeaderBoard;
 import com.cowrycode.smileapp.models.metamodels.UnreadTribeMessagesDTO;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+
 import java.util.List;
 
 @Entity

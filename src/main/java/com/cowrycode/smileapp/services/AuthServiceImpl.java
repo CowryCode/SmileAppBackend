@@ -1,8 +1,7 @@
 package com.cowrycode.smileapp.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthServiceImpl implements AuthService {

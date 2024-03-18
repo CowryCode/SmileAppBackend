@@ -19,9 +19,9 @@ import com.cowrycode.smileapp.repositories.QuestionnaireBMIScaleRepo;
 import com.cowrycode.smileapp.repositories.TrackerRepo;
 import com.cowrycode.smileapp.repositories.UserProfileRepo;
 import com.cowrycode.smileapp.utilities.Variables;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;

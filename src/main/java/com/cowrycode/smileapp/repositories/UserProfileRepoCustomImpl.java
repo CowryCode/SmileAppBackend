@@ -1,10 +1,10 @@
 package com.cowrycode.smileapp.repositories;
 
 import com.cowrycode.smileapp.domains.UserProfileEntity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
 import java.util.List;
 
 public class UserProfileRepoCustomImpl implements UserProfileRepoCustom {

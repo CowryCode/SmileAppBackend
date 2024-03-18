@@ -13,5 +13,6 @@ public class EasyFeedUserStatus {
     private int todayBreastFeedingCount;
     private int todayPumpingCount;
     private int todayBottlingCount;
+    private int numberOfDays;
     private List<FeedingData> historicData;
 }
