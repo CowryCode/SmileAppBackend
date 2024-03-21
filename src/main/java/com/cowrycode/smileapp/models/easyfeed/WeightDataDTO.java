@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class WeightDataDTO {
     private Long id;
     private String userID;
-    private double weight;
+    private String weight;
 }

@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HeightData extends BaseEntity {
     private String userID;
-    private double height;
+    private String height;
 }

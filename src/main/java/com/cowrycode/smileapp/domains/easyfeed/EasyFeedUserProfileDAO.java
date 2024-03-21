@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class EasyFeedUserProfileDAO extends BaseEntity {
     private String userID;
     private String babyName;
+    private String deviceID;
     //private List<EasyFeedUserStatus> sharedUsers;
     private String listofSharedUsers; // User this to get the Status of these users
 }

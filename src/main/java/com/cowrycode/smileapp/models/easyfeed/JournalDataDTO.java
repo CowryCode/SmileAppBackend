@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class JournalDataDTO {
     private Long id;
     private String userID;
-    private double journal;
+    private String journal;
 }

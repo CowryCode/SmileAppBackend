@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class HeightDataDTO {
     private Long id;
     private String userID;
-    private double height;
+    private String height;
 }

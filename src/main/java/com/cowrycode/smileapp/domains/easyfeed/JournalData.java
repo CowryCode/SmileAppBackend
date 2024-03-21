@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JournalData extends BaseEntity {
     private String userID;
-    private double journal;
+    private String journal;
 }

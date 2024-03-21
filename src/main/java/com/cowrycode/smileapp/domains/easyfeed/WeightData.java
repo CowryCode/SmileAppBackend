@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WeightData extends BaseEntity {
     private String userID;
-    private double weight;
+    private String weight;
 }

@@ -43,6 +43,7 @@ public class EasyFeedController {
     @CrossOrigin(origins = "*")
     @PostMapping("/save-height")
     public ResponseEntity<String> saveHeight(@RequestBody @Validated HeightDataDTO heightDataDTO){
+        System.out.println(" HEIGHT IS : " + heightDataDTO.getHeight());
         easyFeedService.saveHeightData(heightDataDTO);
         // maxVowels("abciiidef", 3);
         return new ResponseEntity<>("Save successfully", HttpStatus.OK);
@@ -51,6 +52,7 @@ public class EasyFeedController {
     @CrossOrigin(origins = "*")
     @PostMapping("/save-weight")
     public ResponseEntity<String> saveWeight(@RequestBody @Validated WeightDataDTO weightDataDTO){
+        System.out.println(" WEIGHT IS : " + weightDataDTO.getWeight());
         easyFeedService.saveWeigthtData(weightDataDTO);
         // maxVowels("abciiidef", 3);
         return new ResponseEntity<>("Save successfully", HttpStatus.OK);
