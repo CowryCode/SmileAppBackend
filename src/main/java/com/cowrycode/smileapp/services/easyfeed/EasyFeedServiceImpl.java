@@ -229,7 +229,6 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         weightDataRepo.save(new WeightData(weightDataDTO.getUserID(), weightDataDTO.getWeight()));
         return true;
     }
-
     @Override
     public boolean saveFeedBack(FeedBackDTO feedBackDTO) {
         feedBackRepo.save(new FeedBack(feedBackDTO.getUserID(),feedBackDTO.getFeedback()));
@@ -242,9 +241,21 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     }
 
     @Override
+    public EasyFeedUserprofileDTO getEasyFeedUserProfile(String userID) {
+        EasyFeedUserProfileDAO profile = easyFeedUserProfilerRepo.findEasyFeedUserProfileDAOByUserID(userID);
+        return userProfileMapper.DAOtoDTO(profile);
+    }
+
+    @Override
     public boolean saveJournalData(JournalDataDTO journalDataDTO) {
         journalDataRepo.save(new JournalData(journalDataDTO.getUserID(), journalDataDTO.getJournal()));
         return true;
+    }
+    @Override
+    public void saveDeviceID(String userID, String deviceID) {
+        EasyFeedUserProfileDAO profile = easyFeedUserProfilerRepo.findEasyFeedUserProfileDAOByUserID(userID);
+        profile.setDeviceID(deviceID);
+        easyFeedUserProfilerRepo.save(profile);
     }
 
 

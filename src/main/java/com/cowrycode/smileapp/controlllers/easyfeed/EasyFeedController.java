@@ -75,10 +75,24 @@ public class EasyFeedController {
     }
 
     @CrossOrigin(origins = "*")
+    @PostMapping("/get-userprofile")
+    public ResponseEntity<EasyFeedUserprofileDTO> getEasyFeedUserProfile(@RequestBody @Validated EasyFeedUserprofileDTO easyFeedUserprofileDTO){
+        EasyFeedUserprofileDTO profile = easyFeedService.getEasyFeedUserProfile(easyFeedUserprofileDTO.getUserID());
+        // maxVowels("abciiidef", 3);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "*")
     @PostMapping("/save-journal")
     public ResponseEntity<String> saveJournalData(@RequestBody @Validated JournalDataDTO journalDataDTO){
         easyFeedService.saveJournalData(journalDataDTO);
-        // maxVowels("abciiidef", 3);
+        return new ResponseEntity<>("Save successfully", HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/save-deviceId")
+    public ResponseEntity<String> saveDeviceID(@RequestBody @Validated EasyFeedUserprofileDTO easyFeedUserprofileDTO){
+        easyFeedService.saveDeviceID(easyFeedUserprofileDTO.getUserID(), easyFeedUserprofileDTO.getDeviceID());
         return new ResponseEntity<>("Save successfully", HttpStatus.OK);
     }
 

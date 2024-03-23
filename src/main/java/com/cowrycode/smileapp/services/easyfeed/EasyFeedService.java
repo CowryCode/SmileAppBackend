@@ -11,5 +11,7 @@ public interface EasyFeedService {
     boolean saveHeightData(HeightDataDTO heightDataDTO);
     boolean saveJournalData(JournalDataDTO journalDataDTO);
     boolean saveEasyFeedUserProfile(EasyFeedUserprofileDTO easyFeedUserprofileDTO);
+    EasyFeedUserprofileDTO getEasyFeedUserProfile(String userID);
     boolean saveWeigthtData(WeightDataDTO weightDataDTO);
+    void saveDeviceID(String userID, String deviceID);
 }
