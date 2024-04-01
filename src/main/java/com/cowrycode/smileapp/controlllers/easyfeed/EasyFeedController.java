@@ -108,6 +108,7 @@ public class EasyFeedController {
        // fcmSenderService.sendPushnotification("CHESS","Hello Chimamaka Notification hi!!!","f7yWrhNWR92WCZrToUJodD:APA91bEt92iJfUlTbFnLu4s1B0_F0fnol8KloCoSDdvW-ZKSyZQaIBoExUwz79FEzxzEIlQA7nf4OLMTTXhVjjJGyzsLrna9mqZlgUUPEm-RQ22_38leXlX5SU2hxRcvgQUhT_DtMBCT");
        // return new ResponseEntity<>("Successfull ", HttpStatus.OK);
 //        decode();
+        easyFeedService.sendEmail("josephorji.laplace@gmail.com", "Test Email");
         return new ResponseEntity<>(decode(), HttpStatus.OK);
     }
 

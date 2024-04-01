@@ -14,4 +14,7 @@ public interface EasyFeedService {
     EasyFeedUserprofileDTO getEasyFeedUserProfile(String userID);
     boolean saveWeigthtData(WeightDataDTO weightDataDTO);
     void saveDeviceID(String userID, String deviceID);
+    boolean sendPushnotification();
+
+    void sendEmail(String receiver, String msg);
 }

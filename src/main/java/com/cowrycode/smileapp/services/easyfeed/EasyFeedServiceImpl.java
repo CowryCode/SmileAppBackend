@@ -7,10 +7,16 @@ import com.cowrycode.smileapp.mapper.easyfeed.JournalDataMapper;
 import com.cowrycode.smileapp.mapper.easyfeed.UserProfileMapper;
 import com.cowrycode.smileapp.models.easyfeed.*;
 import com.cowrycode.smileapp.repositories.easyfeed.*;
+import com.cowrycode.smileapp.services.FCMSenderService;
 import com.cowrycode.smileapp.services.easyfeed.utilities.EasyFeedUserStatus;
 import com.cowrycode.smileapp.services.easyfeed.utilities.FeedingData;
 import com.cowrycode.smileapp.services.easyfeed.utilities.FeedingRanking;
 import com.cowrycode.smileapp.services.easyfeed.utilities.LeaderBoard;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 public class EasyFeedServiceImpl implements EasyFeedService{
     private final BreastMilkDataRepo breastMilkDataRepo;
+
+    private final FCMSenderService fcmSenderService;
     private final BreastMilkDataMapper mapper = BreastMilkDataMapper.INSTANCE;
 
 
@@ -40,9 +48,10 @@ public class EasyFeedServiceImpl implements EasyFeedService{
                                FeedBackRepo feedBackRepo,
                                HeightDataRepo heightDataRepo,
                                JournalDataRepo journalDataRepo,
-                               WeightDataRepo weightDataRepo
+                               WeightDataRepo weightDataRepo,
+                               FCMSenderService fcmSenderService
 
-    ) {
+                               ) {
         this.breastMilkDataRepo = breastMilkDataRepo;
         feedingDataMap = new HashMap<>();
 
@@ -51,6 +60,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         this.heightDataRepo = heightDataRepo;
         this.journalDataRepo = journalDataRepo;
         this.weightDataRepo = weightDataRepo;
+        this.fcmSenderService = fcmSenderService;
     }
 
     @Override
@@ -258,6 +268,67 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         EasyFeedUserProfileDAO profile = easyFeedUserProfilerRepo.findEasyFeedUserProfileDAOByUserID(userID);
         profile.setDeviceID(deviceID);
         easyFeedUserProfilerRepo.save(profile);
+    }
+
+    @Override
+    public boolean sendPushnotification() {
+        List<EasyFeedUserProfileDAO> users = easyFeedUserProfilerRepo.findAll();
+        users.stream().forEach((user)->{
+            fcmSenderService.sendPushnotification("Feeding Alert","Have you fed the baby today?",user.getDeviceID());
+        });
+        return true;
+    }
+
+    @Override
+    public void sendEmail(String receiver, String msg) {
+//        Properties prop = new Properties();
+//        prop.put("mail.smtp.auth", true);
+//        prop.put("mail.smtp.starttls.enable", "true");
+//        prop.put("mail.smtp.host", "smtp.mailtrap.io");
+//        prop.put("mail.smtp.port", "25");
+//        prop.put("mail.smtp.ssl.trust", "smtp.mailtrap.io");
+
+        String senderEmail = "easyfeed24@gmail.com";
+        String senderPassword = "Easyfeed2024#";
+
+        // SMTP server configuration
+        Properties prop = new Properties();
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(prop, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(senderEmail, senderPassword);
+            }
+        });
+
+        Message message = new MimeMessage(session);
+        try {
+            message.setFrom(new InternetAddress(receiver));
+
+        message.setRecipients(
+                Message.RecipientType.TO, InternetAddress.parse(senderEmail));
+        message.setSubject("Mail Subject");
+
+       // String msg = "This is my first email using JavaMailer";
+
+        MimeBodyPart mimeBodyPart = new MimeBodyPart();
+        mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(mimeBodyPart);
+
+        message.setContent(multipart);
+
+        Transport.send(message);
+
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 
