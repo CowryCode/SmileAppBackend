@@ -4,13 +4,18 @@ import com.cowrycode.smileapp.models.UserProfileDTO;
 import com.cowrycode.smileapp.models.easyfeed.*;
 import com.cowrycode.smileapp.services.FCMSenderService;
 import com.cowrycode.smileapp.services.easyfeed.EasyFeedService;
+import com.cowrycode.smileapp.services.easyfeed.utilities.FeedingRanking;
 import com.cowrycode.smileapp.services.easyfeed.utilities.LeaderBoard;
+import com.cowrycode.smileapp.utilities.Interview;
 import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -36,14 +41,15 @@ public class EasyFeedController {
     @GetMapping("/get-leaderboard/{userID}")
     public ResponseEntity<LeaderBoard> getLeaderBoard(@PathVariable("userID") String userID){
      //  LeaderBoard result =   easyFeedService.getLeaderBoard(Long.valueOf(userID));
+        System.out.println("THE USER ID IS : " + userID);
        LeaderBoard result =   easyFeedService.getLeaderBoard(userID);
+        System.out.println(" Result : " + result.getUserStatus());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("/save-height")
     public ResponseEntity<String> saveHeight(@RequestBody @Validated HeightDataDTO heightDataDTO){
-        System.out.println(" HEIGHT IS : " + heightDataDTO.getHeight());
         easyFeedService.saveHeightData(heightDataDTO);
         // maxVowels("abciiidef", 3);
         return new ResponseEntity<>("Save successfully", HttpStatus.OK);
@@ -99,7 +105,46 @@ public class EasyFeedController {
     @CrossOrigin(origins = "*")
     @GetMapping("/push-notification")
     public ResponseEntity<String> getnotify(){
-        fcmSenderService.sendPushnotification("CHESS","Hello Chimamaka Notification hi!!!","f7yWrhNWR92WCZrToUJodD:APA91bEt92iJfUlTbFnLu4s1B0_F0fnol8KloCoSDdvW-ZKSyZQaIBoExUwz79FEzxzEIlQA7nf4OLMTTXhVjjJGyzsLrna9mqZlgUUPEm-RQ22_38leXlX5SU2hxRcvgQUhT_DtMBCT");
-        return new ResponseEntity<>("Successfull ", HttpStatus.OK);
+       // fcmSenderService.sendPushnotification("CHESS","Hello Chimamaka Notification hi!!!","f7yWrhNWR92WCZrToUJodD:APA91bEt92iJfUlTbFnLu4s1B0_F0fnol8KloCoSDdvW-ZKSyZQaIBoExUwz79FEzxzEIlQA7nf4OLMTTXhVjjJGyzsLrna9mqZlgUUPEm-RQ22_38leXlX5SU2hxRcvgQUhT_DtMBCT");
+       // return new ResponseEntity<>("Successfull ", HttpStatus.OK);
+//        decode();
+        return new ResponseEntity<>(decode(), HttpStatus.OK);
+    }
+
+    private String decode(){
+        PriorityQueue<Interview> sort =
+                new PriorityQueue<Interview>((a,b) ->  a.index - b.index);
+
+        String filePath = "/Users/josephorji/downloads/interview/coding_qual_input.txt";
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] arr = line.split(" ");
+                sort.add(new Interview(Integer.parseInt(arr[0]), arr[1]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int counter = 1;
+        int pointer = 1;
+        int pointerCounter = 1;
+        String result = "";
+        while (!sort.isEmpty()){
+            if(counter == pointer){
+                Interview val =  sort.poll();
+                result = result + " " + val.value;
+                pointerCounter++;
+                pointer = pointer + pointerCounter;
+                counter++;
+            }else {
+                sort.poll();
+                counter++;
+            }
+        }
+        System.out.println(result);
+        return  result.trim();
     }
 }
+
+

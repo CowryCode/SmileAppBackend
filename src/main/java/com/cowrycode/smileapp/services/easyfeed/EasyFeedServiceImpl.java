@@ -63,20 +63,22 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     public LeaderBoard getLeaderBoard(String userID) {
         List<BreastMilkData> bdata = breastMilkDataRepo.findAll();
 
-        //BreastMilkData bmd = breastMilkDataRepo.findById(userID).orElse(null);
-        BreastMilkData bmd = breastMilkDataRepo.findBreastMilkDataByUserID(userID);
+        EasyFeedUserProfileDAO profile = easyFeedUserProfilerRepo.findEasyFeedUserProfileDAOByUserID(userID);
 
         bdata.stream().forEach((breastMilkData)->{
             this.separateDate(breastMilkData);
         });
 
         String currentUserID;
-        if(bmd != null){
-            currentUserID = bmd.getUserID();
+        if(profile != null){
+            currentUserID = profile.getUserID();
         }else{
             currentUserID = null;
         }
-        return organizeDataByUser(currentUserID);
+
+        LeaderBoard result = organizeDataByUser(currentUserID);
+        feedingDataMap.clear();
+        return result;
     }
     private LeaderBoard organizeDataByUser(String userID){
         try{
@@ -90,7 +92,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
             System.out.println(":::::::::::::::::: DATA DETAILS OF USERS :::::::::::::::::");
             for (Map.Entry<LocalDate, Map<String, FeedingData>>  ent : feedingDataMap.entrySet()) {
                 for (Map.Entry<String, FeedingData> data : ent.getValue().entrySet()) {
-                    System.out.println("GIVEN UID : " + data.getValue().getUserID() + " Pulled ID : " + userID );
+
                     if(data.getValue().getUserID().equals(userID)){
                         if(ent.getKey().equals(LocalDate.now())){
                             userStatus.setTodayBreastFeedingCount(data.getValue().getBreastFeedingCount());
