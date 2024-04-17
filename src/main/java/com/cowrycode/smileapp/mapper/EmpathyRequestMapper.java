@@ -5,7 +5,7 @@ import com.cowrycode.smileapp.models.EmpathyRequestDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface EmpathyRequestMapper {
 
     EmpathyRequestMapper INSTANCE = Mappers.getMapper(EmpathyRequestMapper.class);

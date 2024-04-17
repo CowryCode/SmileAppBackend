@@ -3,8 +3,8 @@ package com.cowrycode.smileapp.services.easyfeed;
 import com.cowrycode.smileapp.config.CustomException;
 import com.cowrycode.smileapp.domains.easyfeed.*;
 import com.cowrycode.smileapp.mapper.easyfeed.BreastMilkDataMapper;
+import com.cowrycode.smileapp.mapper.easyfeed.EasyFeedUserProfileMapper;
 import com.cowrycode.smileapp.mapper.easyfeed.JournalDataMapper;
-import com.cowrycode.smileapp.mapper.easyfeed.UserProfileMapper;
 import com.cowrycode.smileapp.models.easyfeed.*;
 import com.cowrycode.smileapp.repositories.easyfeed.*;
 import com.cowrycode.smileapp.services.FCMSenderService;
@@ -41,7 +41,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     private final WeightDataRepo weightDataRepo;
 
     private JournalDataMapper journalDataMapper = JournalDataMapper.INSTANCE;
-    private UserProfileMapper userProfileMapper = UserProfileMapper.INSTANCE;
+    private EasyFeedUserProfileMapper userProfileMapper = EasyFeedUserProfileMapper.INSTANCE;
 
     public EasyFeedServiceImpl(BreastMilkDataRepo breastMilkDataRepo,
                                EasyFeedUserProfilerRepo easyFeedUserProfilerRepo,
@@ -265,9 +265,12 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     }
     @Override
     public void saveDeviceID(String userID, String deviceID) {
+        System.out.println(" USER ID: " + userID);
+        System.out.println(" DEVICE ID: " + deviceID);
         EasyFeedUserProfileDAO profile = easyFeedUserProfilerRepo.findEasyFeedUserProfileDAOByUserID(userID);
         profile.setDeviceID(deviceID);
-        easyFeedUserProfilerRepo.save(profile);
+        EasyFeedUserProfileDAO savedProfile = easyFeedUserProfilerRepo.save(profile);
+        System.out.println(" DEVICE ID 2.0 : " + savedProfile.getDeviceID());
     }
 
     @Override

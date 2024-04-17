@@ -5,7 +5,7 @@ import com.cowrycode.smileapp.models.MyTribeMessageDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface MyTribeMessageMapper {
     MyTribeMessageMapper INSTANCE = Mappers.getMapper(MyTribeMessageMapper.class);
 

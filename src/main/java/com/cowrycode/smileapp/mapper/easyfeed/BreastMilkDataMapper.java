@@ -7,7 +7,7 @@ import com.cowrycode.smileapp.models.easyfeed.BreastMilkDataDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BreastMilkDataMapper {
     BreastMilkDataMapper INSTANCE = Mappers.getMapper(BreastMilkDataMapper.class);
     BreastMilkDataDTO entityToDTO(BreastMilkData breastMilkData);

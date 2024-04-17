@@ -5,7 +5,7 @@ import com.cowrycode.smileapp.models.easyfeed.JournalDataDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface JournalDataMapper {
     JournalDataMapper INSTANCE = Mappers.getMapper(JournalDataMapper.class);
 

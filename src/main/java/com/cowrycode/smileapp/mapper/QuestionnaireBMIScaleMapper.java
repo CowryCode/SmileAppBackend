@@ -5,7 +5,7 @@ import com.cowrycode.smileapp.models.QuestionnaireBMIScaleDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface QuestionnaireBMIScaleMapper {
     QuestionnaireBMIScaleMapper INSTANCE = Mappers.getMapper(QuestionnaireBMIScaleMapper.class);
 
