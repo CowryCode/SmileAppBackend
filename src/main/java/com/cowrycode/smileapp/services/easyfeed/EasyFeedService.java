@@ -16,5 +16,7 @@ public interface EasyFeedService {
     void saveDeviceID(String userID, String deviceID);
     boolean sendPushnotification();
 
+    LastFeeding getLastFeeding(String userID);
+
     void sendEmail(String receiver, String msg);
 }

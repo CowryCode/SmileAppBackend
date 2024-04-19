@@ -17,6 +17,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,6 +44,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     private JournalDataMapper journalDataMapper = JournalDataMapper.INSTANCE;
     private EasyFeedUserProfileMapper userProfileMapper = EasyFeedUserProfileMapper.INSTANCE;
 
+
     public EasyFeedServiceImpl(BreastMilkDataRepo breastMilkDataRepo,
                                EasyFeedUserProfilerRepo easyFeedUserProfilerRepo,
                                FeedBackRepo feedBackRepo,
@@ -61,6 +63,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         this.journalDataRepo = journalDataRepo;
         this.weightDataRepo = weightDataRepo;
         this.fcmSenderService = fcmSenderService;
+
     }
 
     @Override
@@ -76,8 +79,10 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         EasyFeedUserProfileDAO profile = easyFeedUserProfilerRepo.findEasyFeedUserProfileDAOByUserID(userID);
 
         bdata.stream().forEach((breastMilkData)->{
+            System.out.println("THE NAME " + breastMilkData.getUserName());
             this.separateDate(breastMilkData);
         });
+        System.out.println("*****************************************************");
 
         String currentUserID;
         if(profile != null){
@@ -98,11 +103,9 @@ public class EasyFeedServiceImpl implements EasyFeedService{
             // AGGREGATE OTHER DATA
             Map<String, List<FeedingData>> allUsersData = new HashMap<>();
 
-
             System.out.println(":::::::::::::::::: DATA DETAILS OF USERS :::::::::::::::::");
             for (Map.Entry<LocalDate, Map<String, FeedingData>>  ent : feedingDataMap.entrySet()) {
                 for (Map.Entry<String, FeedingData> data : ent.getValue().entrySet()) {
-
                     if(data.getValue().getUserID().equals(userID)){
                         if(ent.getKey().equals(LocalDate.now())){
                             userStatus.setTodayBreastFeedingCount(data.getValue().getBreastFeedingCount());
@@ -135,6 +138,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
         int pumpingCounting = 0;
 
         for (Map.Entry<String, List<FeedingData>>  userData : allUsersData.entrySet()) {
+            String username = "N/A";
             for(int x = 0; x < userData.getValue().size(); x++){
                 bfCounting = bfCounting + userData.getValue().get(x).getBreastFeedingCount();
                 bottleCounting = bottleCounting + userData.getValue().get(x).getBottlingCount();
@@ -145,14 +149,17 @@ public class EasyFeedServiceImpl implements EasyFeedService{
             int pumpAvg = 0;
             if(bfCounting > 0){
                 bfAvg = (int) bfCounting / userData.getValue().size();
+                username = userData.getValue().get(0).getUserName();
             }
             if(bottleCounting > 0){
                 bottleAvg = (int) bottleCounting / userData.getValue().size();
+                username = userData.getValue().get(0).getUserName();
             }
             if(pumpingCounting > 0){
                 pumpAvg = (int) pumpingCounting / userData.getValue().size();
+                username = userData.getValue().get(0).getUserName();
             }
-            usersAVG.add(new FeedingRanking(userData.getKey(), bfAvg, bottleAvg, pumpAvg ));
+            usersAVG.add(new FeedingRanking(userData.getKey(), username, bfAvg, bottleAvg, pumpAvg ));
         }
         return  rankUsers(userStatus, usersAVG);
     }
@@ -218,6 +225,7 @@ public class EasyFeedServiceImpl implements EasyFeedService{
             userData = new FeedingData();
         }
         userData.setUserID(breastMilkData.getUserID());
+        userData.setUserName(breastMilkData.getUserName());
         userData.setDate(datecreated);
 
         if(breastMilkData.isIsbreasting()){
@@ -255,7 +263,9 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     @Override
     public EasyFeedUserprofileDTO getEasyFeedUserProfile(String userID) {
         EasyFeedUserProfileDAO profile = easyFeedUserProfilerRepo.findEasyFeedUserProfileDAOByUserID(userID);
-        return userProfileMapper.DAOtoDTO(profile);
+        EasyFeedUserprofileDTO profileDto = userProfileMapper.DAOtoDTO(profile);
+        profileDto.setLastFeeding(getLastFeeding(userID));
+        return profileDto;
     }
 
     @Override
@@ -283,13 +293,33 @@ public class EasyFeedServiceImpl implements EasyFeedService{
     }
 
     @Override
+    public LastFeeding getLastFeeding(String userID) {
+        LastFeeding lastFeeding = new LastFeeding();
+
+        List<BreastMilkData> breastfeading = breastMilkDataRepo.findBreastMilkDataByUserIDAndIsbreasting(userID, true);
+        List<BreastMilkData>  pumping = breastMilkDataRepo.findBreastMilkDataByUserIDAndIspumping(userID, true);
+        List<BreastMilkData> bttle = breastMilkDataRepo.findBreastMilkDataByUserIDAndIsbottlingOrderByDateCreatedDesc(userID, true);
+
+
+
+        lastFeeding.setBreastfeeding(mapper.entityToDTO(getLastBreatFeedingData(breastfeading)));
+        lastFeeding.setPumping(mapper.entityToDTO(getLastBreatFeedingData(pumping)));
+        lastFeeding.setBottling(mapper.entityToDTO(getLastBreatFeedingData(bttle)));
+        return lastFeeding;
+    }
+
+    private BreastMilkData getLastBreatFeedingData(List<BreastMilkData> dataList ){
+        Collections.sort(dataList, new Comparator<BreastMilkData>(){
+            @Override
+            public int compare(BreastMilkData o1, BreastMilkData o2) {
+                return o2.getDateCreated().compareTo(o1.getDateCreated());
+            }
+        });
+       return dataList.get(0);
+    }
+
+    @Override
     public void sendEmail(String receiver, String msg) {
-//        Properties prop = new Properties();
-//        prop.put("mail.smtp.auth", true);
-//        prop.put("mail.smtp.starttls.enable", "true");
-//        prop.put("mail.smtp.host", "smtp.mailtrap.io");
-//        prop.put("mail.smtp.port", "25");
-//        prop.put("mail.smtp.ssl.trust", "smtp.mailtrap.io");
 
         String senderEmail = "easyfeed24@gmail.com";
         String senderPassword = "Easyfeed2024#";

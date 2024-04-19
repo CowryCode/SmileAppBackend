@@ -16,4 +16,5 @@ public class BreastMilkDataDTO {
     private boolean ispumping;
     private boolean isbreasting;
     private String userID;
+    private String userName;
 }

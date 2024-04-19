@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedingRanking {
     private String userID;
+    private String userName;
     private int breastAvgFeedingRank;
     private int bottlingAvgRank;
     private int pumpingAvgRank;

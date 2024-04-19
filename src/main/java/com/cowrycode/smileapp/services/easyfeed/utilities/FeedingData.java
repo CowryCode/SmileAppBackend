@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class FeedingData {
     private String userID;
+    private String userName;
     private LocalDate date;
     private int breastFeedingCount;
     private int pumpingCount;

@@ -14,6 +14,7 @@ public class EasyFeedUserprofileDTO {
     private String babyName;
     private String deviceID;
     //private List<EasyFeedUserStatus> sharedUsers;
+    private LastFeeding lastFeeding;
     @JsonIgnore
     private String listofSharedUsers; // User this to get the Status of these users
 }

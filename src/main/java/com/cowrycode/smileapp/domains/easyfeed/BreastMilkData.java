@@ -20,4 +20,5 @@ public class BreastMilkData extends BaseEntity {
     private boolean ispumping;
     private boolean isbreasting;
     private String userID;
+    private String userName;
 }

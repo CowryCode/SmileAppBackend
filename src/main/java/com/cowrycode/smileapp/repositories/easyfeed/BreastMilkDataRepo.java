@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface BreastMilkDataRepo extends JpaRepository<BreastMilkData, Long> {
     BreastMilkData findBreastMilkDataByUserID(String userID);
+    List<BreastMilkData> findBreastMilkDataByUserIDAndIsbottlingOrderByDateCreatedDesc(String id, boolean type);
+    List<BreastMilkData> findBreastMilkDataByUserIDAndIsbreasting(String id, boolean type);
+    List<BreastMilkData> findBreastMilkDataByUserIDAndIspumping(String id, boolean type);
 }
